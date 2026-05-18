@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "design:lint": "npx @google/design.md@0.1.1 lint DESIGN.md",
+    "design:export": "npx @google/design.md@0.1.1 export DESIGN.md --format tailwind > src/styles/theme-generated.json"
   },
   "dependencies": {
     "react": "18.3.1",

@@ -1,0 +1,85 @@
+{
+  "theme": {
+    "extend": {
+      "colors": {
+        "background": "#030712",
+        "surface": "#111827",
+        "surface-overlay": "#1f2937",
+        "primary": "#2563eb",
+        "primary-hover": "#1d4ed8",
+        "foreground": "#f9fafb",
+        "muted-foreground": "#9ca3af",
+        "destructive": "#f87171",
+        "destructive-hover": "#ef4444",
+        "border": "#1f2937",
+        "input-surface": "#0d1117"
+      },
+      "fontFamily": {
+        "display": [
+          "Inter"
+        ],
+        "heading": [
+          "Inter"
+        ],
+        "body-medium": [
+          "Inter"
+        ],
+        "body": [
+          "Inter"
+        ],
+        "caption": [
+          "Inter"
+        ]
+      },
+      "fontSize": {
+        "display": [
+          "20px",
+          {
+            "fontWeight": "700"
+          }
+        ],
+        "heading": [
+          "16px",
+          {
+            "fontWeight": "600"
+          }
+        ],
+        "body-medium": [
+          "14px",
+          {
+            "lineHeight": "20px",
+            "fontWeight": "500"
+          }
+        ],
+        "body": [
+          "14px",
+          {
+            "lineHeight": "20px",
+            "fontWeight": "400"
+          }
+        ],
+        "caption": [
+          "14px",
+          {
+            "lineHeight": "16px",
+            "fontWeight": "400"
+          }
+        ]
+      },
+      "borderRadius": {
+        "sm": "8px",
+        "md": "10px",
+        "lg": "14px",
+        "full": "9999px"
+      },
+      "spacing": {
+        "xs": "4px",
+        "sm": "8px",
+        "md": "12px",
+        "lg": "16px",
+        "xl": "24px",
+        "2xl": "32px"
+      }
+    }
+  }
+}

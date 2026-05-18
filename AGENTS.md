@@ -47,14 +47,21 @@ src/
 
 ---
 
-## Design system
+## Design System
 
-**Fonte da verdade:** `src/styles/theme.css` (e seu espelho `default_shadcn_theme.css`).  
-Tokens disponíveis como variáveis CSS (`--background`, `--foreground`, `--primary`, `--destructive`, `--border`, `--radius`…) e como classes Tailwind semânticas (`bg-background`, `text-foreground`, `border-border`, `rounded-lg`…) via bloco `@theme inline`.
+**`DESIGN.md` é a fonte da verdade para tokens de design** (cores, tipografia, radius, spacing, componentes).  
+`src/styles/theme.css` contém as CSS variables do shadcn (sistema paralelo, não substituir).
+
+**Comandos:**
+```bash
+npm run design:lint      # Valida DESIGN.md (0 errors obrigatório antes de commitar)
+npm run design:export    # Exporta tokens → src/styles/theme-generated.json (Tailwind config)
+```
 
 **Regras:**
-- Novos componentes devem usar classes semânticas Tailwind (`bg-card`, `text-muted-foreground`, `border-border`) em vez de hex hardcoded.
-- Componentes gerados pelo Figma Make (em `src/imports/` e componentes de tela) **contêm hex hardcoded** — não altere esses valores ao refatorar; só troque intencionalmente ao ajustar um componente.
+- Nunca editar `src/styles/theme-generated.json` diretamente — é gerado automaticamente.
+- Novos componentes devem referenciar tokens do `DESIGN.md` (`{colors.primary}`, `{rounded.sm}`…).
+- Componentes gerados pelo Figma Make contêm hex hardcoded — não altere ao refatorar sem checar o `DESIGN.md` primeiro.
 - Antes de criar um componente do zero, verifique `src/app/components/ui/` — button, input, textarea, dialog, slider, card, tabs e outros já existem.
 
 ---
