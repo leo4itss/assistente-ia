@@ -1,0 +1,12 @@
+/* Overrides gerados a partir do DESIGN.md — editar o DESIGN.md, não este arquivo */
+
+:root {
+  --background: #030712;
+  --foreground: #f9fafb;
+  --primary: #2563eb;
+  --primary-foreground: #f9fafb;
+  --muted-foreground: #9ca3af;
+  --destructive: #f87171;
+  --border: #1f2937;
+  --input-background: #0d1117;
+}

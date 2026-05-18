@@ -39,8 +39,9 @@ src/
 ├── assets/                  # Imagens referenciadas via `figma:asset/` (não editar nomes)
 ├── imports/                 # AUTO-GERADO pelo Figma Make — SVG paths e snapshots de design
 └── styles/
-    ├── index.css            # Entry point: importa fonts, tailwind, theme
-    ├── theme.css            # Tokens CSS + bloco @theme inline (fonte da verdade)
+    ├── index.css            # Entry point: importa fonts, tailwind, theme, theme-design
+    ├── theme.css            # CSS variables shadcn + @theme inline (não editar)
+    ├── theme-design.css     # Overrides do DESIGN.md sobre o shadcn (não editar — gerado manualmente)
     ├── tailwind.css         # Diretivas @import "tailwindcss"
     └── fonts.css            # @font-face declarations
 ```
@@ -50,16 +51,17 @@ src/
 ## Design System
 
 **`DESIGN.md` é a fonte da verdade para tokens de design** (cores, tipografia, radius, spacing, componentes).  
-`src/styles/theme.css` contém as CSS variables do shadcn (sistema paralelo, não substituir).
+`src/styles/theme-design.css` aplica esses tokens como overrides sobre as CSS variables do shadcn.
 
 **Comandos:**
 ```bash
 npm run design:lint      # Valida DESIGN.md (0 errors obrigatório antes de commitar)
-npm run design:export    # Exporta tokens → src/styles/theme-generated.json (Tailwind config)
+npm run design:export    # Referência: exporta tokens em formato Tailwind v3 JSON (não usado ativamente)
 ```
 
 **Regras:**
-- Nunca editar `src/styles/theme-generated.json` diretamente — é gerado automaticamente.
+- Para mudar uma cor do projeto: edite o `DESIGN.md` e atualize `src/styles/theme-design.css` manualmente (o CLI `@google/design.md` ainda não suporta export para Tailwind v4 CSS).
+- Nunca editar `src/styles/theme-design.css` sem também atualizar o `DESIGN.md` — os dois devem estar em sincronia.
 - Novos componentes devem referenciar tokens do `DESIGN.md` (`{colors.primary}`, `{rounded.sm}`…).
 - Componentes gerados pelo Figma Make contêm hex hardcoded — não altere ao refatorar sem checar o `DESIGN.md` primeiro.
 - Antes de criar um componente do zero, verifique `src/app/components/ui/` — button, input, textarea, dialog, slider, card, tabs e outros já existem.
@@ -113,7 +115,8 @@ npm run build    # Build de produção → dist/
 | Arquivo / Pasta | Motivo |
 |---|---|
 | `default_shadcn_theme.css` | Sincronizado com o Figma Make — marcado com `KEEP_IN_SYNC` |
-| `src/styles/theme.css` | Espelho dos tokens; alterar quebra o design system inteiro |
+| `src/styles/theme.css` | Espelho do `default_shadcn_theme.css`; alterar quebra o design system inteiro |
+| `src/styles/theme-design.css` | Overrides do DESIGN.md — editar o `DESIGN.md`, não este arquivo diretamente |
 | `vercel.json` | Configuração de deploy Vercel (força npm, output dir) |
 | `vite.config.ts` | Contém o resolver `figma:asset/` — remover quebra todos os assets |
 | `src/imports/` | Auto-gerado pelo Figma Make — não editar manualmente |
