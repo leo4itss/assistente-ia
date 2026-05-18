@@ -4,7 +4,6 @@ import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png"
 import AssistantSelectorPopover from "@/app/components/AssistantSelectorPopover";
 import CreateAssistantScreen from "@/app/components/CreateAssistantScreen";
 import EditAssistantScreen from "@/app/components/EditAssistantScreen";
-import DeleteAssistantModal from "@/app/components/DeleteAssistantModal";
 import type { Assistant } from "@/app/App";
 
 interface CustomizationScreenProps {
@@ -16,7 +15,6 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
   const [assistantDropdownOpen, setAssistantDropdownOpen] = useState(false);
   const [showCreateAssistant, setShowCreateAssistant] = useState(false);
   const [showEditAssistant, setShowEditAssistant] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [currentAssistant, setCurrentAssistant] = useState<Assistant | null>(initialAssistant || null);
   const assistantButtonRef = useRef<HTMLDivElement>(null);
@@ -43,36 +41,6 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
     };
   }, []);
 
-
-  const handleDelete = () => {
-    if (!currentAssistant) {
-      alert("Nenhum assistente selecionado");
-      return;
-    }
-    setShowDeleteModal(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (!currentAssistant) return;
-
-    // Remover do localStorage
-    const existingAssistants = JSON.parse(localStorage.getItem("assistants") || "[]");
-    const filteredAssistants = existingAssistants.filter((a: Assistant) => a.id !== currentAssistant.id);
-    localStorage.setItem("assistants", JSON.stringify(filteredAssistants));
-
-    // Limpar assistente selecionado
-    localStorage.removeItem("selectedAssistantId");
-
-    // Disparar evento custom para atualizar a lista
-    window.dispatchEvent(new Event("assistants-updated"));
-
-    // Fechar modal
-    setShowDeleteModal(false);
-
-    // Feedback visual e voltar
-    alert("Assistente excluído com sucesso!");
-    onBack();
-  };
 
   const handleEdit = () => {
     if (!currentAssistant) {
@@ -201,10 +169,10 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                     </div>
                   </button>
                   <button className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Sidebar / SidebarMenuItem">
-                    <div className="h-[32px] relative rounded-[8px] shrink-0 w-full hover:bg-[rgba(255,255,255,0.05)] transition-colors" data-name="Sidebar / SidebarMenuButton">
+                    <div className="bg-[#1f2937] h-[32px] relative rounded-[8px] shrink-0 w-full" data-name="Sidebar / SidebarMenuButton">
                       <div className="flex flex-row items-center size-full">
                         <div className="content-stretch flex gap-[8px] items-center p-[8px] relative size-full">
-                          <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-none min-w-px not-italic overflow-hidden relative text-[#f9fafb] text-[14px] text-ellipsis text-left whitespace-nowrap">Persona</p>
+                          <p className="flex-[1_0_0] font-['Inter:Medium',sans-serif] font-medium leading-none min-w-px not-italic overflow-hidden relative text-[#f9fafb] text-[14px] text-ellipsis text-left whitespace-nowrap">Persona</p>
                         </div>
                       </div>
                     </div>
@@ -287,15 +255,36 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
         </div>
 
         {/* Page Header */}
-        <div className="bg-[#030712] relative shrink-0 w-full" data-name="Pro Blocks / Page Header / 9.">
-          <div className="content-stretch flex flex-col items-center overflow-clip px-[32px] py-[16px] relative rounded-[inherit] size-full">
-            <div className="content-stretch flex h-[40px] items-center justify-between relative shrink-0 w-full" data-name="Container">
-              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Div">
-                <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none not-italic relative shrink-0 text-[#f9fafb] text-[20px] w-full">Persona</p>
+        <div className="bg-[#030712] relative shrink-0 w-full border-b border-[rgba(255,255,255,0.1)]">
+          {/* Tab Nav */}
+          <div className="border-b border-[rgba(255,255,255,0.1)] px-[32px]">
+            <div className="flex items-center">
+              <div className="border-b-2 border-[#2563eb] flex items-center justify-center py-[6px]">
+                <div className="flex items-center justify-center px-[10px] py-[8px] rounded-[8px]">
+                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[20px] not-italic text-[#f9fafb] text-[14px] whitespace-nowrap">Persona</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-center py-[6px]">
+                <div className="flex items-center justify-center px-[10px] py-[8px] rounded-[8px]">
+                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic text-[#9ca3af] text-[14px] whitespace-nowrap">Resource Tools</p>
+                </div>
               </div>
             </div>
           </div>
-          <div aria-hidden="true" className="absolute border-[rgba(255,255,255,0.1)] border-b border-solid inset-0 pointer-events-none" />
+          {/* Title + Counter */}
+          <div className="flex items-center justify-between px-[32px] py-0 h-[66px]">
+            <p className="font-['Inter:Bold',sans-serif] font-bold leading-none not-italic text-[#f9fafb] text-[20px]">Persona</p>
+            <div className="flex flex-col items-end gap-[6px]">
+              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[16px]">
+                {assistants.length} de 5 assistentes utilizados
+              </p>
+              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px]">
+                {5 - assistants.length > 0
+                  ? `Você pode adicionar mais ${5 - assistants.length} assistente${5 - assistants.length > 1 ? "s" : ""}.`
+                  : "Limite de assistentes atingido."}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Form Content */}
@@ -322,10 +311,10 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                           <img alt="" className="absolute max-w-none object-cover rounded-[9999px] size-full" src={imgAvatar} />
                         </div>
                       </div>
-                      <button disabled className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 opacity-50 cursor-not-allowed" data-name="Button">
+                      <button className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors" data-name="Button">
                         <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                         <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                          <p className="leading-[20px]">Escolher arquivo</p>
+                          <p className="leading-[20px]">Fazer upload</p>
                         </div>
                       </button>
                     </div>
@@ -334,9 +323,9 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                   {/* Nome do Assistente */}
                   <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="Field">
                     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Flex">
-                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Nome do Assistente</p>
+                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Nome do Assistente<span className="text-[#f9fafb]">*</span></p>
                     </div>
-                    <div className="bg-[rgba(255,255,255,0.05)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] h-[36px] opacity-50 relative rounded-[8px] shrink-0 w-full">
+                    <div className="bg-[rgba(255,255,255,0.05)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] h-[36px] relative rounded-[8px] shrink-0 w-full">
                       <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                       <div className="flex flex-row items-center size-full">
                         <div className="content-stretch flex items-center px-[12px] py-[4px] relative size-full">
@@ -353,7 +342,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Flex">
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Descrição da persona</p>
                     </div>
-                    <div className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex flex-col items-start opacity-50 relative rounded-[8px] shrink-0 w-full">
+                    <div className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex flex-col items-start relative rounded-[8px] shrink-0 w-full">
                       <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                       <div className="h-[64px] min-h-[64px] relative shrink-0 w-full">
                         <div className="flex flex-row items-center justify-center min-h-[inherit] size-full">
@@ -381,7 +370,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                       </div>
                       <div className="relative shrink-0 w-full" data-name="Card Content">
                         <div className="content-stretch flex flex-col items-start px-[24px] relative size-full">
-                          <div className="content-stretch flex gap-[8px] h-[68px] items-center opacity-50 relative shrink-0 w-full" data-name="Slider-02">
+                          <div className="content-stretch flex gap-[8px] h-[68px] items-center relative shrink-0 w-full" data-name="Slider-02">
                             <div className="content-stretch flex flex-col gap-[4px] items-center justify-center relative shrink-0 w-[9px]" data-name="ItemContent">
                               <p className="font-['Inter:Medium',sans-serif] font-medium leading-[16px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] w-full">0</p>
                             </div>
@@ -422,7 +411,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Flex">
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Apresentação Resumida</p>
                     </div>
-                    <div className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex flex-col items-start opacity-50 relative rounded-[8px] shrink-0 w-full">
+                    <div className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex flex-col items-start relative rounded-[8px] shrink-0 w-full">
                       <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                       <div className="h-[64px] min-h-[64px] relative shrink-0 w-full">
                         <div className="flex flex-row items-center justify-center min-h-[inherit] size-full">
@@ -441,7 +430,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Flex">
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Link de Apresentação em Vídeo</p>
                     </div>
-                    <div className="bg-[rgba(255,255,255,0.05)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] h-[36px] opacity-50 relative rounded-[8px] shrink-0 w-full">
+                    <div className="bg-[rgba(255,255,255,0.05)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] h-[36px] relative rounded-[8px] shrink-0 w-full">
                       <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                       <div className="flex flex-row items-center size-full">
                         <div className="content-stretch flex items-center px-[12px] py-[4px] relative size-full">
@@ -457,20 +446,9 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                 {/* Action Buttons */}
                 <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full pb-[80px]" data-name="Field / Buttons">
                   <button
-                    onClick={handleDelete}
-                    disabled={!currentAssistant}
-                    className="bg-[rgba(248,113,113,0.6)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(248,113,113,0.8)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    data-name="Button"
-                  >
-                    <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
-                    <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">Deletar</p>
-                    </div>
-                  </button>
-                  <button
                     onClick={handleEdit}
                     disabled={!currentAssistant}
-                    className="bg-[#1f2937] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#374151] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     data-name="Button"
                   >
                     <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
@@ -484,14 +462,6 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
         </div>
       </div>
 
-      {/* Modal de Exclusão */}
-      {showDeleteModal && currentAssistant && (
-        <DeleteAssistantModal
-          assistant={currentAssistant}
-          onConfirm={handleConfirmDelete}
-          onCancel={() => setShowDeleteModal(false)}
-        />
-      )}
     </div>
   );
 }

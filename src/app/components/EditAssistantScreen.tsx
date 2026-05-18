@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import svgPaths from "@/imports/CustomizacaoIaPersonaEditarPersona/svg-ujv0in80jo";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
+import DeleteAssistantModal from "@/app/components/DeleteAssistantModal";
 import type { Assistant } from "@/app/App";
 
 interface EditAssistantScreenProps {
@@ -14,8 +15,11 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
   const [creativity, setCreativity] = useState(0.5);
   const [briefPresentation, setBriefPresentation] = useState("");
   const [videoLink, setVideoLink] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assistantsCount, setAssistantsCount] = useState(0);
 
-  // Carregar dados do assistente
+  const MAX_ASSISTANTS = 5;
+
   useEffect(() => {
     if (assistant) {
       setAssistantName(assistant.name || "");
@@ -24,7 +28,19 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
       setBriefPresentation(assistant.briefPresentation || "");
       setVideoLink(assistant.videoLink || "");
     }
+    const stored = localStorage.getItem("assistants");
+    if (stored) setAssistantsCount(JSON.parse(stored).length);
   }, [assistant]);
+
+  const handleDelete = () => {
+    const existingAssistants = JSON.parse(localStorage.getItem("assistants") || "[]");
+    const filtered = existingAssistants.filter((a: Assistant) => a.id !== assistant.id);
+    localStorage.setItem("assistants", JSON.stringify(filtered));
+    localStorage.removeItem("selectedAssistantId");
+    window.dispatchEvent(new Event("assistants-updated"));
+    setShowDeleteModal(false);
+    onBack();
+  };
 
   const handleSave = () => {
     const updatedAssistant = {
@@ -56,6 +72,7 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
   };
 
   return (
+    <>
     <div className="content-stretch flex items-start relative w-full h-full bg-[#030712]">
       {/* Main Content */}
       <div className="content-stretch flex flex-[1_0_0] flex-col h-full items-start min-w-px relative">
@@ -89,7 +106,17 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
             <div className="content-stretch flex flex-col items-center px-[32px] py-[16px] relative size-full">
               <div className="content-stretch flex h-[40px] items-center justify-between relative shrink-0 w-full">
                 <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative">
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none not-italic relative shrink-0 text-[#f9fafb] text-[20px] w-full">Editar Persona</p>
+                  <p className="font-['Inter:Bold',sans-serif] font-bold leading-none not-italic relative shrink-0 text-[#f9fafb] text-[20px] w-full">Editar Persona</p>
+                </div>
+                <div className="flex flex-col items-end gap-[6px]">
+                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[16px]">
+                    {assistantsCount} de {MAX_ASSISTANTS} assistentes utilizados
+                  </p>
+                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px]">
+                    {MAX_ASSISTANTS - assistantsCount > 0
+                      ? `Você pode adicionar mais ${MAX_ASSISTANTS - assistantsCount} assistente${MAX_ASSISTANTS - assistantsCount > 1 ? "s" : ""}.`
+                      : "Limite de assistentes atingido."}
+                  </p>
                 </div>
               </div>
             </div>
@@ -126,7 +153,7 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
                       <button className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors">
                         <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                         <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                          <p className="leading-[20px]">Escolher arquivo</p>
+                          <p className="leading-[20px]">Fazer upload</p>
                         </div>
                       </button>
                     </div>
@@ -135,7 +162,7 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
                   {/* Nome do Assistente */}
                   <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
                     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full">
-                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Nome do Assistente</p>
+                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Nome do Assistente<span className="text-[#f9fafb]">*</span></p>
                     </div>
                     <input
                       type="text"
@@ -228,27 +255,36 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
                 </div>
 
                 {/* Buttons */}
-                <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full pb-[80px]">
+                <div className="content-stretch flex items-center justify-between relative shrink-0 w-full pb-[80px]">
                   <button
-                    onClick={onBack}
-                    className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+                    onClick={() => setShowDeleteModal(true)}
+                    className="bg-[rgba(248,113,113,0.6)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(248,113,113,0.8)] transition-colors"
                   >
                     <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                     <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">Cancelar</p>
+                      <p className="leading-[20px]">Deletar</p>
                     </div>
                   </button>
-                  <button
-                    onClick={handleSave}
-                    disabled={!assistantName.trim()}
-                    className={`bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 transition-opacity ${
-                      !assistantName.trim() ? "opacity-50 cursor-not-allowed" : "hover:bg-[#1d4ed8]"
-                    }`}
-                  >
-                    <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">Salvar</p>
-                    </div>
-                  </button>
+                  <div className="flex gap-[12px] items-center">
+                    <button
+                      onClick={onBack}
+                      className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+                    >
+                      <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
+                      <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+                        <p className="leading-[20px]">Cancelar</p>
+                      </div>
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      disabled={!assistantName.trim()}
+                      className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+                        <p className="leading-[20px]">Salvar</p>
+                      </div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -256,5 +292,14 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
         </div>
       </div>
     </div>
+
+    {showDeleteModal && (
+      <DeleteAssistantModal
+        assistant={assistant}
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteModal(false)}
+      />
+    )}
+    </>
   );
 }

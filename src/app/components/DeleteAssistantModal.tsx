@@ -7,12 +7,12 @@ interface DeleteAssistantModalProps {
   onCancel: () => void;
 }
 
-function DialogHeader({ assistantName }: { assistantName: string }) {
+function DialogHeader() {
   return (
     <div className="content-stretch flex flex-col gap-[16px] items-start not-italic relative shrink-0 w-full" data-name="Dialog Header">
       <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none relative shrink-0 text-[#f9fafb] text-[18px] w-full">Pretende deletar esse assistente?</p>
       <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] relative shrink-0 text-[#9ca3af] text-[14px] w-full">
-        Esta ação é irreversível. Ao excluir o assistente <strong className="text-[#f9fafb]">{assistantName}</strong>, todas as conversas serão permanentemente removidas e não poderão ser recuperadas.
+        Esta ação é irreversível. Ao excluir o assistente, todas as conversas serão permanentemente removidas e não poderão ser recuperadas.
       </p>
     </div>
   );
@@ -37,7 +37,7 @@ function DialogFooter({ onCancel, onConfirm }: { onCancel: () => void; onConfirm
         data-name="Button"
       >
         <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#111827] text-[14px] whitespace-nowrap">
-          <p className="leading-[20px]">Deletar</p>
+          <p className="leading-[20px]">Excluir</p>
         </div>
       </button>
     </div>
@@ -49,7 +49,7 @@ export default function DeleteAssistantModal({ assistant, onConfirm, onCancel }:
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-[#111827] content-stretch drop-shadow-[0px_10px_7.5px_rgba(0,0,0,0.1),0px_4px_3px_rgba(0,0,0,0.1)] flex flex-col gap-[32px] items-end p-[24px] relative rounded-[10px] w-[425px]" data-name="Dialog">
         <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[10px]" />
-        <DialogHeader assistantName={assistant.name} />
+        <DialogHeader />
         <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Orientation=Horizontal">
           <div className="h-0 relative shrink-0 w-full" data-name="Separator">
             <div className="absolute inset-[-1px_0_0_0]">

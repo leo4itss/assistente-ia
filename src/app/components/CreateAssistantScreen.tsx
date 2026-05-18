@@ -137,7 +137,7 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
                       <button className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.1)] transition-colors" data-name="Button">
                         <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
                         <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                          <p className="leading-[20px]">Escolher arquivo</p>
+                          <p className="leading-[20px]">Fazer upload</p>
                         </div>
                       </button>
                     </div>
@@ -146,7 +146,7 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
                   {/* Nome do Assistente */}
                   <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="Field">
                     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Flex">
-                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Nome do Assistente</p>
+                      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">Nome do Assistente<span className="text-[#f9fafb]">*</span></p>
                     </div>
                     <input
                       type="text"
@@ -245,23 +245,13 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
                 {/* Submit Button */}
                 <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full pb-[80px]" data-name="Field / Buttons">
                   <button
-                    onClick={onBack}
-                    className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
-                    data-name="Button"
-                  >
-                    <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
-                    <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">Cancelar</p>
-                    </div>
-                  </button>
-                  <button
                     onClick={handleSave}
                     disabled={!assistantName.trim() || remainingSlots <= 0}
                     className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     data-name="Button"
                   >
                     <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">{remainingSlots <= 0 ? 'Limite atingido' : 'Criar Assistente'}</p>
+                      <p className="leading-[20px]">{remainingSlots <= 0 ? 'Limite atingido' : 'Salvar'}</p>
                     </div>
                   </button>
                 </div>
