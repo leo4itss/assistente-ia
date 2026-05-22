@@ -9,9 +9,10 @@ import type { Assistant } from "@/app/App";
 interface CustomizationScreenProps {
   onBack: () => void;
   assistant?: Assistant | null;
+  onResourcesToolsClick?: () => void;
 }
 
-export default function CustomizationScreen({ onBack, assistant: initialAssistant }: CustomizationScreenProps) {
+export default function CustomizationScreen({ onBack, assistant: initialAssistant, onResourcesToolsClick }: CustomizationScreenProps) {
   const [assistantDropdownOpen, setAssistantDropdownOpen] = useState(false);
   const [showCreateAssistant, setShowCreateAssistant] = useState(false);
   const [showEditAssistant, setShowEditAssistant] = useState(false);
@@ -264,11 +265,14 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                   <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[20px] not-italic text-[#f9fafb] text-[14px] whitespace-nowrap">Persona</p>
                 </div>
               </div>
-              <div className="flex items-center justify-center py-[6px]">
+              <button
+                onClick={onResourcesToolsClick}
+                className="flex items-center justify-center py-[6px] hover:opacity-80 transition-opacity"
+              >
                 <div className="flex items-center justify-center px-[10px] py-[8px] rounded-[8px]">
                   <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic text-[#9ca3af] text-[14px] whitespace-nowrap">Resource Tools</p>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
           {/* Title + Counter */}

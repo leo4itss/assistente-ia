@@ -10,6 +10,7 @@ import AssistantSelector from "@/app/components/AssistantSelector";
 import AppsPopover from "@/app/components/AppsPopover";
 import CustomizationScreen from "@/app/components/CustomizationScreen";
 import CreateAssistantScreen from "@/app/components/CreateAssistantScreen";
+import ResourcesToolsScreen from "@/app/components/ResourcesToolsScreen";
 import { DEFAULT_ASSISTANTS } from "@/app/constants/defaultAssistants";
 
 interface Message {
@@ -26,6 +27,8 @@ export interface Assistant {
   creativity: number;
   briefPresentation: string;
   videoLink: string;
+  resources?: string;
+  tools?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -38,6 +41,8 @@ export default function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [appsPopoverOpen, setAppsPopoverOpen] = useState(false);
   const [showCustomization, setShowCustomization] =
+    useState(false);
+  const [showResourcesTools, setShowResourcesTools] =
     useState(false);
   const [showCreateAssistant, setShowCreateAssistant] =
     useState(false);
@@ -220,18 +225,36 @@ export default function App() {
     );
   }
 
+  if (showResourcesTools) {
+    return (
+      <ResourcesToolsScreen
+        assistant={selectedAssistant}
+        onBack={() => {
+          setShowResourcesTools(false);
+          const stored = localStorage.getItem("assistants");
+          if (stored) {
+            setAssistants(JSON.parse(stored));
+            const selectedId = localStorage.getItem("selectedAssistantId");
+            if (selectedId) {
+              const all = JSON.parse(stored);
+              const sel = all.find((a: Assistant) => a.id === selectedId);
+              if (sel) setSelectedAssistant(sel);
+            }
+          }
+        }}
+      />
+    );
+  }
+
   if (showCustomization) {
     return (
       <CustomizationScreen
         assistant={selectedAssistant}
         onBack={() => {
           setShowCustomization(false);
-          // Recarregar assistentes
           const stored = localStorage.getItem("assistants");
           if (stored) {
             setAssistants(JSON.parse(stored));
-
-            // Atualizar assistente selecionado
             const selectedId = localStorage.getItem(
               "selectedAssistantId",
             );
@@ -245,6 +268,10 @@ export default function App() {
               }
             }
           }
+        }}
+        onResourcesToolsClick={() => {
+          setShowCustomization(false);
+          setShowResourcesTools(true);
         }}
       />
     );
