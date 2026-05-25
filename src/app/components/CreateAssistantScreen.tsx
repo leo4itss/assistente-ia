@@ -113,9 +113,9 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
 
         {/* Form Content */}
         <div className="bg-[#030712] flex-[1_0_0] min-h-0 overflow-y-auto relative w-full [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full" data-name="Div">
-          <div className="flex flex-row justify-center size-full">
-            <div className="content-stretch flex items-start justify-center px-[32px] pt-[32px] pb-[80px] relative size-full">
-              <div className="content-stretch flex flex-[1_0_0] flex-col gap-[28px] h-full items-end max-w-[640px] min-w-px relative" data-name="FieldSet">
+          <div className="flex flex-row justify-center w-full">
+            <div className="content-stretch flex items-start justify-center px-[32px] pt-[32px] pb-[80px] relative w-full">
+              <div className="content-stretch flex flex-col gap-[28px] items-end max-w-[640px] min-w-px relative w-full" data-name="FieldSet">
                 <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full" data-name="Field Group">
                   <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Div">
                     <div className="content-stretch flex items-start pb-[12px] relative shrink-0 w-full" data-name="Field / Legend">
