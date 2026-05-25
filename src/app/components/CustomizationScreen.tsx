@@ -256,38 +256,25 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
         </div>
 
         {/* Page Header */}
-        <div className="bg-[#030712] relative shrink-0 w-full border-b border-[rgba(255,255,255,0.1)]">
-          {/* Tab Nav */}
-          <div className="border-b border-[rgba(255,255,255,0.1)] px-[32px]">
-            <div className="flex items-center">
-              <div className="border-b-2 border-[#2563eb] flex items-center justify-center py-[6px]">
-                <div className="flex items-center justify-center px-[10px] py-[8px] rounded-[8px]">
-                  <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[20px] not-italic text-[#f9fafb] text-[14px] whitespace-nowrap">Persona</p>
-                </div>
-              </div>
-              <button
-                onClick={onResourcesToolsClick}
-                className="flex items-center justify-center py-[6px] hover:opacity-80 transition-opacity"
-              >
-                <div className="flex items-center justify-center px-[10px] py-[8px] rounded-[8px]">
-                  <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic text-[#9ca3af] text-[14px] whitespace-nowrap">Resource Tools</p>
-                </div>
-              </button>
-            </div>
-          </div>
-          {/* Title + Counter */}
-          <div className="flex items-center justify-between px-[32px] py-0 h-[66px]">
+        <div className="bg-[#030712] border-b border-[rgba(255,255,255,0.1)] flex items-center justify-between px-[32px] py-[16px] relative shrink-0 w-full">
+          <div className="flex items-center gap-[24px]">
             <p className="font-['Inter:Bold',sans-serif] font-bold leading-none not-italic text-[#f9fafb] text-[20px]">Persona</p>
-            <div className="flex flex-col items-end gap-[6px]">
-              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[16px]">
-                {assistants.length} de 5 assistentes utilizados
-              </p>
-              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px]">
-                {5 - assistants.length > 0
-                  ? `Você pode adicionar mais ${5 - assistants.length} assistente${5 - assistants.length > 1 ? "s" : ""}.`
-                  : "Limite de assistentes atingido."}
-              </p>
-            </div>
+            <button
+              onClick={onResourcesToolsClick}
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+            >
+              <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic text-[#f9fafb] text-[14px] whitespace-nowrap">Resource e Tools</p>
+            </button>
+          </div>
+          <div className="flex flex-col items-end gap-[6px]">
+            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[16px]">
+              {assistants.length} de 5 assistentes utilizados
+            </p>
+            <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px]">
+              {5 - assistants.length > 0
+                ? `Você pode adicionar mais ${5 - assistants.length} assistente${5 - assistants.length > 1 ? "s" : ""}.`
+                : "Limite de assistentes atingido."}
+            </p>
           </div>
         </div>
 
