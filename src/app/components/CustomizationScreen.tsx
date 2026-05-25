@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { toast, Toaster } from "sonner";
 import svgPaths from "@/imports/CustomizacaoIaPersona/svg-1m8jzas3y7";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 import AssistantSelectorPopover from "@/app/components/AssistantSelectorPopover";
@@ -45,7 +46,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
 
   const handleEdit = () => {
     if (!currentAssistant) {
-      alert("Nenhum assistente selecionado");
+      toast.error("Nenhum assistente selecionado");
       return;
     }
     setShowEditAssistant(true);
@@ -116,6 +117,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
 
   return (
     <div className="content-stretch flex items-start relative w-full h-full bg-[#030712]">
+      <Toaster theme="dark" position="bottom-right" />
       {/* Sidebar */}
       <div className="bg-[#111827] content-stretch flex flex-col h-full items-start relative shrink-0 w-[256px]">
         <div className="bg-[#111827] relative shrink-0 w-full" data-name="SidebarHeader">
@@ -434,22 +436,21 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full pb-[80px]" data-name="Field / Buttons">
-                  <button
-                    onClick={handleEdit}
-                    disabled={!currentAssistant}
-                    className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    data-name="Button"
-                  >
-                    <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">Editar</p>
-                    </div>
-                  </button>
-                </div>
               </div>
             </div>
           </div>
+        </div>
+        {/* Footer */}
+        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-end px-[32px] py-[16px] shrink-0 w-full gap-[12px]">
+          <button
+            onClick={handleEdit}
+            disabled={!currentAssistant}
+            className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+              <p className="leading-[20px]">Editar</p>
+            </div>
+          </button>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast, Toaster } from "sonner";
 import svgPaths from "@/imports/CustomizacaoIaPersonaCriarPersona/svg-iyj974iz86";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 
@@ -30,7 +31,7 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
     // Verificar se atingiu o limite
     const existingAssistants = JSON.parse(localStorage.getItem("assistants") || "[]");
     if (existingAssistants.length >= MAX_ASSISTANTS) {
-      alert(`Você atingiu o limite de ${MAX_ASSISTANTS} assistentes. Faça upgrade para criar mais!`);
+      toast.error(`Você atingiu o limite de ${MAX_ASSISTANTS} assistentes. Faça upgrade para criar mais!`);
       return;
     }
 
@@ -54,13 +55,13 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
     // Disparar evento custom para atualizar a lista
     window.dispatchEvent(new Event("assistants-updated"));
 
-    // Feedback visual e voltar
-    alert("Assistente criado com sucesso!");
+    toast.success("Assistente criado com sucesso!");
     onBack();
   };
 
   return (
     <div className="content-stretch flex items-start relative w-full h-full bg-[#030712]">
+      <Toaster theme="dark" position="bottom-right" />
       {/* Main Content */}
       <div className="content-stretch flex flex-col flex-1 h-full items-start relative" data-name="Main">
         {/* Header */}
@@ -242,22 +243,21 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
                   </div>
                 </div>
 
-                {/* Submit Button */}
-                <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full pb-[80px]" data-name="Field / Buttons">
-                  <button
-                    onClick={handleSave}
-                    disabled={!assistantName.trim() || remainingSlots <= 0}
-                    className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    data-name="Button"
-                  >
-                    <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                      <p className="leading-[20px]">{remainingSlots <= 0 ? 'Limite atingido' : 'Salvar'}</p>
-                    </div>
-                  </button>
-                </div>
               </div>
             </div>
           </div>
+        </div>
+        {/* Footer */}
+        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-end px-[32px] py-[16px] shrink-0 w-full gap-[12px]">
+          <button
+            onClick={handleSave}
+            disabled={!assistantName.trim() || remainingSlots <= 0}
+            className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+              <p className="leading-[20px]">{remainingSlots <= 0 ? 'Limite atingido' : 'Salvar'}</p>
+            </div>
+          </button>
         </div>
       </div>
     </div>
