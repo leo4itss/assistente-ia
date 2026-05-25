@@ -231,6 +231,7 @@ export default function App() {
         assistant={selectedAssistant}
         onBack={() => {
           setShowResourcesTools(false);
+          setShowCustomization(true);
           const stored = localStorage.getItem("assistants");
           if (stored) {
             setAssistants(JSON.parse(stored));
