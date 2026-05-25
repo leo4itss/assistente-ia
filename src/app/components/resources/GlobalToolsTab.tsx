@@ -18,7 +18,7 @@ export default function GlobalToolsTab({ tools, onChange, errors }: GlobalToolsT
 
   return (
     <div className="flex flex-row justify-center w-full">
-      <div className="flex flex-col items-start gap-[24px] p-[32px] w-full max-w-[800px]">
+      <div className="flex flex-col items-start gap-[24px] px-[32px] pt-[32px] pb-[80px] w-full max-w-[800px]">
         {/* Empty state */}
         {tools.length === 0 && (
           <div className="flex flex-col items-center justify-center w-full py-[64px] gap-[16px]">

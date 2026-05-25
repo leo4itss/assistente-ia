@@ -382,7 +382,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
         </div>
 
         {/* Tab Content */}
-        <div className="bg-[#030712] flex-[1_0_0] min-h-0 overflow-y-auto relative w-full">
+        <div className="bg-[#030712] flex-[1_0_0] min-h-0 overflow-y-auto relative w-full [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full">
           {activeTab === "recursos" && (
             <ResourcesTab
               resources={resources}
@@ -398,7 +398,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
             />
           )}
           {activeTab === "avancado" && (
-            <div className="flex flex-row justify-center w-full p-[32px]">
+            <div className="flex flex-row justify-center w-full px-[32px] pt-[32px] pb-[80px]">
               <div className="w-full max-w-[800px]">
                 <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] mb-[12px]">JSON atual (somente leitura)</p>
                 <pre className="bg-[#0d1117] border border-[rgba(255,255,255,0.1)] rounded-[8px] p-[16px] text-[#9ca3af] text-[12px] leading-[20px] overflow-auto whitespace-pre-wrap break-all">
