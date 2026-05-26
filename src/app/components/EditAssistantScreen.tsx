@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { toastSuccess } from "@/app/lib/toast";
 import svgPaths from "@/imports/CustomizacaoIaPersonaEditarPersona/svg-ujv0in80jo";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 import DeleteAssistantModal from "@/app/components/DeleteAssistantModal";
@@ -40,7 +41,7 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
     localStorage.removeItem("selectedAssistantId");
     window.dispatchEvent(new Event("assistants-updated"));
     setShowDeleteModal(false);
-    toast.success("Assistente excluído com sucesso!");
+    toastSuccess("Assistente excluído com sucesso!");
     onBack();
   };
 
@@ -69,7 +70,7 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
     window.dispatchEvent(new Event("assistants-updated"));
 
     // Feedback visual e voltar
-    toast.success("Assistente atualizado com sucesso!");
+    toastSuccess("Persona atualizada com sucesso!");
     onBack();
   };
 

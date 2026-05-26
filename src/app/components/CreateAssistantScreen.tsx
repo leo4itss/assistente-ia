@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { toastSuccess } from "@/app/lib/toast";
 import svgPaths from "@/imports/CustomizacaoIaPersonaCriarPersona/svg-iyj974iz86";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 
@@ -55,7 +56,7 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
     // Disparar evento custom para atualizar a lista
     window.dispatchEvent(new Event("assistants-updated"));
 
-    toast.success("Assistente criado com sucesso!");
+    toastSuccess("Assistente criado com sucesso!");
     onBack();
   };
 

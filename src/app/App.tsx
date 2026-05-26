@@ -222,7 +222,7 @@ export default function App() {
 
   return (
     <>
-      <Toaster theme="dark" position="bottom-right" />
+      <Toaster theme="dark" position="top-right" />
       {showCreateAssistant ? (
         <CreateAssistantScreen
           onBack={() => {
