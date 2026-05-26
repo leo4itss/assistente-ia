@@ -54,6 +54,15 @@ export default function App() {
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
+  // Deep link dev: ?screen=resources-tools abre Resources e Tools direto (captura Figma)
+  useEffect(() => {
+    const screen = new URLSearchParams(window.location.search).get("screen");
+    if (screen === "resources-tools") {
+      setShowResourcesTools(true);
+      setShowCustomization(false);
+    }
+  }, []);
+
   // Carregar assistentes e assistente selecionado do localStorage
   useEffect(() => {
     const loadAssistants = () => {

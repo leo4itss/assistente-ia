@@ -40,6 +40,7 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
     localStorage.removeItem("selectedAssistantId");
     window.dispatchEvent(new Event("assistants-updated"));
     setShowDeleteModal(false);
+    toast.success("Assistente excluído com sucesso!");
     onBack();
   };
 

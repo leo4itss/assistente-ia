@@ -1,3 +1,4 @@
+import { useState } from "react";
 import svgPaths from "../../imports/Dialog/svg-qy3hpqah86";
 import type { Assistant } from "@/app/App";
 
@@ -18,7 +19,7 @@ function DialogHeader() {
   );
 }
 
-function DialogFooter({ onCancel, onConfirm }: { onCancel: () => void; onConfirm: () => void }) {
+function DialogFooter({ onCancel, onConfirm, confirmed }: { onCancel: () => void; onConfirm: () => void; confirmed: boolean }) {
   return (
     <div className="content-stretch flex gap-[8px] items-center justify-end relative shrink-0 w-full" data-name="Dialog Footer">
       <button
@@ -33,7 +34,8 @@ function DialogFooter({ onCancel, onConfirm }: { onCancel: () => void; onConfirm
       </button>
       <button
         onClick={onConfirm}
-        className="bg-[#f87171] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#ef4444] transition-colors"
+        disabled={!confirmed}
+        className="bg-[#f87171] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#ef4444] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         data-name="Button"
       >
         <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#111827] text-[14px] whitespace-nowrap">
@@ -45,11 +47,25 @@ function DialogFooter({ onCancel, onConfirm }: { onCancel: () => void; onConfirm
 }
 
 export default function DeleteAssistantModal({ assistant, onConfirm, onCancel }: DeleteAssistantModalProps) {
+  const [confirmName, setConfirmName] = useState("");
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-[#111827] content-stretch drop-shadow-[0px_10px_7.5px_rgba(0,0,0,0.1),0px_4px_3px_rgba(0,0,0,0.1)] flex flex-col gap-[32px] items-end p-[24px] relative rounded-[10px] w-[425px]" data-name="Dialog">
         <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[10px]" />
         <DialogHeader />
+        <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full">
+          <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] relative shrink-0 text-[#9ca3af] text-[14px] w-full">
+            Digite <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb]">{assistant.name}</span> para confirmar a exclusão:
+          </p>
+          <input
+            type="text"
+            value={confirmName}
+            onChange={(e) => setConfirmName(e.target.value)}
+            placeholder={assistant.name}
+            className="bg-[rgba(255,255,255,0.05)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] h-[36px] relative rounded-[8px] shrink-0 w-full border border-[rgba(255,255,255,0.15)] px-[12px] py-[4px] font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#f9fafb] text-[14px] outline-none focus:border-[rgba(255,255,255,0.3)] placeholder:text-[#6b7280]"
+          />
+        </div>
         <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Orientation=Horizontal">
           <div className="h-0 relative shrink-0 w-full" data-name="Separator">
             <div className="absolute inset-[-1px_0_0_0]">
@@ -59,7 +75,7 @@ export default function DeleteAssistantModal({ assistant, onConfirm, onCancel }:
             </div>
           </div>
         </div>
-        <DialogFooter onCancel={onCancel} onConfirm={onConfirm} />
+        <DialogFooter onCancel={onCancel} onConfirm={onConfirm} confirmed={confirmName === assistant.name} />
         <button
           onClick={onCancel}
           className="absolute right-[16px] rounded-[2px] size-[16px] top-[16px] hover:opacity-100 transition-opacity"
