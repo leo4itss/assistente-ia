@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Toaster } from "sonner";
 import svgPaths from "@/imports/svg-vtaynlf815";
 import svgPathsPlaceholder from "@/imports/svg-hujl1n6kp5";
 import svgPathsChatCore from "@/imports/svg-7x1t3yrsvw";
@@ -289,6 +290,7 @@ export default function App() {
 
   return (
     <div className="content-stretch flex items-start relative size-full bg-[#030712]">
+      <Toaster theme="dark" position="bottom-right" />
       {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}

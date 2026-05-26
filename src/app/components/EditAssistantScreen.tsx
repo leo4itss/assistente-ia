@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import svgPaths from "@/imports/CustomizacaoIaPersonaEditarPersona/svg-ujv0in80jo";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 import DeleteAssistantModal from "@/app/components/DeleteAssistantModal";
@@ -75,7 +75,6 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
 
   return (
     <>
-    <Toaster theme="dark" position="bottom-right" />
     <div className="content-stretch flex items-start relative w-full h-full bg-[#030712]">
       {/* Main Content */}
       <div className="content-stretch flex flex-[1_0_0] flex-col h-full items-start min-w-px relative">

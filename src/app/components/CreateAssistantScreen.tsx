@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import svgPaths from "@/imports/CustomizacaoIaPersonaCriarPersona/svg-iyj974iz86";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 
@@ -61,7 +61,6 @@ export default function CreateAssistantScreen({ onBack }: CreateAssistantScreenP
 
   return (
     <div className="content-stretch flex items-start relative w-full h-full bg-[#030712]">
-      <Toaster theme="dark" position="bottom-right" />
       {/* Main Content */}
       <div className="content-stretch flex flex-col flex-1 h-full items-start relative" data-name="Main">
         {/* Header */}

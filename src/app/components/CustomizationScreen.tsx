@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import svgPaths from "@/imports/CustomizacaoIaPersona/svg-1m8jzas3y7";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 import AssistantSelectorPopover from "@/app/components/AssistantSelectorPopover";
@@ -117,7 +117,6 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
 
   return (
     <div className="content-stretch flex items-start relative w-full h-full bg-[#030712]">
-      <Toaster theme="dark" position="bottom-right" />
       {/* Sidebar */}
       <div className="bg-[#111827] content-stretch flex flex-col h-full items-start relative shrink-0 w-[256px]">
         <div className="bg-[#111827] relative shrink-0 w-full" data-name="SidebarHeader">
