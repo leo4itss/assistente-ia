@@ -1,0 +1,89 @@
+---
+description: Regras gerais do projeto assistente-ia (Figma Make / React prototype)
+globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
+alwaysApply: true
+---
+
+# Projeto: Assistente IA — PRIZM
+
+Protótipo React navegável gerado via **Figma Make**. Sem router — a troca de telas é feita por renderização condicional em `src/app/App.tsx`.
+
+## Stack
+
+- React + TypeScript + Vite
+- Tailwind CSS (classes utilitárias inline, sem CSS Modules)
+- Sonner para toasts (`toast.custom()` com UI própria em `src/app/lib/toast.tsx`)
+- shadcn/ui para primitivos em `src/app/components/ui/`
+- `localStorage` + evento DOM `assistants-updated` para estado global
+
+## Comandos válidos
+
+```bash
+npm run dev      # dev server
+npm run build    # build de produção (rodar antes de commitar)
+```
+
+Não existe `lint`, `test` ou `preview` — nunca os invoque.
+
+## Arquitetura de navegação
+
+`App.tsx` usa um único `return` com ternário encadeado:
+
+```
+showCreateAssistant → <CreateAssistantScreen>
+showResourcesTools  → <ResourcesToolsScreen>
+showCustomization   → <CustomizationScreen>
+default             → shell de chat (Sidebar + Header + ChatBar)
+```
+
+O `<Toaster>` vive em `App.tsx` e **não** deve ser adicionado em telas individuais.
+
+## Design system
+
+- `DESIGN.md` é a fonte de verdade para tokens (cores, tipografia, radius, espaçamento)
+- Projeto **dark-first**: `background: #030712`, `surface: #111827`, `primary: #2563eb`
+- Edite `DESIGN.md` primeiro; depois atualize `src/styles/theme-design.css` manualmente
+- Componentes em `src/imports/` carregam hex hardcoded vindos do Figma — consulte `DESIGN.md` antes de alterar
+
+## Toasts
+
+Usar sempre `toastSuccess(message)` de `@/app/lib/toast` para toasts de sucesso.
+Usar `toast.error(message)` de `sonner` para erros.
+Nunca usar `toast.success()` diretamente.
+
+## Convenções de código
+
+- Arquivos de componente: `PascalCase.tsx`
+- shadcn/ui em `src/app/components/ui/`: `kebab-case.tsx`
+- Sem barrel files (`index.ts`) — importar por caminho direto
+- Interface `Assistant` exportada de `src/app/App.tsx`
+- Tipos locais ficam no próprio arquivo de componente
+- Import alias: `@/` → `src/`
+
+## Arquivos que NÃO devem ser editados
+
+| Arquivo / Pasta | Motivo |
+|---|---|
+| `src/imports/` | Auto-gerado pelo Figma Make |
+| `src/assets/` | Hash de conteúdo — renomear quebra imports |
+| `src/styles/theme.css` | Mirror do shadcn default |
+| `src/styles/theme-design.css` | Gerado por `DESIGN.md` |
+| `default_shadcn_theme.css` | Sincronizado com Figma Make |
+| `vite.config.ts` | Contém o resolver `figma:asset/` |
+| `vercel.json` | Config de deploy |
+
+## Formato de commit
+
+```
+feat/fix/chore: descrição em português [claude]
+```
+
+Branch de trabalho: `feat/resource-e-tools` → PR para `main` só em releases estáveis.
+
+## Padrões de UI
+
+- Footer das telas de gestão de assistentes: `flex flex-col items-center px-[32px] py-[16px]` com inner `max-w-[640px] w-full` — alinhado ao grid do formulário
+- Modal de exclusão: campo de texto exige digitação exata do nome antes de habilitar o botão
+- Botão destrutivo: `bg-[rgba(248,113,113,0.6)] hover:bg-[rgba(248,113,113,0.8)]`
+- Botão primário: `bg-[#2563eb] hover:bg-[#1d4ed8]`
+- Botão secundário: `bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)]`
