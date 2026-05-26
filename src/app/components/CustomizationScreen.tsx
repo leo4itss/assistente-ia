@@ -440,16 +440,18 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
           </div>
         </div>
         {/* Footer */}
-        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-end px-[32px] py-[16px] shrink-0 w-full gap-[12px]">
-          <button
-            onClick={handleEdit}
-            disabled={!currentAssistant}
-            className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-              <p className="leading-[20px]">Editar</p>
-            </div>
-          </button>
+        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex flex-col items-center px-[32px] py-[16px] shrink-0 w-full">
+          <div className="flex h-[36px] items-center justify-end max-w-[640px] w-full">
+            <button
+              onClick={handleEdit}
+              disabled={!currentAssistant}
+              className="bg-[#2563eb] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+                <p className="leading-[20px]">Editar</p>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
 

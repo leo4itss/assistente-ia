@@ -262,35 +262,35 @@ export default function EditAssistantScreen({ onBack, assistant }: EditAssistant
           </div>
         </div>
         {/* Footer */}
-        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-between px-[32px] py-[16px] shrink-0 w-full">
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="bg-[rgba(248,113,113,0.6)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(248,113,113,0.8)] transition-colors"
-          >
-            <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
-            <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-              <p className="leading-[20px]">Deletar</p>
+        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex flex-col items-center px-[32px] py-[16px] shrink-0 w-full">
+          <div className="flex h-[36px] items-center justify-between max-w-[640px] w-full">
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="bg-[rgba(248,113,113,0.6)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(248,113,113,0.8)] transition-colors"
+            >
+              <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+                <p className="leading-[20px]">Deletar</p>
+              </div>
+            </button>
+            <div className="flex gap-[12px] items-center">
+              <button
+                onClick={onBack}
+                className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+              >
+                <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+                  <p className="leading-[20px]">Cancelar</p>
+                </div>
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={!assistantName.trim()}
+                className="bg-[#2563eb] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
+                  <p className="leading-[20px]">Salvar</p>
+                </div>
+              </button>
             </div>
-          </button>
-          <div className="flex gap-[12px] items-center">
-            <button
-              onClick={onBack}
-              className="bg-[rgba(255,255,255,0.05)] content-stretch drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
-            >
-              <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
-              <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                <p className="leading-[20px]">Cancelar</p>
-              </div>
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={!assistantName.trim()}
-              className="bg-[#2563eb] content-stretch flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[#f9fafb] text-[14px] whitespace-nowrap">
-                <p className="leading-[20px]">Salvar</p>
-              </div>
-            </button>
           </div>
         </div>
       </div>
