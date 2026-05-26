@@ -220,78 +220,67 @@ export default function App() {
     }
   };
 
-  if (showCreateAssistant) {
-    return (
-      <CreateAssistantScreen
-        onBack={() => {
-          setShowCreateAssistant(false);
-          // Recarregar assistentes
-          const stored = localStorage.getItem("assistants");
-          if (stored) {
-            setAssistants(JSON.parse(stored));
-          }
-        }}
-      />
-    );
-  }
-
-  if (showResourcesTools) {
-    return (
-      <ResourcesToolsScreen
-        assistant={selectedAssistant}
-        onBack={() => {
-          setShowResourcesTools(false);
-          setShowCustomization(true);
-          const stored = localStorage.getItem("assistants");
-          if (stored) {
-            setAssistants(JSON.parse(stored));
-            const selectedId = localStorage.getItem("selectedAssistantId");
-            if (selectedId) {
-              const all = JSON.parse(stored);
-              const sel = all.find((a: Assistant) => a.id === selectedId);
-              if (sel) setSelectedAssistant(sel);
+  return (
+    <>
+      <Toaster theme="dark" position="bottom-right" />
+      {showCreateAssistant ? (
+        <CreateAssistantScreen
+          onBack={() => {
+            setShowCreateAssistant(false);
+            const stored = localStorage.getItem("assistants");
+            if (stored) {
+              setAssistants(JSON.parse(stored));
             }
-          }
-        }}
-      />
-    );
-  }
-
-  if (showCustomization) {
-    return (
-      <CustomizationScreen
-        assistant={selectedAssistant}
-        onBack={() => {
-          setShowCustomization(false);
-          const stored = localStorage.getItem("assistants");
-          if (stored) {
-            setAssistants(JSON.parse(stored));
-            const selectedId = localStorage.getItem(
-              "selectedAssistantId",
-            );
-            if (selectedId) {
-              const allAssistants = JSON.parse(stored);
-              const selected = allAssistants.find(
-                (a: Assistant) => a.id === selectedId,
-              );
-              if (selected) {
-                setSelectedAssistant(selected);
+          }}
+        />
+      ) : showResourcesTools ? (
+        <ResourcesToolsScreen
+          assistant={selectedAssistant}
+          onBack={() => {
+            setShowResourcesTools(false);
+            setShowCustomization(true);
+            const stored = localStorage.getItem("assistants");
+            if (stored) {
+              setAssistants(JSON.parse(stored));
+              const selectedId = localStorage.getItem("selectedAssistantId");
+              if (selectedId) {
+                const all = JSON.parse(stored);
+                const sel = all.find((a: Assistant) => a.id === selectedId);
+                if (sel) setSelectedAssistant(sel);
               }
             }
-          }
-        }}
-        onResourcesToolsClick={() => {
-          setShowCustomization(false);
-          setShowResourcesTools(true);
-        }}
-      />
-    );
-  }
-
-  return (
-    <div className="content-stretch flex items-start relative size-full bg-[#030712]">
-      <Toaster theme="dark" position="bottom-right" />
-      {/* Sidebar */}
+          }}
+        />
+      ) : showCustomization ? (
+        <CustomizationScreen
+          assistant={selectedAssistant}
+          onBack={() => {
+            setShowCustomization(false);
+            const stored = localStorage.getItem("assistants");
+            if (stored) {
+              setAssistants(JSON.parse(stored));
+              const selectedId = localStorage.getItem(
+                "selectedAssistantId",
+              );
+              if (selectedId) {
+                const allAssistants = JSON.parse(stored);
+                const selected = allAssistants.find(
+                  (a: Assistant) => a.id === selectedId,
+                );
+                if (selected) {
+                  setSelectedAssistant(selected);
+                }
+              }
+            }
+          }}
+          onResourcesToolsClick={() => {
+            setShowCustomization(false);
+            setShowResourcesTools(true);
+          }}
+        />
+      ) : (
+      <div className="content-stretch flex items-start relative size-full bg-[#030712]">
+        {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
@@ -756,5 +745,7 @@ export default function App() {
         </div>
       </div>
     </div>
+      )}
+    </>
   );
 }
