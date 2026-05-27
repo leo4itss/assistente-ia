@@ -499,8 +499,8 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
             />
           )}
           {activeTab === "avancado" && (
-            <div className="flex flex-col h-full px-[32px] pt-[32px]">
-              <div className="w-full max-w-[800px] mx-auto flex flex-col flex-1 min-h-0 pb-[40px]">
+            <div className="flex flex-row justify-center w-full h-full">
+              <div className="w-full max-w-[800px] px-[32px] pt-[32px] flex flex-col flex-1 min-h-0 pb-[40px]">
                 <div className="flex items-center justify-between mb-[12px] shrink-0">
                   <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">JSON</p>
                   <div className="flex items-center gap-[12px]">
@@ -549,7 +549,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
 
         {/* Footer */}
         <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-center px-[32px] py-[16px] shrink-0 w-full">
-          <div className="flex items-center justify-end gap-[12px] w-full max-w-[800px]">
+          <div className="flex items-center justify-end gap-[12px] w-full max-w-[800px] px-[32px]">
             <button
               onClick={onBack}
               className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
