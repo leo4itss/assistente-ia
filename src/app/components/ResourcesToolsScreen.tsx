@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { toastSuccess } from "@/app/lib/toast";
 import ResourcesTab from "@/app/components/resources/ResourcesTab";
 import GlobalToolsTab from "@/app/components/resources/GlobalToolsTab";
 import type { Assistant } from "@/app/App";
@@ -75,7 +76,7 @@ function SaveConfirmationDialog({
       <div className="bg-[#111827] flex flex-col gap-[32px] items-end p-[24px] relative rounded-[10px] w-full max-w-[425px] shadow-xl z-10">
         <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[10px]" />
         <div className="flex flex-col gap-[16px] items-start w-full">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[18px] w-full">Salvar Resources e Tools?</p>
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[18px] w-full">Salvar capacidades?</p>
           <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px] w-full">As configurações serão salvas e aplicadas ao assistente. Confirma?</p>
         </div>
         <div className="h-0 w-full border-t border-[rgba(255,255,255,0.1)]" />
@@ -240,6 +241,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
     }
     setShowSaveDialog(false);
     setIsDirty(false);
+    toastSuccess("Capacidades salvas com sucesso.");
   };
 
   const jsonPreview = JSON.stringify(
@@ -279,7 +281,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
               {(["recursos", "ferramentas", "avancado"] as ActiveTab[]).map((tab) => {
                 const labels: Record<ActiveTab, string> = {
                   recursos: "Recursos",
-                  ferramentas: "Ferramentas globais",
+                  ferramentas: "Integrações",
                   avancado: "Avançado (JSON)",
                 };
                 const isActive = activeTab === tab;
@@ -302,8 +304,8 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
           {/* Title */}
           <div className="flex items-center justify-between px-[32px] py-[24px]">
             <div className="flex flex-col gap-[4px]">
-              <p className="font-['Inter:Bold',sans-serif] font-bold leading-none text-[#f9fafb] text-[20px]">Resources e Tools</p>
-              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px]">Configure bancos de dados, documentos e pesquisa para o assistente.</p>
+              <p className="font-['Inter:Bold',sans-serif] font-bold leading-none text-[#f9fafb] text-[20px]">Capacidades</p>
+              <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px]">Configure as capacidades do assistente: fontes de dados, documentos e integrações externas.</p>
             </div>
             <div className="flex items-center gap-[12px]">
               {hasErrors && (
@@ -354,14 +356,14 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
                     <svg className="size-[16px] shrink-0" fill="none" viewBox="0 0 16 16">
                       <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
                     </svg>
-                    <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] whitespace-nowrap">Adicionar ferramenta</span>
+                    <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] whitespace-nowrap">Adicionar integração</span>
                     <svg className="size-[14px] shrink-0 opacity-60" fill="none" viewBox="0 0 14 14">
                       <path d="M3.5 5.25l3.5 3.5 3.5-3.5" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
                     </svg>
                   </button>
                   {addToolDropdownOpen && (
                     <div ref={addToolDropdownRef} className="absolute top-[calc(100%+4px)] right-0 z-50 bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[8px] py-[4px] min-w-[200px] shadow-lg">
-                      {(["mcp", "azure_ai_search"] as GlobalToolType[]).map((type) => (
+                      {(["mcp"] as GlobalToolType[]).map((type) => (
                         <button
                           key={type}
                           onClick={() => {
@@ -401,7 +403,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
             <div className="flex flex-row justify-center w-full px-[32px] pt-[32px] pb-[80px]">
               <div className="w-full max-w-[800px]">
                 <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] mb-[12px]">JSON atual (somente leitura)</p>
-                <pre className="bg-[#0d1117] border border-[rgba(255,255,255,0.1)] rounded-[8px] p-[16px] text-[#9ca3af] text-[12px] leading-[20px] overflow-auto whitespace-pre-wrap break-all">
+                <pre className="bg-[#0d1117] border border-[rgba(255,255,255,0.1)] rounded-[8px] p-[16px] text-[#9ca3af] text-[12px] leading-[20px] overflow-auto whitespace-pre-wrap break-all min-h-[400px] resize-y">
                   {jsonPreview}
                 </pre>
               </div>

@@ -264,7 +264,7 @@ export default function CustomizationScreen({ onBack, assistant: initialAssistan
               onClick={onResourcesToolsClick}
               className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 hover:bg-[rgba(255,255,255,0.08)] transition-colors"
             >
-              <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic text-[#f9fafb] text-[14px] whitespace-nowrap">Resource e Tools</p>
+              <p className="font-['Inter:Medium',sans-serif] font-medium leading-[20px] not-italic text-[#f9fafb] text-[14px] whitespace-nowrap">Capacidades</p>
             </button>
           </div>
           <div className="flex flex-col items-end gap-[6px]">
