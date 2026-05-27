@@ -115,6 +115,9 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
   const [isDirty, setIsDirty] = useState(false);
   const [avancadoKey, setAvancadoKey] = useState(0);
   const [jsonEditorError, setJsonEditorError] = useState(false);
+  const [editorHeight, setEditorHeight] = useState(300);
+  const [showJsonModal, setShowJsonModal] = useState(false);
+  const [modalKey, setModalKey] = useState(0);
   const prevTabRef = useRef<ActiveTab>("recursos");
   const [addResourceDropdownOpen, setAddResourceDropdownOpen] = useState(false);
   const addResourceDropdownRef = useRef<HTMLDivElement>(null);
@@ -174,6 +177,22 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
     } catch {
       setJsonEditorError(true);
     }
+  };
+
+  const handleEditorMount = (editor: any) => {
+    const update = () => setEditorHeight(Math.max(300, editor.getContentHeight() + 24));
+    editor.onDidContentSizeChange(update);
+    update();
+  };
+
+  const handleOpenModal = () => {
+    setModalKey((k) => k + 1);
+    setShowJsonModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowJsonModal(false);
+    setAvancadoKey((k) => k + 1);
   };
 
   const handleResourcesChange = (updated: Resource[]) => {
@@ -285,6 +304,47 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
         onClose={() => setShowSaveDialog(false)}
         onConfirm={handleConfirmSave}
       />
+
+      {showJsonModal && (
+        <div className="fixed inset-0 z-[9999] flex flex-col bg-[#030712]">
+          <div className="flex items-center justify-between px-[32px] py-[16px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
+            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">JSON</p>
+            <div className="flex items-center gap-[12px]">
+              {jsonEditorError && (
+                <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[13px]">JSON inválido — as alterações não serão salvas.</p>
+              )}
+              <button
+                onClick={handleCloseModal}
+                title="Fechar"
+                className="flex items-center justify-center size-[32px] rounded-[8px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+              >
+                <svg className="size-[16px]" fill="none" viewBox="0 0 16 16">
+                  <path d="M12 4L4 12M4 4L12 12" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 min-h-0">
+            <Editor
+              key={modalKey}
+              height="100%"
+              defaultLanguage="json"
+              defaultValue={jsonPreview}
+              onChange={handleEditorChange}
+              theme="vs-dark"
+              options={{
+                minimap: { enabled: true },
+                fontSize: 14,
+                lineNumbers: "on",
+                scrollBeyondLastLine: false,
+                wordWrap: "on",
+                folding: true,
+                padding: { top: 16, bottom: 16 },
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col w-full h-full bg-[#030712]">
         {/* Header */}
@@ -430,17 +490,29 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
               <div className="w-full max-w-[800px]">
                 <div className="flex items-center justify-between mb-[12px]">
                   <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">JSON</p>
-                  {jsonEditorError && (
-                    <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[13px]">JSON inválido — as alterações não serão salvas.</p>
-                  )}
+                  <div className="flex items-center gap-[12px]">
+                    {jsonEditorError && (
+                      <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[13px]">JSON inválido — as alterações não serão salvas.</p>
+                    )}
+                    <button
+                      onClick={handleOpenModal}
+                      title="Expandir editor"
+                      className="flex items-center justify-center size-[28px] rounded-[6px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+                    >
+                      <svg className="size-[14px]" fill="none" viewBox="0 0 14 14">
+                        <path d="M2 5V2h3M9 2h3v3M12 9v3H9M5 12H2V9" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden" style={{ height: "500px" }}>
+                <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden" style={{ height: editorHeight }}>
                   <Editor
                     key={avancadoKey}
                     height="100%"
                     defaultLanguage="json"
                     defaultValue={jsonPreview}
                     onChange={handleEditorChange}
+                    onMount={handleEditorMount}
                     theme="vs-dark"
                     options={{
                       minimap: { enabled: false },
