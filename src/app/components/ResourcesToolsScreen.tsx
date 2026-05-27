@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { toastSuccess } from "@/app/lib/toast";
+import Editor from "@monaco-editor/react";
 import ResourcesTab from "@/app/components/resources/ResourcesTab";
 import GlobalToolsTab from "@/app/components/resources/GlobalToolsTab";
 import type { Assistant } from "@/app/App";
@@ -403,9 +404,27 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
             <div className="flex flex-row justify-center w-full px-[32px] pt-[32px] pb-[80px]">
               <div className="w-full max-w-[800px]">
                 <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] mb-[12px]">JSON atual (somente leitura)</p>
-                <pre className="bg-[#0d1117] border border-[rgba(255,255,255,0.1)] rounded-[8px] p-[16px] text-[#9ca3af] text-[12px] leading-[20px] overflow-auto whitespace-pre-wrap break-all min-h-[400px] resize-y">
-                  {jsonPreview}
-                </pre>
+                <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden" style={{ height: "500px" }}>
+                  <Editor
+                    height="100%"
+                    defaultLanguage="json"
+                    value={jsonPreview}
+                    theme="vs-dark"
+                    options={{
+                      readOnly: true,
+                      minimap: { enabled: false },
+                      fontSize: 13,
+                      lineNumbers: "on",
+                      scrollBeyondLastLine: false,
+                      wordWrap: "on",
+                      renderLineHighlight: "none",
+                      overviewRulerBorder: false,
+                      hideCursorInOverviewRuler: true,
+                      folding: true,
+                      padding: { top: 12, bottom: 12 },
+                    }}
+                  />
+                </div>
               </div>
             </div>
           )}
