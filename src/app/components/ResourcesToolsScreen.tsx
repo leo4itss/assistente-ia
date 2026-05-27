@@ -113,6 +113,9 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [avancadoKey, setAvancadoKey] = useState(0);
+  const [jsonEditorError, setJsonEditorError] = useState(false);
+  const prevTabRef = useRef<ActiveTab>("recursos");
   const [addResourceDropdownOpen, setAddResourceDropdownOpen] = useState(false);
   const addResourceDropdownRef = useRef<HTMLDivElement>(null);
   const addResourceButtonRef = useRef<HTMLButtonElement>(null);
@@ -150,6 +153,28 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
       // JSON inválido no storage — ignora e começa vazio
     }
   }, [currentAssistant?.id]);
+
+  useEffect(() => {
+    if (activeTab === "avancado" && prevTabRef.current !== "avancado") {
+      setAvancadoKey((k) => k + 1);
+      setJsonEditorError(false);
+    }
+    prevTabRef.current = activeTab;
+  }, [activeTab]);
+
+  const handleEditorChange = (val: string | undefined) => {
+    if (val === undefined) return;
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed.resources)) setResources(parsed.resources);
+      if (Array.isArray(parsed.tools)) setGlobalTools(parsed.tools);
+      setIsDirty(true);
+      setJsonEditorError(false);
+      setErrors({});
+    } catch {
+      setJsonEditorError(true);
+    }
+  };
 
   const handleResourcesChange = (updated: Resource[]) => {
     setResources(updated);
@@ -403,15 +428,21 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
           {activeTab === "avancado" && (
             <div className="flex flex-row justify-center w-full px-[32px] pt-[32px] pb-[80px]">
               <div className="w-full max-w-[800px]">
-                <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] mb-[12px]">JSON atual (somente leitura)</p>
+                <div className="flex items-center justify-between mb-[12px]">
+                  <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">JSON</p>
+                  {jsonEditorError && (
+                    <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[13px]">JSON inválido — as alterações não serão salvas.</p>
+                  )}
+                </div>
                 <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden" style={{ height: "500px" }}>
                   <Editor
+                    key={avancadoKey}
                     height="100%"
                     defaultLanguage="json"
-                    value={jsonPreview}
+                    defaultValue={jsonPreview}
+                    onChange={handleEditorChange}
                     theme="vs-dark"
                     options={{
-                      readOnly: true,
                       minimap: { enabled: false },
                       fontSize: 13,
                       lineNumbers: "on",
