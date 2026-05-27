@@ -548,20 +548,22 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
         </div>
 
         {/* Footer */}
-        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-end px-[32px] py-[16px] shrink-0 w-full gap-[12px]">
-          <button
-            onClick={onBack}
-            className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
-          >
-            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
-          </button>
-          <button
-            onClick={handleSaveClick}
-            disabled={!isDirty}
-            className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
-          </button>
+        <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex items-center justify-center px-[32px] py-[16px] shrink-0 w-full">
+          <div className="flex items-center justify-end gap-[12px] w-full max-w-[800px]">
+            <button
+              onClick={onBack}
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+            >
+              <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
+            </button>
+            <button
+              onClick={handleSaveClick}
+              disabled={!isDirty}
+              className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
+            </button>
+          </div>
         </div>
       </div>
     </>
