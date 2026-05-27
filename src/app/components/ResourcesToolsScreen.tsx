@@ -195,6 +195,38 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
     setAvancadoKey((k) => k + 1);
   };
 
+  const handleEditorBeforeMount = (monaco: any) => {
+    monaco.editor.defineTheme("figma-json", {
+      base: "vs-dark",
+      inherit: false,
+      rules: [
+        { token: "", foreground: "9ca3af" },
+        { token: "string.key.json", foreground: "9ca3af" },
+        { token: "string.value.json", foreground: "9ca3af" },
+        { token: "number", foreground: "9ca3af" },
+        { token: "keyword.json", foreground: "9ca3af" },
+        { token: "delimiter", foreground: "9ca3af" },
+        { token: "delimiter.bracket", foreground: "9ca3af" },
+        { token: "delimiter.array", foreground: "9ca3af" },
+        { token: "delimiter.colon", foreground: "9ca3af" },
+        { token: "delimiter.comma", foreground: "9ca3af" },
+      ],
+      colors: {
+        "editor.background": "#0d1117",
+        "editor.foreground": "#9ca3af",
+        "editorCursor.foreground": "#9ca3af",
+        "editor.lineHighlightBackground": "#0d1117",
+        "editor.selectionBackground": "#374151",
+        "editorIndentGuide.background1": "#1f2937",
+        "editorBracketMatch.background": "#374151",
+        "editorBracketMatch.border": "#4b5563",
+        "scrollbar.shadow": "#0d1117",
+        "scrollbarSlider.background": "#37415166",
+        "scrollbarSlider.hoverBackground": "#4b556380",
+      },
+    });
+  };
+
   const handleResourcesChange = (updated: Resource[]) => {
     setResources(updated);
     setIsDirty(true);
@@ -331,15 +363,24 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
               defaultLanguage="json"
               defaultValue={jsonPreview}
               onChange={handleEditorChange}
-              theme="vs-dark"
+              beforeMount={handleEditorBeforeMount}
+              theme="figma-json"
               options={{
-                minimap: { enabled: true },
-                fontSize: 14,
+                minimap: { enabled: false },
+                fontSize: 13,
+                fontFamily: "'Menlo', 'Monaco', 'Courier New', monospace",
+                lineHeight: 20,
                 lineNumbers: "on",
+                glyphMargin: false,
                 scrollBeyondLastLine: false,
                 wordWrap: "on",
+                renderLineHighlight: "none",
+                overviewRulerBorder: false,
+                overviewRulerLanes: 0,
+                hideCursorInOverviewRuler: true,
                 folding: true,
                 padding: { top: 16, bottom: 16 },
+                scrollbar: { vertical: "auto", horizontal: "hidden", verticalScrollbarSize: 4 },
               }}
             />
           </div>
@@ -505,7 +546,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
                     </button>
                   </div>
                 </div>
-                <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden" style={{ height: editorHeight }}>
+                <div className="rounded-[8px] overflow-hidden" style={{ height: editorHeight }}>
                   <Editor
                     key={avancadoKey}
                     height="100%"
@@ -513,18 +554,26 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
                     defaultValue={jsonPreview}
                     onChange={handleEditorChange}
                     onMount={handleEditorMount}
-                    theme="vs-dark"
+                    beforeMount={handleEditorBeforeMount}
+                    theme="figma-json"
                     options={{
                       minimap: { enabled: false },
-                      fontSize: 13,
-                      lineNumbers: "on",
+                      fontSize: 12,
+                      fontFamily: "'Menlo', 'Monaco', 'Courier New', monospace",
+                      lineHeight: 20,
+                      lineNumbers: "off",
+                      glyphMargin: false,
+                      lineDecorationsWidth: 0,
+                      lineNumbersMinChars: 0,
                       scrollBeyondLastLine: false,
                       wordWrap: "on",
                       renderLineHighlight: "none",
                       overviewRulerBorder: false,
+                      overviewRulerLanes: 0,
                       hideCursorInOverviewRuler: true,
-                      folding: true,
-                      padding: { top: 12, bottom: 12 },
+                      folding: false,
+                      padding: { top: 16, bottom: 16 },
+                      scrollbar: { vertical: "auto", horizontal: "hidden", verticalScrollbarSize: 4 },
                     }}
                   />
                 </div>
