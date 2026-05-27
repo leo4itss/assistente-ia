@@ -115,7 +115,6 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
   const [isDirty, setIsDirty] = useState(false);
   const [avancadoKey, setAvancadoKey] = useState(0);
   const [jsonEditorError, setJsonEditorError] = useState(false);
-  const [editorHeight, setEditorHeight] = useState(300);
   const [showJsonModal, setShowJsonModal] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const prevTabRef = useRef<ActiveTab>("recursos");
@@ -177,12 +176,6 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
     } catch {
       setJsonEditorError(true);
     }
-  };
-
-  const handleEditorMount = (editor: any) => {
-    const update = () => setEditorHeight(Math.max(300, editor.getContentHeight() + 24));
-    editor.onDidContentSizeChange(update);
-    update();
   };
 
   const handleOpenModal = () => {
@@ -490,7 +483,7 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
         </div>
 
         {/* Tab Content */}
-        <div className="bg-[#030712] flex-[1_0_0] min-h-0 overflow-y-auto relative w-full [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full">
+        <div className={`bg-[#030712] flex-[1_0_0] min-h-0 relative w-full [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full ${activeTab === "avancado" ? "overflow-hidden" : "overflow-y-auto"}`}>
           {activeTab === "recursos" && (
             <ResourcesTab
               resources={resources}
@@ -506,9 +499,9 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
             />
           )}
           {activeTab === "avancado" && (
-            <div className="flex flex-row justify-center w-full px-[32px] pt-[32px] pb-[80px]">
-              <div className="w-full max-w-[800px]">
-                <div className="flex items-center justify-between mb-[12px]">
+            <div className="flex flex-col h-full px-[32px] pt-[32px]">
+              <div className="w-full max-w-[800px] mx-auto flex flex-col flex-1 min-h-0 pb-[40px]">
+                <div className="flex items-center justify-between mb-[12px] shrink-0">
                   <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">JSON</p>
                   <div className="flex items-center gap-[12px]">
                     {jsonEditorError && (
@@ -525,14 +518,13 @@ export default function ResourcesToolsScreen({ onBack, assistant: initialAssista
                     </button>
                   </div>
                 </div>
-                <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden" style={{ height: editorHeight }}>
+                <div className="border border-[rgba(255,255,255,0.1)] rounded-[8px] overflow-hidden flex-1 min-h-0">
                   <Editor
                     key={avancadoKey}
                     height="100%"
                     defaultLanguage="json"
                     defaultValue={jsonPreview}
                     onChange={handleEditorChange}
-                    onMount={handleEditorMount}
                     beforeMount={handleEditorBeforeMount}
                     theme="figma-json"
                     options={{
