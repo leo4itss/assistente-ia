@@ -84,10 +84,9 @@ Representa uma conexão do assistente com um banco de dados relacional.
 
 #### Campos do card
 
-**Versão** (radio obrigatório)
-- `v1` (padrão) ou `v2`
+**Conexões** (uma ou mais, adicionadas via "Adicionar conexão de banco")
 
-**Conexões** (pode ter uma ou mais, adicionadas via "Adicionar conexão de banco")
+Ao adicionar o recurso, a **primeira conexão já aparece aberta** com campos vazios. Conexões adicionais são criadas pelo botão "Adicionar conexão de banco".
 
 Cada conexão contém:
 
@@ -95,7 +94,7 @@ Cada conexão contém:
 |---|---|---|---|
 | Banco de dados | Select | Sim | `postgresql`, `mysql` ou `sqlserver` |
 | Usar MCP | Toggle | — | Alterna entre conexão direta e MCP |
-| String de conexão | Password input | Sim (se MCP desligado) | Ex.: `postgresql://user:pass@host:5432/db` |
+| String de conexão | Password input | Sim (se MCP desligado) | Placeholder muda conforme o banco selecionado (ex.: `postgresql://user:pass@host:5432/db`, `mysql://user:pass@host:3306/db`, `sqlserver://user:pass@host:1433;database=db`) |
 | **Configuração MCP** (visível apenas se "Usar MCP" ligado) | | | |
 | Host | Text | Sim (se MCP) | Ex.: `localhost` |
 | Porta | Number | Não | Ex.: `3000` |
@@ -417,24 +416,23 @@ Após salvar, o evento `"assistants-updated"` é disparado no `window` para que 
 **Passos:**
 1. Clicar em "Adicionar recurso" no cabeçalho
 2. Selecionar "Banco de dados" no dropdown
-3. Verificar que um card "Banco de dados" aparece na lista
-4. Confirmar que a versão padrão selecionada é "v1"
+3. Verificar que um card "Banco de dados" aparece na lista com a seção "Conexão" já expandida
 
 **Critério de aceite:**
-- Card criado imediatamente, sem formulário pré-preenchido
-- Versão "v1" marcada por padrão
-- Sem conexões listadas ainda
+- Card criado imediatamente com uma conexão em branco já aberta (sem dados pré-preenchidos)
+- Todos os campos da conexão estão vazios/no estado padrão
+- O botão "Adicionar conexão de banco" aparece abaixo para adicionar conexões extras
 - Botão "Salvar" é habilitado
 
 ---
 
 ### CT-06 — Configurar Banco de dados sem MCP (caminho feliz)
 
-**Pré-condição:** Card "Banco de dados" adicionado.
+**Pré-condição:** Card "Banco de dados" adicionado (conexão já aberta).
 
 **Passos:**
-1. Clicar em "Adicionar conexão de banco"
-2. Selecionar "PostgreSQL" no campo "Banco de dados"
+1. Selecionar "PostgreSQL" no campo "Banco de dados"
+2. Confirmar que o placeholder da "String de conexão" muda para `postgresql://user:pass@host:5432/db`
 3. Confirmar que o toggle "Usar MCP" está desligado
 4. Preencher "String de conexão" com `postgresql://admin:secret@localhost:5432/mydb`
 5. Preencher "System prompt" com uma descrição
@@ -485,10 +483,11 @@ Após salvar, o evento `"assistants-updated"` é disparado no `window` para que 
 
 ### CT-09 — Validação: Banco de dados sem conexões
 
-**Pré-condição:** Card "Banco de dados" adicionado, nenhuma conexão criada.
+**Pré-condição:** Card "Banco de dados" adicionado (conexão auto-aberta).
 
 **Passos:**
-1. Clicar em "Salvar" com o card vazio (sem conexões)
+1. Remover a conexão auto-adicionada clicando no ícone de lixeira do card "Conexão" e confirmando "Sim"
+2. Clicar em "Salvar" com o card sem conexões
 
 **Critério de aceite:**
 - Erro "Adicione ao menos uma conexão de banco." aparece dentro do card
