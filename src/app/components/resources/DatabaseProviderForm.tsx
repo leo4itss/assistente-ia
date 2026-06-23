@@ -253,6 +253,12 @@ export default function DatabaseProviderForm({ provider, onChange, onDelete, err
     { value: "sqlserver", label: "SQL Server" },
   ];
 
+  const CONNECTION_PLACEHOLDERS: Record<string, string> = {
+    postgresql: "postgresql://user:pass@host:5432/db",
+    mysql: "mysql://user:pass@host:3306/db",
+    sqlserver: "sqlserver://user:pass@host:1433;database=db",
+  };
+
   const TRANSPORT_OPTIONS = [
     { value: "stdio", label: "stdio" },
     { value: "http", label: "http" },
@@ -301,7 +307,7 @@ export default function DatabaseProviderForm({ provider, onChange, onDelete, err
           <PasswordInput
             value={provider.connection_string}
             onChange={(v) => update({ connection_string: v })}
-            placeholder="postgresql://user:pass@host:5432/db"
+            placeholder={CONNECTION_PLACEHOLDERS[provider.database] ?? "protocol://user:pass@host:port/db"}
             hasValue={!!provider.connection_string}
           />
           <FieldError message={e("connection_string")} />
