@@ -10,6 +10,7 @@ import type {
   AgentDatabase,
   AgentDocuments,
   AgentResearch,
+  DatabaseProvider,
   GlobalTool,
   GlobalToolType,
   McpTool,
@@ -23,7 +24,8 @@ function newId() {
 
 function createResource(type: ResourceType): Resource {
   if (type === "agent_database") {
-    const r: AgentDatabase = { id: newId(), type: "agent_database", version: "v1", tools: [] };
+    const provider: DatabaseProvider = { id: newId(), database: "", connection_string: "", system_prompt: "", use_mcp: false, mcp_host: "", mcp_port: "", mcp_transport: "", mcp_secret_key: "", mcp_command: "", mcp_args: [], metadata: [] };
+    const r: AgentDatabase = { id: newId(), type: "agent_database", version: "v1", tools: [provider] };
     return r;
   }
   if (type === "agent_documents") {
