@@ -34,6 +34,8 @@ export interface Assistant {
   updatedAt?: string;
 }
 
+const initialScreen = new URLSearchParams(window.location.search).get("screen");
+
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -44,7 +46,7 @@ export default function App() {
   const [showCustomization, setShowCustomization] =
     useState(false);
   const [showResourcesTools, setShowResourcesTools] =
-    useState(false);
+    useState(initialScreen === "resources-tools");
   const [showCreateAssistant, setShowCreateAssistant] =
     useState(false);
   const [assistants, setAssistants] = useState<Assistant[]>([]);

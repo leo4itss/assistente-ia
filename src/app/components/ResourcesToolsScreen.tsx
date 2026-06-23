@@ -61,6 +61,12 @@ interface ResourcesToolsScreenProps {
 
 type ActiveTab = "recursos" | "ferramentas" | "avancado";
 
+const initialTabParam = new URLSearchParams(window.location.search).get("tab");
+const initialTab: ActiveTab =
+  initialTabParam === "ferramentas" || initialTabParam === "avancado"
+    ? initialTabParam
+    : "recursos";
+
 function SaveConfirmationDialog({
   isOpen,
   onClose,
@@ -107,7 +113,7 @@ function SaveConfirmationDialog({
 
 export default function ResourcesToolsScreen({ onBack, assistant: initialAssistant }: ResourcesToolsScreenProps) {
   const [currentAssistant] = useState<Assistant | null>(initialAssistant || null);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("recursos");
+  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
   const [resources, setResources] = useState<Resource[]>([]);
   const [globalTools, setGlobalTools] = useState<GlobalTool[]>([]);
   const [errors, setErrors] = useState<ValidationErrors>({});
