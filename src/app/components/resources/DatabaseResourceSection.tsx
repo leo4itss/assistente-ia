@@ -43,24 +43,6 @@ export default function DatabaseResourceSection({ resource, onChange, errors, er
 
   return (
     <div className="flex flex-col gap-[20px]">
-      {/* Version radio */}
-      <div className="flex flex-col gap-[10px]">
-        <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Versão</p>
-        <div className="flex items-center gap-[20px]">
-          {(["v1", "v2"] as const).map((v) => (
-            <label key={v} className="flex items-center gap-[8px] cursor-pointer">
-              <div
-                onClick={() => onChange({ ...resource, version: v })}
-                className={`flex items-center justify-center size-[16px] rounded-full border-2 transition-colors cursor-pointer ${resource.version === v ? "border-[#2563eb]" : "border-[rgba(255,255,255,0.3)]"}`}
-              >
-                {resource.version === v && <div className="size-[8px] rounded-full bg-[#2563eb]" />}
-              </div>
-              <span className="font-['Inter:Regular',sans-serif] font-normal text-[#f9fafb] text-[14px]">{v}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
       {/* Error for empty tools */}
       {errors[`${errorPrefix}.tools`] && (
         <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[12px]">{errors[`${errorPrefix}.tools`]}</p>
