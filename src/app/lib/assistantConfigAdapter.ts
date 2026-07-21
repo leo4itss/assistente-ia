@@ -1,0 +1,162 @@
+// Adaptador de leitura: converte o formato antigo persistido no localStorage
+// ({ resources, tools }) para o shape v3 (AssistantConfig), sem perder dados já salvos.
+//
+// O back-end (Pedro Augusto) ainda está refatorando o contrato JSON. Este adaptador
+// isola a UI dessa transição: lê o que existir e devolve sempre um AssistantConfig válido.
+
+import type {
+  AssistantConfig,
+  Source,
+  SourceDatabase,
+  SourceDocuments,
+  DatabaseType,
+  SourceTransport,
+} from "@/app/types/assistantConfig";
+
+function newId() {
+  return Math.random().toString(36).slice(2);
+}
+
+function defaultModelOverride(model_name: string | null, api_version: string | null) {
+  return { model_name, api_version };
+}
+
+export function emptyAssistantConfig(): AssistantConfig {
+  return {
+    identity: { persona: "", restrictions: [] },
+    sources: [],
+    capabilities: [],
+    builtins: {
+      knowledge: {
+        enabled: true,
+        tools: { current_datetime: true, code_execution: true, fetch_url: true, attachments: true },
+        mcp_sources: [],
+      },
+      schedule: { enabled: true },
+      visualization: { enabled: true },
+    },
+    config: {
+      use_dag_executor: true,
+      use_semantic_namespace_per_resource: true,
+      global_temperature: 0.2,
+      temperature_decision: 0,
+      temperature_generation: 0.3,
+      temperature_creative: 0.9,
+      answer_depth: "concise",
+      insight_enrichment_enabled: false,
+      model_large: defaultModelOverride("gpt-4o", "2024-12-01-preview"),
+      model_small: defaultModelOverride("gpt-4o-mini", "2024-12-01-preview"),
+      model_coding: defaultModelOverride(null, null),
+    },
+  };
+}
+
+/** Já está no shape v3? (tem a chave `sources`) */
+function isV3(parsed: any): parsed is AssistantConfig {
+  return parsed && typeof parsed === "object" && Array.isArray(parsed.sources);
+}
+
+/** Converte o array antigo `resources` (agent_database / agent_documents) em Sources v3. */
+function sourcesFromLegacyResources(resources: any[]): Source[] {
+  const sources: Source[] = [];
+  if (!Array.isArray(resources)) return sources;
+
+  for (const r of resources) {
+    if (r?.type === "agent_database" && Array.isArray(r.tools)) {
+      for (const p of r.tools) {
+        const s: SourceDatabase = {
+          id: newId(),
+          kind: "database",
+          label: "",
+          database: (p.database as DatabaseType) || "",
+          connection_string: p.connection_string || "",
+          use_mcp: !!p.use_mcp,
+          introspect: false,
+          mcp_host: p.mcp_host || "",
+          mcp_port: p.mcp_port || "",
+          mcp_transport: (p.mcp_transport as SourceTransport) || "",
+          mcp_secret_key: p.mcp_secret_key || "",
+          structure: "",
+        };
+        sources.push(s);
+      }
+    }
+    if (r?.type === "agent_documents" && Array.isArray(r.tools)) {
+      for (const d of r.tools) {
+        const s: SourceDocuments = {
+          id: newId(),
+          kind: "documents",
+          label: "",
+          connection_string: d.connection_string || "",
+          files: [],
+          links: [],
+        };
+        sources.push(s);
+      }
+    }
+    // agent_research não tem correspondente em Sources (vira Capability no modelo v3 — etapa 2)
+  }
+  return sources;
+}
+
+/**
+ * Lê os campos persistidos do assistente e devolve um AssistantConfig v3.
+ * Aceita tanto o novo campo `config` (JSON v3) quanto o legado `resources`/`tools`.
+ */
+export function readAssistantConfig(fields: {
+  config?: string;
+  resources?: string;
+  tools?: string;
+  /** Campo legado da tela Persona (CustomizationScreen) — migrado para identity.persona. */
+  personaDescription?: string;
+}): AssistantConfig {
+  // 1. Formato v3 já salvo
+  if (fields.config) {
+    try {
+      const parsed = JSON.parse(fields.config);
+      if (isV3(parsed)) {
+        const defaults = emptyAssistantConfig();
+        // Merge raso por seção — evita que builtins/config salvos antes dessas
+        // camadas existirem (ex.: "{}" de etapas anteriores) apaguem os defaults.
+        return {
+          identity: { ...defaults.identity, ...parsed.identity },
+          // Backfill de campos adicionados em etapas posteriores (files/links em
+          // Documents, items em FAQ) — sources/capabilities salvas antes deles
+          // existirem não têm essas chaves.
+          sources: (parsed.sources ?? defaults.sources).map((s: any) =>
+            s.kind === "documents" ? { files: [], links: [], ...s } : s,
+          ),
+          capabilities: (parsed.capabilities ?? defaults.capabilities).map((c: any) =>
+            c.kind === "faq" ? { items: [], ...c } : c,
+          ),
+          builtins: {
+            knowledge: {
+              ...defaults.builtins.knowledge,
+              ...parsed.builtins?.knowledge,
+              tools: { ...defaults.builtins.knowledge.tools, ...parsed.builtins?.knowledge?.tools },
+            },
+            schedule: { ...defaults.builtins.schedule, ...parsed.builtins?.schedule },
+            visualization: { ...defaults.builtins.visualization, ...parsed.builtins?.visualization },
+          },
+          config: { ...defaults.config, ...parsed.config },
+        };
+      }
+    } catch {
+      // ignora e tenta legado
+    }
+  }
+
+  // 2. Legado { resources, tools, personaDescription }
+  const base = emptyAssistantConfig();
+  if (fields.personaDescription) {
+    base.identity.persona = fields.personaDescription;
+  }
+  if (fields.resources) {
+    try {
+      base.sources = sourcesFromLegacyResources(JSON.parse(fields.resources));
+    } catch {
+      // storage inválido — começa vazio
+    }
+  }
+  return base;
+}

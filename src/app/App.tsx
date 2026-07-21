@@ -12,6 +12,7 @@ import AppsPopover from "@/app/components/AppsPopover";
 import CustomizationScreen from "@/app/components/CustomizationScreen";
 import CreateAssistantScreen from "@/app/components/CreateAssistantScreen";
 import ResourcesToolsScreen from "@/app/components/ResourcesToolsScreen";
+import AssistantConfigScreen from "@/app/components/AssistantConfigScreen";
 import { DEFAULT_ASSISTANTS } from "@/app/constants/defaultAssistants";
 
 interface Message {
@@ -30,6 +31,7 @@ export interface Assistant {
   videoLink: string;
   resources?: string;
   tools?: string;
+  config?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -47,6 +49,8 @@ export default function App() {
     useState(false);
   const [showResourcesTools, setShowResourcesTools] =
     useState(initialScreen === "resources-tools");
+  const [showAssistantConfig, setShowAssistantConfig] =
+    useState(initialScreen === "assistant-config");
   const [showCreateAssistant, setShowCreateAssistant] =
     useState(false);
   const [assistants, setAssistants] = useState<Assistant[]>([]);
@@ -225,6 +229,11 @@ export default function App() {
               setAssistants(JSON.parse(stored));
             }
           }}
+        />
+      ) : showAssistantConfig ? (
+        <AssistantConfigScreen
+          assistant={selectedAssistant}
+          onBack={() => setShowAssistantConfig(false)}
         />
       ) : showResourcesTools ? (
         <ResourcesToolsScreen
