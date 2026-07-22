@@ -22,7 +22,7 @@ export default function RestrictionCard({ restriction, index, onChange, onDelete
       <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[14px]" />
 
       <div className="flex items-center justify-between px-[20px] py-[14px] border-b border-[rgba(255,255,255,0.08)]">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[15px]">Restriction #{index + 1}</p>
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[15px]">Restrição #{index + 1}</p>
         {confirmDelete ? (
           <div className="flex items-center gap-[8px]">
             <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">Remover?</span>

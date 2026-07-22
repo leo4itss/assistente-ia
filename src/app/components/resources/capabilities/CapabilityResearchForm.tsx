@@ -41,7 +41,7 @@ export default function CapabilityResearchForm({ capability, onChange, sources, 
       />
 
       <div className="flex flex-col gap-[8px]">
-        <FieldLabel required>Instructions</FieldLabel>
+        <FieldLabel required>Instruções</FieldLabel>
         <TextareaInput
           value={capability.instructions}
           onChange={(v) => update({ instructions: v })}

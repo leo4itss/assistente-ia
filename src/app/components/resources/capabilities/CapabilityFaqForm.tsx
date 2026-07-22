@@ -41,7 +41,7 @@ export default function CapabilityFaqForm({ capability, onChange, errors, errorP
       />
 
       <div className="flex flex-col gap-[8px]">
-        <FieldLabel required>Instructions</FieldLabel>
+        <FieldLabel required>Instruções</FieldLabel>
         <TextareaInput
           value={capability.instructions}
           onChange={(v) => update({ instructions: v })}

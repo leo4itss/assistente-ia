@@ -58,7 +58,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
         onToggle={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, enabled: v } })}
       >
         <div className="flex flex-col gap-[8px]">
-          <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">Tools</span>
+          <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">Ferramentas</span>
           <div className="flex flex-wrap gap-[8px]">
             <CheckboxField
               checked={builtins.knowledge.tools.current_datetime}

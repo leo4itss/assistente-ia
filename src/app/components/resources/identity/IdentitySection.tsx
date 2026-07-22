@@ -121,20 +121,20 @@ export default function IdentitySection({ identity, onChange, errors }: Props) {
       <div className="flex flex-col gap-[16px]">
         <div className="flex items-start justify-between gap-[16px]">
           <div className="flex flex-col gap-[4px]">
-            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Restrictions</p>
+            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Restrições</p>
             <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
               Hoje: soft prompt. Enforcement via rails é um plano separado.
             </p>
           </div>
           <button
             onClick={addRestriction}
-            className="bg-[rgba(255,255,255,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors relative shrink-0"
+            title="Adicionar restrição"
+            className="bg-[rgba(255,255,255,0.05)] flex items-center justify-center size-[36px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors relative shrink-0"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
             <svg className="size-[16px] shrink-0" fill="none" viewBox="0 0 16 16">
               <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
             </svg>
-            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] whitespace-nowrap">+ Restriction</span>
           </button>
         </div>
 
