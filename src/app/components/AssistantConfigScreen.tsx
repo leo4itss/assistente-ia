@@ -468,7 +468,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                       onClick={() => setActiveSection(id)}
                       className={`flex items-center gap-[8px] w-full h-[32px] px-[8px] rounded-[8px] transition-colors ${active ? "bg-[#1f2937]" : "hover:bg-[rgba(255,255,255,0.05)]"}`}
                     >
-                      <span className={`font-['Inter:Medium',sans-serif] font-medium text-[14px] ${active ? "text-[#f9fafb]" : "text-[#9ca3af]"}`}>{SECTION_META[id].label}</span>
+                      <span className={`text-[14px] text-[#f9fafb] ${active ? "font-['Inter:Medium',sans-serif] font-medium" : "font-['Inter:Regular',sans-serif] font-normal"}`}>{SECTION_META[id].label}</span>
                     </button>
                   );
                 })}
