@@ -134,7 +134,7 @@ export function readAssistantConfig(fields: {
           // Documents, items em FAQ) — sources/capabilities salvas antes deles
           // existirem não têm essas chaves.
           sources: (parsed.sources ?? defaults.sources).map((s: any) =>
-            s.kind === "documents" ? { files: [], links: [], ...s } : s,
+            s.kind === "documents" ? { external_id: "", files: [], links: [], ...s } : s,
           ),
           capabilities: (parsed.capabilities ?? defaults.capabilities).map((c: any) =>
             c.kind === "faq" ? { items: [], ...c } : c,

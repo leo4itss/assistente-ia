@@ -41,6 +41,8 @@ export interface DocumentLink {
 export interface SourceDocuments {
   id: string;
   kind: "documents";
+  /** Identificador legível da source (ex.: "docnix_rag") — distinto do `id` interno. */
+  external_id: string;
   label: string;
   connection_string: string;
   files: DocumentFile[];

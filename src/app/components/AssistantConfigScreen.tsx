@@ -208,6 +208,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
       const p = `source.${i}`;
       if (!s.label) errs[`${p}.label`] = "Informe um rótulo para a fonte.";
       if (s.kind === "documents" && !s.connection_string) errs[`${p}.connection_string`] = "Informe a string de conexão.";
+      if (s.kind === "documents" && !s.external_id) errs[`${p}.external_id`] = "Informe o ID.";
       if (s.kind === "database") {
         if (!s.database) errs[`${p}.database`] = "Selecione o tipo de banco.";
         if (!s.use_mcp && !s.connection_string) errs[`${p}.connection_string`] = "Informe a string de conexão ou ative use_mcp.";

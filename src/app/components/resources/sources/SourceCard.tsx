@@ -48,10 +48,23 @@ export default function SourceCard({ source, usedByCount = 0, expanded, onToggle
           {badge.label}
         </span>
 
-        <button onClick={onToggle} className="flex flex-col items-start min-w-0 flex-1 text-left">
-          <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[15px] truncate max-w-full">
-            {source.label || "Sem rótulo"}
-          </span>
+        <button onClick={onToggle} className="flex items-center gap-[8px] min-w-0 flex-1 text-left">
+          {source.kind === "documents" && source.external_id ? (
+            <>
+              <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[15px] truncate shrink-0 max-w-[45%]">
+                {source.external_id}
+              </span>
+              {source.label && (
+                <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] truncate">
+                  {source.label}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[15px] truncate max-w-full">
+              {source.label || "Sem rótulo"}
+            </span>
+          )}
         </button>
 
         {usedByCount > 0 && (

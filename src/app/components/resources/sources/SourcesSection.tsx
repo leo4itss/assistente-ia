@@ -18,7 +18,7 @@ function newId() {
 
 export function createSource(kind: SourceKind): Source {
   if (kind === "documents") {
-    const s: SourceDocuments = { id: newId(), kind: "documents", label: "", connection_string: "", files: [], links: [] };
+    const s: SourceDocuments = { id: newId(), kind: "documents", external_id: "", label: "", connection_string: "", files: [], links: [] };
     return s;
   }
   if (kind === "database") {
