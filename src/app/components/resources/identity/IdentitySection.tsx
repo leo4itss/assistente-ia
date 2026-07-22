@@ -58,7 +58,7 @@ export default function IdentitySection({ identity, onChange, errors }: Props) {
             <button
               type="button"
               onClick={() => avatarInputRef.current?.click()}
-              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
             >
               <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Fazer upload</span>
             </button>

@@ -484,7 +484,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
             <div className="relative" ref={assistantButtonRef}>
               <div
                 onClick={() => setAssistantDropdownOpen((v) => !v)}
-                className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex gap-[8px] items-center px-[16px] py-[8px] rounded-[8px] w-[228px] cursor-pointer hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+                className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] items-center px-[16px] py-[8px] rounded-[8px] w-[228px] cursor-pointer hover:bg-[rgba(255,255,255,0.08)] transition-colors"
               >
                 <div className="relative rounded-[9999px] shrink-0 size-[20px]">
                   <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[9999px]">
@@ -511,7 +511,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
             </div>
             <button
               onClick={() => setShowPreview((v) => !v)}
-              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
             >
               <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">{showPreview ? "Ocultar JSON" : "Ver JSON"}</span>
             </button>
