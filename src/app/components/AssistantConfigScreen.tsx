@@ -74,6 +74,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
   const [isDirty, setIsDirty] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showJsonModal, setShowJsonModal] = useState(false);
 
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [currentAssistant, setCurrentAssistant] = useState<Assistant | null | undefined>(assistant);
@@ -333,6 +334,41 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
         </div>
       )}
 
+      {showJsonModal && (
+        <div className="fixed inset-0 z-[9999] flex flex-col bg-[#030712]">
+          <div className="flex items-center justify-between px-[32px] py-[16px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
+            <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">JSON</p>
+            <button
+              onClick={() => setShowJsonModal(false)}
+              title="Fechar"
+              className="flex items-center justify-center size-[32px] rounded-[8px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+            >
+              <svg className="size-[16px]" fill="none" viewBox="0 0 16 16">
+                <path d="M12 4L4 12M4 4L12 12" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1 min-h-0">
+            <Editor
+              height="100%"
+              defaultLanguage="json"
+              value={jsonPreview}
+              theme="vs-dark"
+              options={{
+                readOnly: true,
+                minimap: { enabled: true },
+                fontSize: 14,
+                lineNumbers: "on",
+                scrollBeyondLastLine: false,
+                wordWrap: "on",
+                folding: true,
+                padding: { top: 16, bottom: 16 },
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex w-full h-full bg-[#030712]">
         {/* Sidebar */}
         <div className="w-[256px] shrink-0 bg-[#111827] flex flex-col h-full">
@@ -474,6 +510,15 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
               <div className="w-[380px] shrink-0 border-l border-[rgba(255,255,255,0.1)] flex flex-col bg-[#0d1117]">
                 <div className="flex items-center justify-between px-[16px] h-[44px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
                   <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#9ca3af] text-[12px] tracking-[0.5px]">PREVIEW JSON</p>
+                  <button
+                    onClick={() => setShowJsonModal(true)}
+                    title="Expandir editor"
+                    className="flex items-center justify-center size-[28px] rounded-[6px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+                  >
+                    <svg className="size-[14px]" fill="none" viewBox="0 0 14 14">
+                      <path d="M2 5V2h3M9 2h3v3M12 9v3H9M5 12H2V9" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" />
+                    </svg>
+                  </button>
                 </div>
                 <div className="flex-1 min-h-0">
                   <Editor
