@@ -116,43 +116,23 @@ export default function CapabilitiesSection({ capabilities, onChange, sources, e
 }
 
 function AddCapabilityButton({ onAdd }: { onAdd: (kind: CapabilityKind) => void }) {
-  const [open, setOpen] = useState(false);
-  const KINDS: CapabilityKind[] = ["database", "documents", "research", "faq"];
+  // FAQ fica fora por enquanto — não está sendo trabalhado nesta etapa.
+  const KINDS: CapabilityKind[] = ["database", "documents", "research"];
 
   return (
-    <div className="relative shrink-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="bg-[rgba(255,255,255,0.05)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors relative"
-      >
-        <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.15)] border-solid inset-0 pointer-events-none rounded-[8px]" />
-        <svg className="size-[16px] shrink-0" fill="none" viewBox="0 0 16 16">
-          <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
-        </svg>
-        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] whitespace-nowrap">Adicionar capacidade</span>
-        <svg className="size-[14px] shrink-0 opacity-60" fill="none" viewBox="0 0 14 14">
-          <path d="M3.5 5.25l3.5 3.5 3.5-3.5" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
-        </svg>
-      </button>
-      {open && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute top-[calc(100%+4px)] right-0 z-50 bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[8px] py-[4px] min-w-[200px] shadow-lg">
-            {KINDS.map((kind) => (
-              <button
-                key={kind}
-                onClick={() => {
-                  onAdd(kind);
-                  setOpen(false);
-                }}
-                className="flex items-center w-full px-[12px] py-[8px] hover:bg-[rgba(255,255,255,0.05)] transition-colors"
-              >
-                <span className="font-['Inter:Regular',sans-serif] font-normal text-[#f9fafb] text-[14px]">{CAPABILITY_KIND_LABELS[kind]}</span>
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+    <div className="flex gap-[8px] shrink-0">
+      {KINDS.map((kind) => (
+        <button
+          key={kind}
+          onClick={() => onAdd(kind)}
+          className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex gap-[8px] h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+        >
+          <svg className="size-[16px] shrink-0" fill="none" viewBox="0 0 16 16">
+            <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
+          </svg>
+          <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] whitespace-nowrap">{CAPABILITY_KIND_LABELS[kind]}</span>
+        </button>
+      ))}
     </div>
   );
 }
