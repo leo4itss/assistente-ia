@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { PanelLeft } from "lucide-react";
+import { toast } from "sonner";
 import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 import Editor from "@monaco-editor/react";
 import { toastSuccess } from "@/app/lib/toast";
@@ -83,6 +84,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
   const [showCreateAssistant, setShowCreateAssistant] = useState(false);
   const assistantButtonRef = useRef<HTMLDivElement>(null);
   const assistantPopoverRef = useRef<HTMLDivElement>(null);
+  const importJsonInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setCurrentAssistant(assistant);
@@ -238,6 +240,39 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
     return errs;
   };
 
+  const handleCopyJson = async () => {
+    try {
+      await navigator.clipboard.writeText(jsonPreview);
+      toastSuccess("JSON copiado para a área de transferência.");
+    } catch {
+      toast.error("Não foi possível copiar o JSON.");
+    }
+  };
+
+  const handleImportClick = () => importJsonInputRef.current?.click();
+
+  const handleImportFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result as string;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        toast.error("Arquivo inválido: não é um JSON válido.");
+        return;
+      }
+      if (!parsed || typeof parsed !== "object" || !Array.isArray((parsed as { sources?: unknown }).sources)) {
+        toast.error("JSON não corresponde ao formato esperado (schema v3).");
+        return;
+      }
+      setConfig(readAssistantConfig({ config: text }));
+      setIsDirty(true);
+      toastSuccess("JSON importado. Revise os campos e clique em Salvar.");
+    };
+    reader.readAsText(file);
+  };
+
   const handleSaveClick = () => {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -338,15 +373,39 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
         <div className="fixed inset-0 z-[9999] flex flex-col bg-[#030712]">
           <div className="flex items-center justify-between px-[32px] py-[16px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
             <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">JSON</p>
-            <button
-              onClick={() => setShowJsonModal(false)}
-              title="Fechar"
-              className="flex items-center justify-center size-[32px] rounded-[8px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
-            >
-              <svg className="size-[16px]" fill="none" viewBox="0 0 16 16">
-                <path d="M12 4L4 12M4 4L12 12" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-[12px]">
+              <input
+                ref={importJsonInputRef}
+                type="file"
+                accept=".json,application/json"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) handleImportFile(e.target.files[0]);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                onClick={handleImportClick}
+                className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+              >
+                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Importar JSON</span>
+              </button>
+              <button
+                onClick={handleCopyJson}
+                className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+              >
+                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Copiar JSON</span>
+              </button>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                title="Fechar"
+                className="flex items-center justify-center size-[32px] rounded-[8px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+              >
+                <svg className="size-[16px]" fill="none" viewBox="0 0 16 16">
+                  <path d="M12 4L4 12M4 4L12 12" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div className="flex-1 min-h-0">
             <Editor
