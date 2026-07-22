@@ -77,7 +77,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
 
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [currentAssistant, setCurrentAssistant] = useState<Assistant | null | undefined>(assistant);
-  const [pendingAssistant, setPendingAssistant] = useState<Assistant | null>(null);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
   const [assistantDropdownOpen, setAssistantDropdownOpen] = useState(false);
   const [showCreateAssistant, setShowCreateAssistant] = useState(false);
   const assistantButtonRef = useRef<HTMLDivElement>(null);
@@ -136,17 +136,28 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
     setAssistantDropdownOpen(false);
   };
 
+  const runOrConfirm = (action: () => void) => {
+    if (isDirty) {
+      setPendingAction(() => action);
+    } else {
+      action();
+    }
+  };
+
   const handleSelectAssistant = (next: Assistant) => {
     if (next.id === currentAssistant?.id) {
       setAssistantDropdownOpen(false);
       return;
     }
-    if (isDirty) {
-      setPendingAssistant(next);
-      setAssistantDropdownOpen(false);
-    } else {
-      switchToAssistant(next);
-    }
+    setAssistantDropdownOpen(false);
+    runOrConfirm(() => switchToAssistant(next));
+  };
+
+  const handleBackClick = () => runOrConfirm(onBack);
+
+  const handleCreateAssistantClick = () => {
+    setAssistantDropdownOpen(false);
+    runOrConfirm(() => setShowCreateAssistant(true));
   };
 
   if (showCreateAssistant) {
@@ -291,31 +302,31 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
         </div>
       )}
 
-      {pendingAssistant && (
+      {pendingAction && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setPendingAssistant(null)} aria-hidden="true" />
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setPendingAction(null)} aria-hidden="true" />
           <div className="bg-[#111827] flex flex-col gap-[32px] items-end p-[24px] relative rounded-[10px] w-full max-w-[425px] shadow-xl z-10">
             <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[10px]" />
             <div className="flex flex-col gap-[16px] items-start w-full">
-              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[18px] w-full">Descartar alterações não salvas?</p>
+              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold leading-none text-[#f9fafb] text-[18px] w-full">Sair sem salvar?</p>
               <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] text-[#9ca3af] text-[14px] w-full">
-                Você tem alterações não salvas em {currentAssistant?.name ?? "este assistente"}. Deseja descartá-las e trocar de assistente?
+                Você tem alterações não salvas em {currentAssistant?.name ?? "este assistente"}. Se continuar, todas as edições feitas serão perdidas.
               </p>
             </div>
             <div className="h-0 w-full border-t border-[rgba(255,255,255,0.1)]" />
             <div className="flex gap-[8px] items-center justify-end w-full">
-              <button onClick={() => setPendingAssistant(null)} className="bg-[rgba(255,255,255,0.05)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors">
-                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
+              <button onClick={() => setPendingAction(null)} className="bg-[rgba(255,255,255,0.05)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Continuar editando</span>
               </button>
               <button
                 onClick={() => {
-                  const next = pendingAssistant;
-                  setPendingAssistant(null);
-                  if (next) switchToAssistant(next);
+                  const action = pendingAction;
+                  setPendingAction(null);
+                  action?.();
                 }}
                 className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors"
               >
-                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Descartar e trocar</span>
+                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Sair sem salvar</span>
               </button>
             </div>
           </div>
@@ -340,7 +351,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
           <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
             <div className="p-[8px] w-full">
               <button
-                onClick={onBack}
+                onClick={handleBackClick}
                 className="flex items-center gap-[8px] w-full h-[32px] px-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.05)] transition-colors"
               >
                 <svg className="size-[16px] shrink-0" fill="none" viewBox="0 0 11.3333 11.3333">
@@ -397,10 +408,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                 <div ref={assistantPopoverRef} className="absolute top-[calc(100%+8px)] left-0 z-50">
                   <AssistantSelectorPopover
                     assistants={assistants}
-                    onCreateClick={() => {
-                      setShowCreateAssistant(true);
-                      setAssistantDropdownOpen(false);
-                    }}
+                    onCreateClick={handleCreateAssistantClick}
                     onSelectAssistant={handleSelectAssistant}
                   />
                 </div>
@@ -450,26 +458,13 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                       <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[14px]">Corrija os erros antes de salvar.</p>
                     )}
                   </div>
-                  {isDirty ? (
-                    <div className="flex items-center gap-[12px]">
-                      <button
-                        onClick={onBack}
-                        className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
-                      >
-                        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
-                      </button>
-                      <button
-                        onClick={handleSaveClick}
-                        className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors"
-                      >
-                        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
-                      </button>
-                    </div>
-                  ) : (
-                    <button className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors">
-                      <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Editar</span>
-                    </button>
-                  )}
+                  <button
+                    onClick={handleSaveClick}
+                    disabled={!isDirty}
+                    className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
+                  </button>
                 </div>
               </div>
             </div>
