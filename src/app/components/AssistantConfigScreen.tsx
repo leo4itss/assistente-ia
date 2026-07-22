@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { PanelLeft } from "lucide-react";
+import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
 import Editor from "@monaco-editor/react";
 import { toastSuccess } from "@/app/lib/toast";
 import SourcesSection from "@/app/components/resources/sources/SourcesSection";
@@ -379,6 +380,12 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                 onClick={() => setAssistantDropdownOpen((v) => !v)}
                 className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex gap-[8px] items-center px-[16px] py-[8px] rounded-[8px] w-[228px] cursor-pointer hover:bg-[rgba(255,255,255,0.08)] transition-colors"
               >
+                <div className="relative rounded-[9999px] shrink-0 size-[20px]">
+                  <div aria-hidden="true" className="absolute inset-0 pointer-events-none rounded-[9999px]">
+                    <div className="absolute bg-[#1f2937] inset-0 rounded-[9999px]" />
+                    <img alt="" className="absolute max-w-none object-cover rounded-[9999px] size-full" src={imgAvatar} />
+                  </div>
+                </div>
                 <span className="flex-1 min-w-0 font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px] truncate">
                   {currentAssistant?.name ?? "Assistentes"}
                 </span>
