@@ -136,6 +136,13 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
 
   const visible = filtered.slice(0, VISIBLE_CAP);
 
+  const hasActiveFilters = search !== "" || typeFilter !== "all" || statusFilter !== "all";
+  const clearFilters = () => {
+    setSearch("");
+    setTypeFilter("all");
+    setStatusFilter("all");
+  };
+
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col bg-[#030712]">
       {/* Header */}
@@ -209,9 +216,21 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
             </div>
 
             {visible.length === 0 ? (
-              <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[13px] text-center py-[32px]">
-                {allRows.length === 0 ? "Nenhum arquivo ou link neste acervo ainda." : "Nada corresponde à busca/filtro."}
-              </p>
+              <div className="flex flex-col items-center gap-[8px] py-[32px]">
+                <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[13px] text-center">
+                  {allRows.length === 0
+                    ? "Nenhum arquivo ou link neste acervo ainda."
+                    : "Nenhum item corresponde à busca/filtro atual."}
+                </p>
+                {allRows.length > 0 && hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    className="font-['Inter:Medium',sans-serif] font-medium text-[#60a5fa] text-[13px] hover:underline"
+                  >
+                    Limpar busca e filtros
+                  </button>
+                )}
+              </div>
             ) : (
               visible.map((row) => (
                 <div
