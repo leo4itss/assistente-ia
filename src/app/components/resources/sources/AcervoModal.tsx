@@ -150,9 +150,12 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
         </div>
         <button
           onClick={onClose}
-          className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors shrink-0"
+          title="Fechar"
+          className="flex items-center justify-center size-[32px] rounded-[8px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors shrink-0"
         >
-          <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Fechar</span>
+          <svg className="size-[16px]" fill="none" viewBox="0 0 16 16">
+            <path d="M12 4L4 12M4 4L12 12" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
+          </svg>
         </button>
       </div>
 
