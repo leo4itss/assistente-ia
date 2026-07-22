@@ -94,7 +94,7 @@ export default function ConfigSection({ config, onChange }: Props) {
       <div className="flex flex-col gap-[16px]">
         <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Enrichment</p>
         <div className="grid grid-cols-2 gap-[16px]">
-          <div className="flex flex-col gap-[8px]">
+          <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px] p-[16px] flex flex-col gap-[8px] justify-center">
             <FieldLabel>ANSWER_DEPTH</FieldLabel>
             <SelectInput
               value={config.answer_depth}
@@ -102,7 +102,7 @@ export default function ConfigSection({ config, onChange }: Props) {
               options={Object.entries(ANSWER_DEPTH_LABELS).map(([value, label]) => ({ value, label }))}
             />
           </div>
-          <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px] px-[16px] flex items-center">
+          <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px] p-[16px] flex items-center">
             <ToggleSwitch
               checked={config.insight_enrichment_enabled}
               onChange={(v) => update({ insight_enrichment_enabled: v })}
