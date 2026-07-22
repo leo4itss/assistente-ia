@@ -40,7 +40,7 @@ function FaqAttachmentList({
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-[6px]">
           {attachments.map((a) => (
-            <div key={a.id} className="flex items-center gap-[6px] bg-[#1f2937] rounded-[6px] px-[8px] py-[4px]">
+            <div key={a.id} className="flex items-center gap-[6px] bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.15)] rounded-[6px] px-[8px] py-[4px]">
               {a.type === "file" ? (
                 <svg className="size-[11px] opacity-70 shrink-0" fill="none" viewBox="0 0 16 16">
                   <path d="M9.333 1.333H4A1.333 1.333 0 002.667 2.667v10.666A1.333 1.333 0 004 14.667h8a1.333 1.333 0 001.333-1.334V5.333L9.333 1.333z" stroke="#9ca3af" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" />

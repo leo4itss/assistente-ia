@@ -92,7 +92,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
             {builtins.knowledge.mcp_sources.map((id) => {
               const source = sources.find((s) => s.id === id);
               return (
-                <div key={id} className="flex items-center gap-[4px] bg-[#1f2937] rounded-[4px] px-[8px] py-[3px]">
+                <div key={id} className="flex items-center gap-[4px] bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.15)] rounded-[4px] px-[8px] py-[3px]">
                   <span className="font-['Inter:Regular',sans-serif] font-normal text-[#f9fafb] text-[12px]">{source?.label || id}</span>
                   <button
                     type="button"
