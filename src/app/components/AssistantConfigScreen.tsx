@@ -537,7 +537,13 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                   ) : activeSection === "capabilities" ? (
                     <CapabilitiesSection capabilities={config.capabilities} onChange={handleCapabilitiesChange} sources={config.sources} errors={errors} />
                   ) : activeSection === "identity" ? (
-                    <IdentitySection identity={config.identity} onChange={handleIdentityChange} errors={errors} />
+                    <IdentitySection
+                      identity={config.identity}
+                      onChange={handleIdentityChange}
+                      errors={errors}
+                      assistantId={currentAssistant?.id ?? ""}
+                      schemaVersion={config.schema_version}
+                    />
                   ) : activeSection === "builtins" ? (
                     <BuiltinsSection builtins={config.builtins} onChange={handleBuiltinsChange} sources={config.sources} />
                   ) : (

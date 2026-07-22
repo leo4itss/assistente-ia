@@ -1,7 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FieldLabel, FieldError, TextInput, TextareaInput } from "@/app/components/resources/fields/Fields";
 import RestrictionCard from "@/app/components/resources/identity/RestrictionCard";
 import type { Identity, Restriction, ValidationErrors } from "@/app/types/assistantConfig";
+
+// Constantes fixas da plataforma — não fazem parte do config do assistente, só exibidas.
+const PLATFORM_TENANT_ID = "docnix";
+const PLATFORM_AGENT = "pas_ai";
 
 function newId() {
   return Math.random().toString(36).slice(2);
@@ -11,14 +15,28 @@ function newRestriction(): Restriction {
   return { id: newId(), title: "", instruction: "", instructionAnswer: "", restrictedWords: [] };
 }
 
+function ReadOnlyField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col gap-[8px]">
+      <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#6b7280] text-[11px] tracking-[0.5px]">{label}</p>
+      <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-[8px] h-[36px] flex items-center px-[12px]">
+        <span className="font-['Inter:Regular',sans-serif] font-normal text-[#d1d5db] text-[14px] truncate">{value}</span>
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   identity: Identity;
   onChange: (updated: Identity) => void;
   errors: ValidationErrors;
+  assistantId: string;
+  schemaVersion: number;
 }
 
-export default function IdentitySection({ identity, onChange, errors }: Props) {
+export default function IdentitySection({ identity, onChange, errors, assistantId, schemaVersion }: Props) {
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [systemOpen, setSystemOpen] = useState(false);
 
   const handleAvatarPicked = (file: File) => {
     const reader = new FileReader();
@@ -37,6 +55,37 @@ export default function IdentitySection({ identity, onChange, errors }: Props) {
 
   return (
     <div className="flex flex-col gap-[32px] w-full">
+      <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px]">
+        <button
+          onClick={() => setSystemOpen((v) => !v)}
+          className="flex items-center gap-[8px] w-full px-[16px] py-[12px] hover:bg-[rgba(255,255,255,0.02)] transition-colors rounded-[10px]"
+        >
+          <svg className={`size-[12px] shrink-0 transition-transform ${systemOpen ? "rotate-90" : ""}`} fill="none" viewBox="0 0 14 14">
+            <path d="M5 3l4 4-4 4" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
+          </svg>
+          <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[12px] tracking-[0.5px]">
+            SISTEMA (SOMENTE LEITURA)
+          </span>
+        </button>
+        {systemOpen && (
+          <div className="px-[16px] pb-[16px] pt-[4px] border-t border-[rgba(255,255,255,0.08)] flex flex-col gap-[16px]">
+            <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
+              Definidos pela plataforma / create — não editáveis na UI de produto (
+              <span className="font-mono text-[#c4b5fd]">_id</span> gerado,{" "}
+              <span className="font-mono text-[#c4b5fd]">tenant_id</span> do host, agent fixo{" "}
+              <span className="font-mono text-[#c4b5fd]">pas_ai</span>,{" "}
+              <span className="font-mono text-[#c4b5fd]">schema_version</span> pelo loader).
+            </p>
+            <div className="grid grid-cols-2 gap-[16px]">
+              <ReadOnlyField label="_ID" value={assistantId} />
+              <ReadOnlyField label="TENANT_ID" value={PLATFORM_TENANT_ID} />
+              <ReadOnlyField label="AGENT" value={PLATFORM_AGENT} />
+              <ReadOnlyField label="SCHEMA_VERSION" value={String(schemaVersion)} />
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="flex flex-col gap-[16px]">
         <div className="flex items-start pb-[12px] w-full">
           <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[16px]">Dados do assistente</p>
