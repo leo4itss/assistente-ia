@@ -241,10 +241,14 @@ export function ToggleSwitch({
 
   if (description) {
     return (
-      <div className="flex items-center justify-between gap-[16px]">
-        <div className="flex flex-col gap-[2px]">
-          {label && <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">{label}</span>}
-          <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">{description}</span>
+      <div className="flex items-center justify-between gap-[16px] w-full">
+        <div className="flex flex-col gap-[2px] min-w-0">
+          {label && (
+            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">
+              {label.split("_").map((part, i) => (i === 0 ? part : <span key={i}>_<wbr />{part}</span>))}
+            </span>
+          )}
+          <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] break-words">{description}</span>
         </div>
         {toggle}
       </div>
