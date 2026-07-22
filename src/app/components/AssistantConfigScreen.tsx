@@ -416,32 +416,65 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
 
           {/* Body: content | preview */}
           <div className="flex flex-1 min-h-0 w-full">
-            {/* Conteúdo */}
-            <div className="flex-1 min-w-0 overflow-y-auto [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div className="px-[32px] py-[32px] max-w-[640px] mx-auto flex flex-col gap-[32px]">
-                <div className="flex flex-col gap-[4px]">
-                  <p className="font-['Inter:Bold',sans-serif] font-bold text-[#f9fafb] text-[20px] leading-[20px]">
-                    {SECTION_META[activeSection].label}
-                  </p>
-                  <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px] leading-[20px]">
-                    {SECTION_META[activeSection].description}
-                  </p>
+            {/* Conteúdo + footer (largura acompanha a coluna, encolhe quando o JSON abre) */}
+            <div className="flex flex-col flex-1 min-w-0 min-h-0">
+              <div className="flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full">
+                <div className="px-[32px] py-[32px] max-w-[640px] mx-auto flex flex-col gap-[32px]">
+                  <div className="flex flex-col gap-[4px]">
+                    <p className="font-['Inter:Bold',sans-serif] font-bold text-[#f9fafb] text-[20px] leading-[20px]">
+                      {SECTION_META[activeSection].label}
+                    </p>
+                    <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px] leading-[20px]">
+                      {SECTION_META[activeSection].description}
+                    </p>
+                  </div>
+                  {activeSection === "sources" ? (
+                    <SourcesSection sources={config.sources} onChange={handleSourcesChange} errors={errors} usageBySourceId={usageBySourceId} />
+                  ) : activeSection === "capabilities" ? (
+                    <CapabilitiesSection capabilities={config.capabilities} onChange={handleCapabilitiesChange} sources={config.sources} errors={errors} />
+                  ) : activeSection === "identity" ? (
+                    <IdentitySection identity={config.identity} onChange={handleIdentityChange} errors={errors} />
+                  ) : activeSection === "builtins" ? (
+                    <BuiltinsSection builtins={config.builtins} onChange={handleBuiltinsChange} sources={config.sources} />
+                  ) : (
+                    <ConfigSection config={config.config} onChange={handleConfigLayerChange} />
+                  )}
                 </div>
-                {activeSection === "sources" ? (
-                  <SourcesSection sources={config.sources} onChange={handleSourcesChange} errors={errors} usageBySourceId={usageBySourceId} />
-                ) : activeSection === "capabilities" ? (
-                  <CapabilitiesSection capabilities={config.capabilities} onChange={handleCapabilitiesChange} sources={config.sources} errors={errors} />
-                ) : activeSection === "identity" ? (
-                  <IdentitySection identity={config.identity} onChange={handleIdentityChange} errors={errors} />
-                ) : activeSection === "builtins" ? (
-                  <BuiltinsSection builtins={config.builtins} onChange={handleBuiltinsChange} sources={config.sources} />
-                ) : (
-                  <ConfigSection config={config.config} onChange={handleConfigLayerChange} />
-                )}
+              </div>
+
+              {/* Footer */}
+              <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex flex-col items-center px-[32px] py-[16px] shrink-0 w-full">
+                <div className="flex items-center justify-between max-w-[640px] w-full">
+                  <div>
+                    {hasErrors && (
+                      <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[14px]">Corrija os erros antes de salvar.</p>
+                    )}
+                  </div>
+                  {isDirty ? (
+                    <div className="flex items-center gap-[12px]">
+                      <button
+                        onClick={onBack}
+                        className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+                      >
+                        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
+                      </button>
+                      <button
+                        onClick={handleSaveClick}
+                        className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors"
+                      >
+                        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <button className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors">
+                      <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Editar</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Preview JSON */}
+            {/* Preview JSON — ocupa toda a altura do corpo, sem footer por baixo */}
             {showPreview && (
               <div className="w-[380px] shrink-0 border-l border-[rgba(255,255,255,0.1)] flex flex-col bg-[#0d1117]">
                 <div className="flex items-center justify-between px-[16px] h-[44px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
@@ -469,37 +502,6 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex flex-col items-center px-[32px] py-[16px] shrink-0 w-full">
-            <div className="flex items-center justify-between max-w-[640px] w-full">
-              <div>
-                {hasErrors && (
-                  <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[14px]">Corrija os erros antes de salvar.</p>
-                )}
-              </div>
-              {isDirty ? (
-                <div className="flex items-center gap-[12px]">
-                  <button
-                    onClick={onBack}
-                    className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
-                  >
-                    <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
-                  </button>
-                  <button
-                    onClick={handleSaveClick}
-                    className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors"
-                  >
-                    <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
-                  </button>
-                </div>
-              ) : (
-                <button className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors">
-                  <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Editar</span>
-                </button>
-              )}
-            </div>
           </div>
         </div>
       </div>
