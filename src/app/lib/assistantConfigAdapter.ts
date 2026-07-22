@@ -23,7 +23,8 @@ function defaultModelOverride(model_name: string | null, api_version: string | n
 
 export function emptyAssistantConfig(): AssistantConfig {
   return {
-    identity: { persona: "", restrictions: [] },
+    schema_version: 3,
+    identity: { assistantName: "", avatar: "", persona: "", briefPresentation: "", videoLink: "", restrictions: [] },
     sources: [],
     capabilities: [],
     builtins: {
@@ -107,8 +108,16 @@ export function readAssistantConfig(fields: {
   config?: string;
   resources?: string;
   tools?: string;
-  /** Campo legado da tela Persona (CustomizationScreen) — migrado para identity.persona. */
+  /** Campo legado da tela Persona — migrado para identity.persona. */
   personaDescription?: string;
+  /** Nome do assistente — migrado para identity.assistantName. */
+  name?: string;
+  /** Criatividade legada (0–1) — migrada para config.global_temperature. */
+  creativity?: number;
+  /** Apresentação resumida legada — migrada para identity.briefPresentation. */
+  briefPresentation?: string;
+  /** Link de vídeo legado — migrado para identity.videoLink. */
+  videoLink?: string;
 }): AssistantConfig {
   // 1. Formato v3 já salvo
   if (fields.config) {
@@ -119,6 +128,7 @@ export function readAssistantConfig(fields: {
         // Merge raso por seção — evita que builtins/config salvos antes dessas
         // camadas existirem (ex.: "{}" de etapas anteriores) apaguem os defaults.
         return {
+          schema_version: parsed.schema_version ?? defaults.schema_version,
           identity: { ...defaults.identity, ...parsed.identity },
           // Backfill de campos adicionados em etapas posteriores (files/links em
           // Documents, items em FAQ) — sources/capabilities salvas antes deles
@@ -146,10 +156,22 @@ export function readAssistantConfig(fields: {
     }
   }
 
-  // 2. Legado { resources, tools, personaDescription }
+  // 2. Legado { resources, tools, personaDescription, name, creativity, briefPresentation, videoLink }
   const base = emptyAssistantConfig();
   if (fields.personaDescription) {
     base.identity.persona = fields.personaDescription;
+  }
+  if (fields.name) {
+    base.identity.assistantName = fields.name;
+  }
+  if (typeof fields.creativity === "number") {
+    base.config.global_temperature = fields.creativity;
+  }
+  if (fields.briefPresentation) {
+    base.identity.briefPresentation = fields.briefPresentation;
+  }
+  if (fields.videoLink) {
+    base.identity.videoLink = fields.videoLink;
   }
   if (fields.resources) {
     try {

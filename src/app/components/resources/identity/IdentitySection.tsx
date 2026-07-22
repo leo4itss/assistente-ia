@@ -1,4 +1,5 @@
-import { FieldLabel, TextareaInput } from "@/app/components/resources/fields/Fields";
+import { useRef } from "react";
+import { FieldLabel, FieldError, TextInput, TextareaInput } from "@/app/components/resources/fields/Fields";
 import RestrictionCard from "@/app/components/resources/identity/RestrictionCard";
 import type { Identity, Restriction, ValidationErrors } from "@/app/types/assistantConfig";
 
@@ -17,6 +18,14 @@ interface Props {
 }
 
 export default function IdentitySection({ identity, onChange, errors }: Props) {
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarPicked = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => onChange({ ...identity, avatar: reader.result as string });
+    reader.readAsDataURL(file);
+  };
+
   const updateRestriction = (idx: number, updated: Restriction) => {
     const copy = [...identity.restrictions];
     copy[idx] = updated;
@@ -29,24 +38,83 @@ export default function IdentitySection({ identity, onChange, errors }: Props) {
   return (
     <div className="flex flex-col gap-[32px] w-full">
       <div className="flex flex-col gap-[16px]">
-        <div className="flex flex-col gap-[4px]">
-          <p className="font-['Inter:Bold',sans-serif] font-bold text-[#f9fafb] text-[20px]">Identity</p>
-          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px]">
-            Persona e guardrails de produto. Não entra no catálogo de roteamento do supervisor.
-          </p>
+        <div className="flex items-start pb-[12px] w-full">
+          <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[16px]">Dados do assistente</p>
+        </div>
+
+        <div className="flex flex-col gap-[12px]">
+          <FieldLabel>Insira uma novo avatar</FieldLabel>
+          <div className="flex items-center gap-[16px]">
+            <div className="relative rounded-[9999px] shrink-0 size-[48px] bg-[#1f2937] overflow-hidden flex items-center justify-center">
+              {identity.avatar ? (
+                <img alt="" className="absolute inset-0 size-full object-cover" src={identity.avatar} />
+              ) : (
+                <svg className="size-[20px] opacity-50" fill="none" viewBox="0 0 24 24">
+                  <path d="M20 21a8 8 0 10-16 0" stroke="#9ca3af" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+                  <circle cx="12" cy="8" r="4" stroke="#9ca3af" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+                </svg>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.08)] transition-colors"
+            >
+              <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Fazer upload</span>
+            </button>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                if (e.target.files?.[0]) handleAvatarPicked(e.target.files[0]);
+                e.target.value = "";
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-[8px]">
-          <FieldLabel>Persona</FieldLabel>
+          <FieldLabel required>Nome do Assistente</FieldLabel>
+          <TextInput
+            value={identity.assistantName}
+            onChange={(v) => onChange({ ...identity, assistantName: v })}
+            placeholder="Ex.: Vanessa IA"
+          />
+          <FieldError message={errors["identity.assistantName"]} />
+        </div>
+
+        <div className="flex flex-col gap-[8px]">
+          <FieldLabel>Descrição da persona</FieldLabel>
           <TextareaInput
             value={identity.persona}
             onChange={(v) => onChange({ ...identity, persona: v })}
             placeholder="Tom e papel do assistente. Ex.: Consultora especialista em SGI. Tom profissional, claro e prático."
             rows={3}
           />
-          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-            Injetado no synthesize/editor — define o tom com que o assistente responde.
+          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px]">
+            Descreva a persona do assistente virtual, incluindo personalidade, tom de voz, estilo de comunicação e propósito. Isso garantirá uma experiência natural e alinhada às expectativas dos usuários.
           </p>
+        </div>
+
+        <div className="flex flex-col gap-[8px]">
+          <FieldLabel>Apresentação Resumida</FieldLabel>
+          <TextareaInput
+            value={identity.briefPresentation}
+            onChange={(v) => onChange({ ...identity, briefPresentation: v })}
+            placeholder="Digite um resumo breve da apresentação do assistente."
+            rows={3}
+          />
+        </div>
+
+        <div className="flex flex-col gap-[8px]">
+          <FieldLabel>Link de Apresentação em Vídeo</FieldLabel>
+          <TextInput
+            value={identity.videoLink}
+            onChange={(v) => onChange({ ...identity, videoLink: v })}
+            placeholder="Cole aqui o link do vídeo de apresentação do assistente."
+          />
         </div>
       </div>
 

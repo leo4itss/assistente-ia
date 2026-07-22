@@ -51,13 +51,6 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
 
   return (
     <div className="flex flex-col gap-[16px] w-full">
-      <div className="flex flex-col gap-[4px]">
-        <p className="font-['Inter:Bold',sans-serif] font-bold text-[#f9fafb] text-[20px]">Builtins</p>
-        <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px]">
-          Plataforma (default ON). Podem ser ativadas/desativadas, mas não removidas nem adicionadas pelo usuário.
-        </p>
-      </div>
-
       <BuiltinCard
         title="knowledge"
         description="Tools genéricas + MCP misc"

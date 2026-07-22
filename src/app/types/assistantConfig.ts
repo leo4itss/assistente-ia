@@ -187,7 +187,15 @@ export interface Restriction {
 }
 
 export interface Identity {
+  /** Nome do assistente. Campo fixo (sempre existe). Espelhado em Assistant.name ao salvar. */
+  assistantName: string;
+  /** Avatar do assistente (data URL). Campo fixo; cosmético nesta etapa. */
+  avatar: string;
   persona: string;
+  /** Resumo breve do assistente — migrado de Assistant.briefPresentation (tela de criação). */
+  briefPresentation: string;
+  /** Link de vídeo de apresentação — migrado de Assistant.videoLink (tela de criação). */
+  videoLink: string;
   restrictions: Restriction[];
 }
 
@@ -254,6 +262,8 @@ export interface AssistantRuntimeConfig {
 
 /** Root do JSON de configuração do assistente (v3). */
 export interface AssistantConfig {
+  /** Versão do schema — usada pelo back-end para versionamento/rollback. Read-only na UI. */
+  schema_version: number;
   identity: Identity;
   sources: Source[];
   capabilities: Capability[];

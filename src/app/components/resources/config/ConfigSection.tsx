@@ -43,32 +43,6 @@ export default function ConfigSection({ config, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-[32px] w-full">
-      <div className="flex flex-col gap-[4px]">
-        <p className="font-['Inter:Bold',sans-serif] font-bold text-[#f9fafb] text-[20px]">Config</p>
-        <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px]">
-          Overrides vs Infisical/env. Campos omitidos/null → default da plataforma. Provider/endpoint/credencial Azure não são sobrescrevíveis aqui.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-[16px]">
-        <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[14px] px-[20px] py-[16px]">
-          <ToggleSwitch
-            checked={config.use_dag_executor}
-            onChange={(v) => update({ use_dag_executor: v })}
-            label="use_dag_executor"
-            description="Flag de runtime do executor DAG"
-          />
-        </div>
-        <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[14px] px-[20px] py-[16px]">
-          <ToggleSwitch
-            checked={config.use_semantic_namespace_per_resource}
-            onChange={(v) => update({ use_semantic_namespace_per_resource: v })}
-            label="use_semantic_namespace_per_resource"
-            description="ADR-017: namespace do semantic layer por capability"
-          />
-        </div>
-      </div>
-
       <div className="flex flex-col gap-[16px]">
         <div className="flex flex-col gap-[2px]">
           <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Sampling (temperature)</p>

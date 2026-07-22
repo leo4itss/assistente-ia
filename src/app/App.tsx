@@ -9,9 +9,7 @@ import ProfileMenu from "@/app/components/ProfileMenu";
 import Sidebar from "@/app/components/Sidebar";
 import AssistantSelector from "@/app/components/AssistantSelector";
 import AppsPopover from "@/app/components/AppsPopover";
-import CustomizationScreen from "@/app/components/CustomizationScreen";
 import CreateAssistantScreen from "@/app/components/CreateAssistantScreen";
-import ResourcesToolsScreen from "@/app/components/ResourcesToolsScreen";
 import AssistantConfigScreen from "@/app/components/AssistantConfigScreen";
 import { DEFAULT_ASSISTANTS } from "@/app/constants/defaultAssistants";
 
@@ -45,10 +43,6 @@ export default function App() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [appsPopoverOpen, setAppsPopoverOpen] = useState(false);
-  const [showCustomization, setShowCustomization] =
-    useState(false);
-  const [showResourcesTools, setShowResourcesTools] =
-    useState(initialScreen === "resources-tools");
   const [showAssistantConfig, setShowAssistantConfig] =
     useState(initialScreen === "assistant-config");
   const [showCreateAssistant, setShowCreateAssistant] =
@@ -233,14 +227,8 @@ export default function App() {
       ) : showAssistantConfig ? (
         <AssistantConfigScreen
           assistant={selectedAssistant}
-          onBack={() => setShowAssistantConfig(false)}
-        />
-      ) : showResourcesTools ? (
-        <ResourcesToolsScreen
-          assistant={selectedAssistant}
           onBack={() => {
-            setShowResourcesTools(false);
-            setShowCustomization(true);
+            setShowAssistantConfig(false);
             const stored = localStorage.getItem("assistants");
             if (stored) {
               setAssistants(JSON.parse(stored));
@@ -251,33 +239,6 @@ export default function App() {
                 if (sel) setSelectedAssistant(sel);
               }
             }
-          }}
-        />
-      ) : showCustomization ? (
-        <CustomizationScreen
-          assistant={selectedAssistant}
-          onBack={() => {
-            setShowCustomization(false);
-            const stored = localStorage.getItem("assistants");
-            if (stored) {
-              setAssistants(JSON.parse(stored));
-              const selectedId = localStorage.getItem(
-                "selectedAssistantId",
-              );
-              if (selectedId) {
-                const allAssistants = JSON.parse(stored);
-                const selected = allAssistants.find(
-                  (a: Assistant) => a.id === selectedId,
-                );
-                if (selected) {
-                  setSelectedAssistant(selected);
-                }
-              }
-            }
-          }}
-          onResourcesToolsClick={() => {
-            setShowCustomization(false);
-            setShowResourcesTools(true);
           }}
         />
       ) : (
@@ -405,7 +366,7 @@ export default function App() {
                   <AppsPopover
                     assistantName={selectedAssistant?.name}
                     onCustomizationClick={() => {
-                      setShowCustomization(true);
+                      setShowAssistantConfig(true);
                       setAppsPopoverOpen(false);
                     }}
                   />
@@ -477,7 +438,7 @@ export default function App() {
                 >
                   <ProfileMenu
                     onCustomizationClick={() => {
-                      setShowCustomization(true);
+                      setShowAssistantConfig(true);
                       setProfileMenuOpen(false);
                     }}
                   />

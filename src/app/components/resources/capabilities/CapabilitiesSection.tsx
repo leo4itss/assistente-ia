@@ -68,13 +68,7 @@ export default function CapabilitiesSection({ capabilities, onChange, sources, e
 
   return (
     <div className="flex flex-col gap-[24px] w-full">
-      <div className="flex items-start justify-between gap-[16px]">
-        <div className="flex flex-col gap-[4px]">
-          <p className="font-['Inter:Bold',sans-serif] font-bold text-[#f9fafb] text-[20px]">Capacidades</p>
-          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px]">
-            Opt-in do tenant: se não estiver aqui, o supervisor não enxerga. Bind em source + routing para o supervisor + instructions para o motor.
-          </p>
-        </div>
+      <div className="flex items-start justify-end gap-[16px]">
         <AddCapabilityButton onAdd={add} />
       </div>
 
