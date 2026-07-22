@@ -27,6 +27,8 @@ export interface DocumentFile {
   status: "ready" | "error";
   /** Motivo da rejeição (extensão não suportada / excede tamanho) — sempre visível ao usuário. */
   error?: string;
+  /** Data (ISO) do upload — exibida na tabela do acervo. */
+  updatedAt: string;
 }
 
 /** Link de página — passa por extração/web scraping no back-end antes de ir para o RAG. */
@@ -35,6 +37,8 @@ export interface DocumentLink {
   url: string;
   status: "ready" | "error";
   error?: string;
+  /** Data (ISO) da adição — exibida na tabela do acervo. */
+  updatedAt: string;
 }
 
 /** Source de documentos — base de RAG (upload de arquivos e/ou links; extração no back-end). */

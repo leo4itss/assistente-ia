@@ -133,9 +133,14 @@ export function readAssistantConfig(fields: {
           // Backfill de campos adicionados em etapas posteriores (files/links em
           // Documents, items em FAQ) — sources/capabilities salvas antes deles
           // existirem não têm essas chaves.
-          sources: (parsed.sources ?? defaults.sources).map((s: any) =>
-            s.kind === "documents" ? { external_id: "", files: [], links: [], ...s } : s,
-          ),
+          sources: (parsed.sources ?? defaults.sources).map((s: any) => {
+            if (s.kind !== "documents") return s;
+            const fallbackUpdatedAt = new Date().toISOString();
+            const merged = { external_id: "", files: [], links: [], ...s };
+            merged.files = merged.files.map((f: any) => ({ updatedAt: fallbackUpdatedAt, ...f }));
+            merged.links = merged.links.map((l: any) => ({ updatedAt: fallbackUpdatedAt, ...l }));
+            return merged;
+          }),
           capabilities: (parsed.capabilities ?? defaults.capabilities).map((c: any) =>
             c.kind === "faq" ? { items: [], ...c } : c,
           ),

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FieldLabel, FieldError, TextInput, PasswordInput } from "@/app/components/resources/fields/Fields";
-import FileManager from "@/app/components/resources/sources/FileManager";
-import LinkManager from "@/app/components/resources/sources/LinkManager";
+import AcervoModal from "@/app/components/resources/sources/AcervoModal";
 import type { SourceDocuments, ValidationErrors } from "@/app/types/assistantConfig";
 
 interface Props {
@@ -69,34 +68,7 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
         </button>
       </div>
 
-      {showAcervo && (
-        <div className="fixed inset-0 z-[9999] flex flex-col bg-[#030712]">
-          <div className="flex items-center justify-between px-[32px] py-[16px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
-            <div className="flex flex-col">
-              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Acervo desta source</p>
-              <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
-                {source.external_id || source.label || "Sem rótulo"}
-              </p>
-            </div>
-            <button
-              onClick={() => setShowAcervo(false)}
-              title="Fechar"
-              className="flex items-center justify-center size-[32px] rounded-[8px] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
-            >
-              <svg className="size-[16px]" fill="none" viewBox="0 0 16 16">
-                <path d="M12 4L4 12M4 4L12 12" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
-              </svg>
-            </button>
-          </div>
-          <div className="flex-1 min-h-0 overflow-y-auto px-[32px] py-[24px] [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#374151] [&::-webkit-scrollbar-thumb]:rounded-full">
-            <div className="max-w-[720px] mx-auto flex flex-col gap-[24px]">
-              <FileManager files={source.files} onChange={(files) => update({ files })} />
-              <div className="h-px bg-[rgba(255,255,255,0.08)] w-full" />
-              <LinkManager links={source.links} onChange={(links) => update({ links })} />
-            </div>
-          </div>
-        </div>
-      )}
+      {showAcervo && <AcervoModal source={source} onChange={onChange} onClose={() => setShowAcervo(false)} />}
     </div>
   );
 }
