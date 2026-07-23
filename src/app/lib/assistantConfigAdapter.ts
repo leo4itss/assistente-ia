@@ -134,6 +134,7 @@ export function readAssistantConfig(fields: {
           // Documents, items em FAQ) — sources/capabilities salvas antes deles
           // existirem não têm essas chaves.
           sources: (parsed.sources ?? defaults.sources).map((s: any) => {
+            if (s.kind === "mcp") return { external_id: "", ...s };
             if (s.kind !== "documents") return s;
             const fallbackUpdatedAt = new Date().toISOString();
             const merged = { external_id: "", files: [], links: [], ...s };

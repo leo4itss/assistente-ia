@@ -215,6 +215,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
         if (s.use_mcp && !s.mcp_host) errs[`${p}.mcp_host`] = "Informe o host MCP.";
       }
       if (s.kind === "mcp") {
+        if (!s.external_id) errs[`${p}.external_id`] = "Informe o ID.";
         if (!s.url) errs[`${p}.url`] = "Informe a URL do MCP.";
         if (!s.transport) errs[`${p}.transport`] = "Selecione o transporte.";
       }

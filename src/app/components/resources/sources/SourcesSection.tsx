@@ -38,7 +38,7 @@ export function createSource(kind: SourceKind): Source {
     };
     return s;
   }
-  const s: SourceMcp = { id: newId(), kind: "mcp", label: "", url: "", transport: "", secret_key: "" };
+  const s: SourceMcp = { id: newId(), kind: "mcp", external_id: "", label: "", url: "", transport: "", secret_key: "" };
   return s;
 }
 

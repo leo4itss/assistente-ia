@@ -75,6 +75,8 @@ export interface SourceDatabase {
 export interface SourceMcp {
   id: string;
   kind: "mcp";
+  /** Identificador legível da source (ex.: "jira_mcp") — distinto do `id` interno. */
+  external_id: string;
   label: string;
   url: string;
   transport: SourceTransport | "";
