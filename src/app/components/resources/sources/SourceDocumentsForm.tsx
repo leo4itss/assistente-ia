@@ -32,6 +32,11 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
     <div className="flex flex-col gap-[16px]">
       <div className="grid grid-cols-2 gap-[16px]">
         <div className="flex flex-col gap-[8px]">
+          <FieldLabel required>Rótulo</FieldLabel>
+          <TextInput value={source.label} onChange={handleLabelChange} placeholder="Ex.: Acervo documental (RAG)" />
+          <FieldError message={e("label")} />
+        </div>
+        <div className="flex flex-col gap-[8px]">
           <FieldLabel required>ID</FieldLabel>
           <TextInput
             value={source.external_id}
@@ -42,11 +47,6 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
             placeholder="Ex.: docnix_rag"
           />
           <FieldError message={e("external_id")} />
-        </div>
-        <div className="flex flex-col gap-[8px]">
-          <FieldLabel required>Rótulo</FieldLabel>
-          <TextInput value={source.label} onChange={handleLabelChange} placeholder="Ex.: Acervo documental (RAG)" />
-          <FieldError message={e("label")} />
         </div>
       </div>
 

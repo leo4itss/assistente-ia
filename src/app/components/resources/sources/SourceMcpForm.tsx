@@ -40,6 +40,11 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
     <div className="flex flex-col gap-[16px]">
       <div className="grid grid-cols-2 gap-[16px]">
         <div className="flex flex-col gap-[8px]">
+          <FieldLabel required>Rótulo</FieldLabel>
+          <TextInput value={source.label} onChange={handleLabelChange} placeholder="Ex.: Jira MCP (tools → knowledge)" />
+          <FieldError message={e("label")} />
+        </div>
+        <div className="flex flex-col gap-[8px]">
           <FieldLabel required>ID</FieldLabel>
           <TextInput
             value={source.external_id}
@@ -50,11 +55,6 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
             placeholder="Ex.: jira_mcp"
           />
           <FieldError message={e("external_id")} />
-        </div>
-        <div className="flex flex-col gap-[8px]">
-          <FieldLabel required>Rótulo</FieldLabel>
-          <TextInput value={source.label} onChange={handleLabelChange} placeholder="Ex.: Jira MCP (tools → knowledge)" />
-          <FieldError message={e("label")} />
         </div>
       </div>
 
