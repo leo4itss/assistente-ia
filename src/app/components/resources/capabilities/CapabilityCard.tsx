@@ -3,9 +3,9 @@ import type { Capability, CapabilityKind, Source } from "@/app/types/assistantCo
 import { SOURCE_KIND_LABELS } from "@/app/types/assistantConfig";
 
 const KIND_BADGE: Record<CapabilityKind, { label: string; color: string; bg: string }> = {
-  database: { label: "DATABASE", color: "#6ee7b7", bg: "rgba(16,185,129,0.15)" },
-  documents: { label: "DOCUMENTS", color: "#93c5fd", bg: "rgba(37,99,235,0.15)" },
-  research: { label: "RESEARCH", color: "#fcd34d", bg: "rgba(217,119,6,0.15)" },
+  database: { label: "BANCO DE DADOS", color: "#6ee7b7", bg: "rgba(16,185,129,0.15)" },
+  documents: { label: "DOCUMENTOS", color: "#93c5fd", bg: "rgba(37,99,235,0.15)" },
+  research: { label: "PESQUISA", color: "#fcd34d", bg: "rgba(217,119,6,0.15)" },
   faq: { label: "FAQ", color: "#f9a8d4", bg: "rgba(219,39,119,0.15)" },
 };
 
@@ -63,7 +63,7 @@ export default function CapabilityCard({ capability, boundSource, expanded, onTo
           </span>
         ) : capability.kind !== "faq" ? (
           <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f87171] text-[12px] px-[8px] py-[3px] rounded-full bg-[rgba(248,113,113,0.1)] shrink-0">
-            sem source
+            sem fonte
           </span>
         ) : null}
 

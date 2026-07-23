@@ -18,7 +18,7 @@ export default function SourceBindSelect({ sourceId, onChange, sources, compatib
 
   return (
     <div className="flex flex-col gap-[8px]">
-      <FieldLabel required>Source (bind)</FieldLabel>
+      <FieldLabel required>Fonte (vínculo)</FieldLabel>
       {compatible.length === 0 ? (
         <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[13px]">
           Nenhuma fonte do tipo {compatibleKinds.map((k) => SOURCE_KIND_LABELS[k]).join(" / ")} cadastrada. Crie uma em "Fontes" primeiro.

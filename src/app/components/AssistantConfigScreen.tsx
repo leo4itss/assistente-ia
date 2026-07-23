@@ -35,7 +35,8 @@ const NAV_GROUPS: { label: string; items: SectionId[] }[] = [
 const SECTION_META: Record<SectionId, { label: string; description: string }> = {
   identity: {
     label: "Persona",
-    description: "Configure as capacidades do assistente: fontes de dados, documentos e integrações externas.",
+    description:
+      "Defina quem é o assistente: nome, avatar, personalidade, apresentação e restrições de comportamento.",
   },
   sources: {
     label: "Fontes",

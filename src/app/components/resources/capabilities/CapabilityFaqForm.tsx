@@ -23,7 +23,7 @@ export default function CapabilityFaqForm({ capability, onChange, errors, errorP
       </div>
 
       <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-        FAQ não faz bind a uma source. A semântica de roteamento vem da própria pergunta e resposta — os anexos abaixo são apenas referência.
+        FAQ não faz vínculo a uma fonte. A semântica de roteamento vem da própria pergunta e resposta — os anexos abaixo são apenas referência.
       </p>
 
       <FaqItemsEditor

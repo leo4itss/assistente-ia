@@ -20,7 +20,7 @@ export default function RoutingFields({ routing, onChange, errors, errorPrefix }
   return (
     <div className="flex flex-col gap-[16px]">
       <div className="flex flex-col gap-[8px]">
-        <FieldLabel required>Routing · descrição</FieldLabel>
+        <FieldLabel required>Roteamento · descrição</FieldLabel>
         <TextareaInput
           value={routing.description}
           onChange={(v) => onChange({ ...routing, description: v })}
@@ -31,7 +31,7 @@ export default function RoutingFields({ routing, onChange, errors, errorPrefix }
       </div>
 
       <div className="flex flex-col gap-[8px]">
-        <FieldLabel>Routing · exemplos (um por linha)</FieldLabel>
+        <FieldLabel>Roteamento · exemplos (um por linha)</FieldLabel>
         <TextareaInput
           value={examplesText}
           onChange={handleExamplesChange}

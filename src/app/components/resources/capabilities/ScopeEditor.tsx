@@ -26,7 +26,7 @@ export default function ScopeEditor({ scope, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-[8px]">
-      <FieldLabel>Scope (schema → tabelas/views)</FieldLabel>
+      <FieldLabel>Escopo (schema → tabelas/views)</FieldLabel>
       <div className="flex flex-col gap-[8px]">
         {scope.map((entry, idx) => (
           <div key={entry.id} className="flex gap-[8px] items-start">

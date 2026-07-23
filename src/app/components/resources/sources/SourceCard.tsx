@@ -2,8 +2,8 @@ import { useState } from "react";
 import type { Source, SourceKind } from "@/app/types/assistantConfig";
 
 const KIND_BADGE: Record<SourceKind, { label: string; color: string; bg: string }> = {
-  documents: { label: "DOCUMENTS", color: "#93c5fd", bg: "rgba(37,99,235,0.15)" },
-  database: { label: "DATABASE", color: "#6ee7b7", bg: "rgba(16,185,129,0.15)" },
+  documents: { label: "DOCUMENTOS", color: "#93c5fd", bg: "rgba(37,99,235,0.15)" },
+  database: { label: "BANCO DE DADOS", color: "#6ee7b7", bg: "rgba(16,185,129,0.15)" },
   mcp: { label: "MCP", color: "#c4b5fd", bg: "rgba(139,92,246,0.15)" },
 };
 
