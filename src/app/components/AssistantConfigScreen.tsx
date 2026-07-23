@@ -204,20 +204,28 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
   const validate = (): ValidationErrors => {
     const errs: ValidationErrors = {};
     if (!config.identity.assistantName) errs["identity.assistantName"] = "Informe o nome do assistente.";
+    const externalIdCounts: Record<string, number> = {};
+    config.sources.forEach((s) => {
+      if ((s.kind === "documents" || s.kind === "mcp") && s.external_id) {
+        externalIdCounts[s.external_id] = (externalIdCounts[s.external_id] ?? 0) + 1;
+      }
+    });
     config.sources.forEach((s, i) => {
       const p = `source.${i}`;
       if (!s.label) errs[`${p}.label`] = "Informe um rótulo para a fonte.";
       if (s.kind === "documents" && !s.connection_string) errs[`${p}.connection_string`] = "Informe a string de conexão.";
-      if (s.kind === "documents" && !s.external_id) errs[`${p}.external_id`] = "Informe o ID.";
       if (s.kind === "database") {
         if (!s.database) errs[`${p}.database`] = "Selecione o tipo de banco.";
         if (!s.use_mcp && !s.connection_string) errs[`${p}.connection_string`] = "Informe a string de conexão ou ative use_mcp.";
         if (s.use_mcp && !s.mcp_host) errs[`${p}.mcp_host`] = "Informe o host MCP.";
       }
       if (s.kind === "mcp") {
-        if (!s.external_id) errs[`${p}.external_id`] = "Informe o ID.";
         if (!s.url) errs[`${p}.url`] = "Informe a URL do MCP.";
         if (!s.transport) errs[`${p}.transport`] = "Selecione o transporte.";
+      }
+      if (s.kind === "documents" || s.kind === "mcp") {
+        if (!s.external_id) errs[`${p}.external_id`] = "Informe o ID.";
+        else if (externalIdCounts[s.external_id] > 1) errs[`${p}.external_id`] = "Este ID já está em uso por outra fonte.";
       }
     });
     config.capabilities.forEach((c, i) => {

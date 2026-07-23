@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FieldLabel, FieldError, TextInput, PasswordInput } from "@/app/components/resources/fields/Fields";
 import AcervoModal from "@/app/components/resources/sources/AcervoModal";
+import { slugifyLabel } from "@/app/lib/slug";
 import type { SourceDocuments, ValidationErrors } from "@/app/types/assistantConfig";
 
 interface Props {
@@ -12,8 +13,17 @@ interface Props {
 
 export default function SourceDocumentsForm({ source, onChange, errors, errorPrefix }: Props) {
   const [showAcervo, setShowAcervo] = useState(false);
+  const [idTouched, setIdTouched] = useState(!!source.external_id);
   const e = (f: string) => errors[`${errorPrefix}.${f}`];
   const update = (patch: Partial<SourceDocuments>) => onChange({ ...source, ...patch });
+
+  const handleLabelChange = (label: string) => {
+    if (idTouched) {
+      update({ label });
+    } else {
+      update({ label, external_id: slugifyLabel(label) });
+    }
+  };
 
   const errorCount =
     source.files.filter((f) => f.status === "error").length + source.links.filter((l) => l.status === "error").length;
@@ -23,12 +33,19 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
       <div className="grid grid-cols-2 gap-[16px]">
         <div className="flex flex-col gap-[8px]">
           <FieldLabel required>ID</FieldLabel>
-          <TextInput value={source.external_id} onChange={(v) => update({ external_id: v })} placeholder="Ex.: docnix_rag" />
+          <TextInput
+            value={source.external_id}
+            onChange={(v) => {
+              setIdTouched(true);
+              update({ external_id: v });
+            }}
+            placeholder="Ex.: docnix_rag"
+          />
           <FieldError message={e("external_id")} />
         </div>
         <div className="flex flex-col gap-[8px]">
           <FieldLabel required>Rótulo</FieldLabel>
-          <TextInput value={source.label} onChange={(v) => update({ label: v })} placeholder="Ex.: Acervo documental (RAG)" />
+          <TextInput value={source.label} onChange={handleLabelChange} placeholder="Ex.: Acervo documental (RAG)" />
           <FieldError message={e("label")} />
         </div>
       </div>
