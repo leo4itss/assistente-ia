@@ -34,9 +34,11 @@ interface Props {
   schemaVersion: number;
 }
 
+type Tab = "assistant" | "system";
+
 export default function IdentitySection({ identity, onChange, errors, assistantId, schemaVersion }: Props) {
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  const [systemOpen, setSystemOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("assistant");
 
   const handleAvatarPicked = (file: File) => {
     const reader = new FileReader();
@@ -55,42 +57,46 @@ export default function IdentitySection({ identity, onChange, errors, assistantI
 
   return (
     <div className="flex flex-col gap-[32px] w-full">
-      <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px]">
+      <div className="flex gap-[24px] border-b border-[rgba(255,255,255,0.1)]">
         <button
-          onClick={() => setSystemOpen((v) => !v)}
-          className="flex items-center gap-[8px] w-full px-[16px] py-[12px] hover:bg-[rgba(255,255,255,0.02)] transition-colors rounded-[10px]"
+          onClick={() => setActiveTab("assistant")}
+          className={`pb-[12px] border-b-2 font-['Inter:Semi_Bold',sans-serif] font-semibold text-[15px] transition-colors ${
+            activeTab === "assistant" ? "border-[#2563eb] text-[#f9fafb]" : "border-transparent text-[#9ca3af] hover:text-[#f9fafb]"
+          }`}
         >
-          <svg className={`size-[12px] shrink-0 transition-transform ${systemOpen ? "rotate-90" : ""}`} fill="none" viewBox="0 0 14 14">
-            <path d="M5 3l4 4-4 4" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
-          </svg>
-          <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[12px] tracking-[0.5px]">
-            SISTEMA (SOMENTE LEITURA)
-          </span>
+          Dados do assistente
         </button>
-        {systemOpen && (
-          <div className="px-[16px] pb-[16px] pt-[4px] border-t border-[rgba(255,255,255,0.08)] flex flex-col gap-[16px]">
-            <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
-              Definidos pela plataforma / create — não editáveis na UI de produto (
-              <span className="font-mono text-[#c4b5fd]">_id</span> gerado,{" "}
-              <span className="font-mono text-[#c4b5fd]">tenant_id</span> do host, agent fixo{" "}
-              <span className="font-mono text-[#c4b5fd]">pas_ai</span>,{" "}
-              <span className="font-mono text-[#c4b5fd]">schema_version</span> pelo loader).
-            </p>
-            <div className="grid grid-cols-2 gap-[16px]">
-              <ReadOnlyField label="_ID" value={assistantId} />
-              <ReadOnlyField label="TENANT_ID" value={PLATFORM_TENANT_ID} />
-              <ReadOnlyField label="AGENT" value={PLATFORM_AGENT} />
-              <ReadOnlyField label="SCHEMA_VERSION" value={String(schemaVersion)} />
-            </div>
-          </div>
-        )}
+        <button
+          onClick={() => setActiveTab("system")}
+          className={`pb-[12px] border-b-2 font-['Inter:Semi_Bold',sans-serif] font-semibold text-[15px] transition-colors ${
+            activeTab === "system" ? "border-[#2563eb] text-[#f9fafb]" : "border-transparent text-[#9ca3af] hover:text-[#f9fafb]"
+          }`}
+        >
+          Dados do sistema
+        </button>
       </div>
 
-      <div className="flex flex-col gap-[16px]">
-        <div className="flex items-start pb-[12px] w-full">
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[16px]">Dados do assistente</p>
+      {activeTab === "system" && (
+        <div className="flex flex-col gap-[16px]">
+          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
+            Definidos pela plataforma / create — não editáveis na UI de produto (
+            <span className="font-mono text-[#c4b5fd]">_id</span> gerado,{" "}
+            <span className="font-mono text-[#c4b5fd]">tenant_id</span> do host, agent fixo{" "}
+            <span className="font-mono text-[#c4b5fd]">pas_ai</span>,{" "}
+            <span className="font-mono text-[#c4b5fd]">schema_version</span> pelo loader).
+          </p>
+          <div className="grid grid-cols-2 gap-[16px]">
+            <ReadOnlyField label="_ID" value={assistantId} />
+            <ReadOnlyField label="TENANT_ID" value={PLATFORM_TENANT_ID} />
+            <ReadOnlyField label="AGENT" value={PLATFORM_AGENT} />
+            <ReadOnlyField label="SCHEMA_VERSION" value={String(schemaVersion)} />
+          </div>
         </div>
+      )}
 
+      {activeTab === "assistant" && (
+      <>
+      <div className="flex flex-col gap-[16px]">
         <div className="flex flex-col gap-[12px]">
           <FieldLabel>Insira uma novo avatar</FieldLabel>
           <div className="flex items-center gap-[16px]">
@@ -215,6 +221,8 @@ export default function IdentitySection({ identity, onChange, errors, assistantI
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
