@@ -11,6 +11,7 @@ import BuiltinsSection from "@/app/components/resources/builtins/BuiltinsSection
 import ConfigSection from "@/app/components/resources/config/ConfigSection";
 import AssistantSelectorPopover from "@/app/components/AssistantSelectorPopover";
 import CreateAssistantScreen from "@/app/components/CreateAssistantScreen";
+import DeleteAssistantModal from "@/app/components/DeleteAssistantModal";
 import { readAssistantConfig, emptyAssistantConfig } from "@/app/lib/assistantConfigAdapter";
 import type { Assistant } from "@/app/App";
 import type {
@@ -75,8 +76,10 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isDirty, setIsDirty] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showJsonModal, setShowJsonModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [currentAssistant, setCurrentAssistant] = useState<Assistant | null | undefined>(assistant);
@@ -322,6 +325,31 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
     toastSuccess("Configuração salva com sucesso.");
   };
 
+  const handleConfirmDelete = () => {
+    if (!currentAssistant) {
+      setShowDeleteDialog(false);
+      return;
+    }
+    const all: Assistant[] = JSON.parse(localStorage.getItem("assistants") || "[]");
+    const remaining = all.filter((a) => a.id !== currentAssistant.id);
+    localStorage.setItem("assistants", JSON.stringify(remaining));
+
+    const selectedId = localStorage.getItem("selectedAssistantId");
+    if (selectedId === currentAssistant.id) {
+      if (remaining.length > 0) {
+        localStorage.setItem("selectedAssistantId", remaining[0].id);
+      } else {
+        localStorage.removeItem("selectedAssistantId");
+      }
+    }
+
+    window.dispatchEvent(new Event("assistants-updated"));
+    setShowDeleteDialog(false);
+    setIsDirty(false);
+    toastSuccess("Assistente excluído com sucesso.");
+    onBack();
+  };
+
   const hasErrors = Object.keys(errors).length > 0;
   const jsonPreview = JSON.stringify(config, null, 2);
 
@@ -347,6 +375,14 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
             </div>
           </div>
         </div>
+      )}
+
+      {showDeleteDialog && currentAssistant && (
+        <DeleteAssistantModal
+          assistant={currentAssistant}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowDeleteDialog(false)}
+        />
       )}
 
       {pendingAction && (
@@ -441,20 +477,26 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
 
       <div className="flex w-full h-full bg-[#030712]">
         {/* Sidebar */}
-        <div className="w-[256px] shrink-0 bg-[#111827] flex flex-col h-full">
-          <div className="flex flex-col gap-[8px] items-start p-[8px] shrink-0 w-full">
+        <div
+          className={`shrink-0 bg-[#111827] flex flex-col h-full transition-all duration-300 ${
+            sidebarOpen ? "w-[256px]" : "w-0 overflow-hidden"
+          }`}
+        >
+          <div className="flex flex-col gap-[8px] items-start p-[8px] shrink-0 w-[256px]">
             <div className="flex gap-[8px] items-center p-[8px] rounded-[8px] w-full">
               <p className="flex-1 font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[14px] leading-none">Customização IA</p>
               <button
                 type="button"
+                onClick={() => setSidebarOpen(false)}
                 className="flex items-center justify-center shrink-0 size-[32px] rounded-[8px] hover:bg-[rgba(255,255,255,0.05)] transition-colors"
-                aria-label="Alternar sidebar"
+                aria-label="Recolher sidebar"
+                title="Recolher sidebar"
               >
                 <PanelLeft className="size-[16px] text-[#f9fafb]" strokeWidth={1.5} />
               </button>
             </div>
           </div>
-          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
+          <div className="flex-1 min-h-0 overflow-y-auto flex flex-col w-[256px]">
             <div className="p-[8px] w-full">
               <button
                 onClick={handleBackClick}
@@ -492,7 +534,19 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
         <div className="flex flex-col flex-1 min-w-0 h-full">
           {/* Assistant switcher */}
           <div className="bg-[#030712] border-b border-[rgba(255,255,255,0.1)] flex h-[64px] items-center justify-between px-[32px] py-[16px] shrink-0 w-full">
-            <div className="relative" ref={assistantButtonRef}>
+            <div className="flex items-center gap-[12px] min-w-0">
+              {!sidebarOpen && (
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(true)}
+                  className="bg-[rgba(255,255,255,0.05)] flex items-center justify-center size-[36px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors shrink-0"
+                  aria-label="Expandir sidebar"
+                  title="Expandir sidebar"
+                >
+                  <PanelLeft className="size-[16px] text-[#f9fafb]" strokeWidth={1.5} />
+                </button>
+              )}
+              <div className="relative" ref={assistantButtonRef}>
               <div
                 onClick={() => setAssistantDropdownOpen((v) => !v)}
                 className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex gap-[8px] items-center px-[16px] py-[8px] rounded-[8px] w-[228px] cursor-pointer hover:bg-[rgba(255,255,255,0.08)] transition-colors"
@@ -519,6 +573,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                   />
                 </div>
               )}
+              </div>
             </div>
             <button
               onClick={() => setShowPreview((v) => !v)}
@@ -562,18 +617,29 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex flex-col items-center px-[32px] py-[16px] shrink-0 w-full">
-                <div className="flex items-center justify-between max-w-[640px] w-full">
-                  <div>
+              {/* Footer — mesmo grid do conteúdo: max-w-[640px] + px-[32px] */}
+              <div className="bg-[#030712] border-t border-[rgba(255,255,255,0.1)] flex flex-col items-center py-[16px] shrink-0 w-full">
+                <div className="flex items-center justify-between max-w-[640px] w-full px-[32px] gap-[12px]">
+                  <div className="flex items-center gap-[12px] min-w-0">
+                    {activeSection === "identity" && currentAssistant && (
+                      <button
+                        type="button"
+                        onClick={() => setShowDeleteDialog(true)}
+                        className="bg-[rgba(248,113,113,0.6)] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[rgba(248,113,113,0.8)] transition-colors shrink-0"
+                      >
+                        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Excluir assistente</span>
+                      </button>
+                    )}
                     {hasErrors && (
-                      <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[14px]">Corrija os erros antes de salvar.</p>
+                      <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[14px] truncate">
+                        Corrija os erros antes de salvar.
+                      </p>
                     )}
                   </div>
                   <button
                     onClick={handleSaveClick}
                     disabled={!isDirty}
-                    className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#2563eb] flex h-[36px] items-center justify-center px-[16px] py-[8px] rounded-[8px] hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                   >
                     <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Salvar</span>
                   </button>
