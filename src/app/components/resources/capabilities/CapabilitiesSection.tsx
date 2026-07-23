@@ -81,7 +81,7 @@ export default function CapabilitiesSection({ capabilities, onChange, sources, e
           </div>
           <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[16px]">Nenhuma capacidade configurada</p>
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px] text-center max-w-[400px]">
-            Capacidades dizem ao agente quando e como usar uma fonte. Cadastre uma source primeiro em "Sources", depois crie a capacidade que faz o bind.
+            Capacidades dizem ao agente quando e como usar uma fonte. Cadastre uma fonte primeiro em "Fontes", depois crie a capacidade que faz o bind.
           </p>
         </div>
       ) : (

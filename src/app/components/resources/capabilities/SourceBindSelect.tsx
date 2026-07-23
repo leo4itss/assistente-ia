@@ -21,7 +21,7 @@ export default function SourceBindSelect({ sourceId, onChange, sources, compatib
       <FieldLabel required>Source (bind)</FieldLabel>
       {compatible.length === 0 ? (
         <p className="font-['Inter:Regular',sans-serif] font-normal text-[#f87171] text-[13px]">
-          Nenhuma source do tipo {compatibleKinds.map((k) => SOURCE_KIND_LABELS[k]).join(" / ")} cadastrada. Crie uma em "Sources" primeiro.
+          Nenhuma fonte do tipo {compatibleKinds.map((k) => SOURCE_KIND_LABELS[k]).join(" / ")} cadastrada. Crie uma em "Fontes" primeiro.
         </p>
       ) : (
         <SelectInput

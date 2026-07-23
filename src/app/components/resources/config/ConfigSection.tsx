@@ -45,7 +45,7 @@ export default function ConfigSection({ config, onChange }: Props) {
     <div className="flex flex-col gap-[32px] w-full">
       <div className="flex flex-col gap-[16px]">
         <div className="flex flex-col gap-[2px]">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Sampling (temperature)</p>
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Amostragem (temperatura)</p>
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
             Precedência: temperature_role → global_temperature → Infisical
           </p>
@@ -62,8 +62,8 @@ export default function ConfigSection({ config, onChange }: Props) {
 
         <div className="grid grid-cols-3 gap-[16px]">
           <SliderField
-            label="DECISION"
-            description="Supervisor, intent, SQL"
+            label="DECISÃO"
+            description="Supervisor, intenção, SQL"
             value={config.temperature_decision}
             min={0}
             max={1}
@@ -71,8 +71,8 @@ export default function ConfigSection({ config, onChange }: Props) {
             onChange={(v) => update({ temperature_decision: v })}
           />
           <SliderField
-            label="GENERATION"
-            description="Synthesize / editor"
+            label="GERAÇÃO"
+            description="Síntese / editor"
             value={config.temperature_generation}
             min={0}
             max={1}
@@ -80,8 +80,8 @@ export default function ConfigSection({ config, onChange }: Props) {
             onChange={(v) => update({ temperature_generation: v })}
           />
           <SliderField
-            label="CREATIVE"
-            description="Reservado (não wired)"
+            label="CRIATIVO"
+            description="Reservado (não conectado)"
             value={config.temperature_creative}
             min={0}
             max={1}
@@ -92,7 +92,7 @@ export default function ConfigSection({ config, onChange }: Props) {
       </div>
 
       <div className="flex flex-col gap-[16px]">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Enrichment</p>
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Enriquecimento</p>
         <div className="grid grid-cols-2 gap-[16px]">
           <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px] p-[16px] flex flex-col gap-[8px] justify-center">
             <FieldLabel>ANSWER_DEPTH</FieldLabel>
@@ -115,7 +115,7 @@ export default function ConfigSection({ config, onChange }: Props) {
 
       <div className="flex flex-col gap-[16px]">
         <div className="flex flex-col gap-[2px]">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Models (override por categoria)</p>
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Modelos (sobrescrita por categoria)</p>
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">Só model_name e api_version; resto vem do Infisical.</p>
         </div>
         <ModelOverrideFields label="MODEL_LARGE" override={config.model_large} onChange={(v) => update({ model_large: v })} />

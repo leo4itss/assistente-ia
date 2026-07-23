@@ -54,7 +54,7 @@ export default function CapabilityCard({ capability, boundSource, expanded, onTo
         {boundSource ? (
           <span
             className="font-['Inter:Medium',sans-serif] font-medium text-[#9ca3af] text-[12px] px-[8px] py-[3px] rounded-full bg-[rgba(255,255,255,0.05)] shrink-0 flex items-center gap-[6px]"
-            title="Source vinculada"
+            title="Fonte vinculada"
           >
             <svg className="size-[11px] opacity-70" fill="none" viewBox="0 0 16 16">
               <path d="M2 8h12M8 2v12" stroke="currentColor" strokeLinecap="round" strokeWidth="1.33" />

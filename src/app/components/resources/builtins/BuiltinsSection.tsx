@@ -53,7 +53,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
     <div className="flex flex-col gap-[16px] w-full">
       <BuiltinCard
         title="knowledge"
-        description="Tools genéricas + MCP misc"
+        description="Ferramentas genéricas + MCP diversos"
         enabled={builtins.knowledge.enabled}
         onToggle={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, enabled: v } })}
       >
@@ -87,7 +87,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
           <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">MCP_SOURCES</span>
           <div className="flex flex-wrap gap-[6px] items-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] rounded-[8px] p-[8px] min-h-[36px]">
             {builtins.knowledge.mcp_sources.length === 0 && (
-              <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] px-[4px]">Nenhuma source MCP referenciada</span>
+              <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] px-[4px]">Nenhuma fonte MCP referenciada</span>
             )}
             {builtins.knowledge.mcp_sources.map((id) => {
               const source = sources.find((s) => s.id === id);
@@ -118,7 +118,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
                 defaultValue=""
                 className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] rounded-[8px] h-[32px] px-[10px] text-[#f9fafb] text-[13px] outline-none"
               >
-                <option value="" disabled>Adicionar source MCP...</option>
+                <option value="" disabled>Adicionar fonte MCP...</option>
                 {availableMcpSources.map((s) => (
                   <option key={s.id} value={s.id} style={{ background: "#111827" }}>
                     {s.label || SOURCE_KIND_LABELS[s.kind]}
@@ -128,7 +128,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
             </div>
           )}
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-            Referencia sources com kind=mcp cadastradas em "Sources".
+            Referencia fontes com kind=mcp cadastradas em "Fontes".
           </p>
         </div>
       </BuiltinCard>
@@ -142,7 +142,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
 
       <BuiltinCard
         title="visualization"
-        description="Charts via display_chart (rail pós-artifacts)"
+        description="Gráficos via display_chart (rail pós-artifacts)"
         enabled={builtins.visualization.enabled}
         onToggle={(v) => onChange({ ...builtins, visualization: { enabled: v } })}
       />

@@ -44,16 +44,16 @@ const SECTION_META: Record<SectionId, { label: string; description: string }> = 
   capabilities: {
     label: "Capacidades",
     description:
-      "Opt-in do tenant: se não estiver aqui, o supervisor não enxerga. Bind em source + routing para o supervisor + instructions para o motor.",
+      "Opt-in do tenant: se não estiver aqui, o supervisor não enxerga. Vínculo com fonte + roteamento para o supervisor + instruções para o motor.",
   },
   builtins: {
     label: "Recursos Nativos",
-    description: "Plataforma (default ON). Podem ser ativadas/desativadas, mas não removidas nem adicionadas pelo usuário.",
+    description: "Plataforma (ativo por padrão). Podem ser ativadas/desativadas, mas não removidas nem adicionadas pelo usuário.",
   },
   config: {
     label: "Configurações",
     description:
-      "Overrides vs Infisical/env. Campos omitidos/null → default da plataforma. Provider/endpoint/credencial Azure não são sobrescrevíveis aqui.",
+      "Sobrescritas vs Infisical/env. Campos omitidos/null → default da plataforma. Provider/endpoint/credencial Azure não são sobrescrevíveis aqui.",
   },
 };
 
