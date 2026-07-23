@@ -71,7 +71,7 @@ export default function SourcesSection({ sources, onChange, errors, usageBySourc
 
   return (
     <div className="flex flex-col gap-[24px] w-full">
-      <div className="flex items-start justify-end gap-[16px]">
+      <div className="flex items-start gap-[16px]">
         <AddSourceButton onAdd={add} />
       </div>
 
