@@ -18,15 +18,24 @@ export type SourceKind = "documents" | "database" | "mcp";
 export type DatabaseType = "postgresql" | "mysql" | "sqlserver";
 export type SourceTransport = "sse" | "stdio" | "http" | "websocket";
 
+/**
+ * Ciclo de vida do item no acervo (espelha o pipeline de indexação):
+ * queued → indexing → ready | error
+ * Validação de cliente (extensão/tamanho/URL) pode ir direto para `error`.
+ */
+export type DocumentStatus = "ready" | "indexing" | "queued" | "error";
+
 /** Arquivo enviado para a base de RAG. Validação (extensão/tamanho) acontece no cliente. */
 export interface DocumentFile {
   id: string;
   name: string;
   size: number;
   extension: string;
-  status: "ready" | "error";
+  status: DocumentStatus;
   /** Motivo da rejeição (extensão não suportada / excede tamanho) — sempre visível ao usuário. */
   error?: string;
+  /** Quantidade de chunks gerados após indexação — ausente enquanto não estiver ready. */
+  chunks?: number;
   /** Data (ISO) do upload — exibida na tabela do acervo. */
   updatedAt: string;
 }
@@ -35,8 +44,10 @@ export interface DocumentFile {
 export interface DocumentLink {
   id: string;
   url: string;
-  status: "ready" | "error";
+  status: DocumentStatus;
   error?: string;
+  /** Quantidade de chunks gerados após indexação — ausente enquanto não estiver ready. */
+  chunks?: number;
   /** Data (ISO) da adição — exibida na tabela do acervo. */
   updatedAt: string;
 }
