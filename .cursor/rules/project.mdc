@@ -31,12 +31,23 @@ Não existe `lint`, `test` ou `preview` — nunca os invoque.
 
 ```
 showCreateAssistant → <CreateAssistantScreen>
-showResourcesTools  → <ResourcesToolsScreen>
-showCustomization   → <CustomizationScreen>
+showAssistantConfig → <AssistantConfigScreen>
 default             → shell de chat (Sidebar + Header + ChatBar)
 ```
 
+A **Customização IA** é `AssistantConfigScreen` (config v3), com sidebar própria e seções:
+
+```
+ASSISTENTE → Persona (identity)
+CATÁLOGO   → Fontes (sources), Capacidades (capabilities)
+PLATAFORMA → Recursos Nativos (builtins), Configurações (config)
+```
+
+O modelo de configuração vive em `src/app/types/assistantConfig.ts` e é persistido em `Assistant.config` (JSON string). Campos legados `resources` / `tools` só entram na leitura/migração.
+
 O `<Toaster>` vive em `App.tsx` e **não** deve ser adicionado em telas individuais.
+
+> Removidos: `ResourcesToolsScreen`, `CustomizationScreen` e o fluxo antigo de abas Recursos | Integrações | Avançado.
 
 ## Design system
 
@@ -57,7 +68,8 @@ Nunca usar `toast.success()` diretamente.
 - shadcn/ui em `src/app/components/ui/`: `kebab-case.tsx`
 - Sem barrel files (`index.ts`) — importar por caminho direto
 - Interface `Assistant` exportada de `src/app/App.tsx`
-- Tipos locais ficam no próprio arquivo de componente
+- Tipos do config v3 em `src/app/types/assistantConfig.ts`
+- Tipos locais de UI ficam no próprio arquivo de componente
 - Import alias: `@/` → `src/`
 
 ## Arquivos que NÃO devem ser editados
@@ -78,11 +90,13 @@ Nunca usar `toast.success()` diretamente.
 feat/fix/chore: descrição em português [claude]
 ```
 
-Branch de trabalho: `feat/resource-e-tools` → PR para `main` só em releases estáveis.
+Branch a partir de `dev` (`feat/...` ou ticket). PRs para `main` só em releases estáveis. Documentação de produto da Customização IA: `docs/capacidades.md`.
 
 ## Padrões de UI
 
-- Footer das telas de gestão de assistentes: `flex flex-col items-center px-[32px] py-[16px]` com inner `max-w-[640px] w-full` — alinhado ao grid do formulário
+- Conteúdo + footer da Customização IA: grid `max-w-[640px]` com `px-[32px]` (bordas dos botões alinhadas ao formulário)
+- Footer fixo: **Salvar** à direita; **Excluir assistente** à esquerda **somente** na seção Persona
+- Sidebar da Customização IA: colapsável (`w-[256px]` ↔ `w-0`); botão de expandir no header quando recolhida
 - Modal de exclusão: campo de texto exige digitação exata do nome antes de habilitar o botão
 - Botão destrutivo: `bg-[rgba(248,113,113,0.6)] hover:bg-[rgba(248,113,113,0.8)]`
 - Botão primário: `bg-[#2563eb] hover:bg-[#1d4ed8]`

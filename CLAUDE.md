@@ -61,4 +61,4 @@ Before creating a new UI component, check `src/app/components/ui/` — button, i
 
 **Commits:** use `feat/fix/chore: description [model]` format (e.g. `feat: adiciona contador [claude]`). Branch from `dev`; push to `dev` triggers auto-deploy on Vercel. PRs `dev → main` only for stable releases.
 
-See `AGENTS.md` for the full conventions reference and `DESIGN.md` for the complete token specification.
+See `AGENTS.md` for the full conventions reference (including the Definition of Done) and `DESIGN.md` for the complete token specification.

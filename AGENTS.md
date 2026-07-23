@@ -136,3 +136,16 @@ npm run build    # Build de produção → dist/
 3. **Sempre rodar `npm run build` antes de commitar** — confirma que não há erros de transpilação
 4. **Push para `dev`** — deploy automático na Vercel a partir dessa branch
 5. PRs de `dev → main` apenas para releases estáveis
+
+---
+
+## Definition of Done
+
+Uma tarefa só deve ser considerada concluída quando:
+
+1. **Build** — `npm run build` passa sem erro.
+2. **Design (se aplicável)** — alterações de token passam em `npm run design:lint` e mantêm `DESIGN.md` ↔ `theme-design.css` sincronizados.
+3. **Documentação de produto** — se a mudança alterar fluxo, regras, estados de UI, microcopy ou persistência de uma funcionalidade documentada, atualizar o doc correspondente em `docs/` (ex.: Customização IA → `docs/capacidades.md`). Docs obsoletos devem ser marcados como tal, não deixados contradizendo o código.
+4. **Instruções de agente** — se a arquitetura/navegação/convenções mudarem, atualizar `.cursor/rules/project.mdc` (e `CLAUDE.md` / `AGENTS.md` quando o trecho afetado estiver lá).
+5. **Qualidade de UI** — seguir padrões do projeto (toasts via `toastSuccess`/`toast.error`, footer alinhado ao grid, botões destrutivos/primários conforme tokens).
+6. **Commit** — mensagem `feat|fix|chore: … [modelo]`; sem secrets; escopo coerente com a branch.
