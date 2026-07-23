@@ -1,141 +1,120 @@
-# AGENTS.md — Convenções do projeto Assistente IA
+# AGENTS.md — Fonte de verdade para agentes
 
-Documento de referência para Claude, Codex e Gemini. Baseado no que **de fato existe** no repositório.
+**Este arquivo é a única fonte de verdade** para regras de desenvolvimento, convenções, workflow de sessão e Definition of Done.
 
----
+`CLAUDE.md`, `.cursor/rules/*` e `README.md` **apenas complementam** o comportamento específico de cada ferramenta (Claude Code, Cursor, onboarding humano). Não redefinem as regras daqui — quando houver conflito, prevalece o `AGENTS.md`.
 
-## Stack
-
-| Camada | Lib / Ferramenta | Versão |
-|---|---|---|
-| Framework | React | 18.3.1 |
-| Build | Vite + @vitejs/plugin-react | 6.3.5 / 4.7.0 |
-| Styling | Tailwind CSS v4 (via @tailwindcss/vite) | 4.1.12 |
-| UI primitives | Radix UI (suite completa) | 1.x–2.x |
-| Componentes prontos | shadcn/ui (Radix + Tailwind) | sem versão própria |
-| Ícones | lucide-react | 0.487.0 |
-| Toasts | sonner | 2.0.3 |
-| Formulários | react-hook-form | 7.55.0 |
-| Animações | motion | 12.23.24 |
-| Utilitários CSS | clsx + tailwind-merge + class-variance-authority | 2.1.1 / 3.2.0 / 0.7.1 |
-| Linguagem | TypeScript (transpilado pelo Vite/esbuild, sem tsc) | — |
-
-> **MUI 7 está em `dependencies` mas não é usado nos componentes ativos.** Não adicione novos componentes MUI.
+Baseado no que **de fato existe** no repositório. Não copie tokens de design nem fluxos de produto para cá — consulte os docs certos (tabela abaixo).
 
 ---
 
-## Estrutura de pastas
+## Mapa de documentação (leia só o necessário)
 
-```
-src/
-├── app/
-│   ├── App.tsx              # Raiz: estado global, roteamento de telas
-│   ├── components/
-│   │   ├── ui/              # shadcn/ui — componentes gerados (button, dialog, input…)
-│   │   ├── figma/           # Helpers do Figma Make (ImageWithFallback)
-│   │   └── *.tsx            # Componentes de tela do projeto (PascalCase)
-│   └── constants/
-│       └── defaultAssistants.ts   # Dados estáticos de assistentes padrão
-├── assets/                  # Imagens referenciadas via `figma:asset/` (não editar nomes)
-├── imports/                 # AUTO-GERADO pelo Figma Make — SVG paths e snapshots de design
-└── styles/
-    ├── index.css            # Entry point: importa fonts, tailwind, theme, theme-design
-    ├── theme.css            # CSS variables shadcn + @theme inline (não editar)
-    ├── theme-design.css     # Overrides do DESIGN.md sobre o shadcn (não editar — gerado manualmente)
-    ├── tailwind.css         # Diretivas @import "tailwindcss"
-    └── fonts.css            # @font-face declarations
-```
+| Se a tarefa envolver… | Consulte |
+|---|---|
+| Como trabalhar neste repo, convenções ou Definition of Done | **este arquivo (`AGENTS.md`)** |
+| Tokens, tipografia, cores ou componentes visuais | `DESIGN.md` (+ sync `src/styles/theme-design.css`) |
+| Customização IA (Persona, Fontes, Capacidades, Acervo, salvar/excluir…) | `docs/capacidades.md` |
+| Regras always-on no Cursor (resumo injetado a cada edição) | `.cursor/rules/project.mdc` |
+| Uso via Claude Code | `CLAUDE.md` → aponta para cá |
+| Apenas rodar o app (onboarding humano) | `README.md` |
+
+`docs/resources-tools.md` está **obsoleto** (tela antiga removida).
 
 ---
 
-## Design System
+## Princípios
 
-**`DESIGN.md` é a fonte da verdade para tokens de design** (cores, tipografia, radius, spacing, componentes).  
-`src/styles/theme-design.css` aplica esses tokens como overrides sobre as CSS variables do shadcn.
-
-**Comandos:**
-```bash
-npm run design:lint      # Valida DESIGN.md (0 errors obrigatório antes de commitar)
-npm run design:export    # Referência: exporta tokens em formato Tailwind v3 JSON (não usado ativamente)
-```
-
-**Regras:**
-- Para mudar uma cor do projeto: edite o `DESIGN.md` e atualize `src/styles/theme-design.css` manualmente (o CLI `@google/design.md` ainda não suporta export para Tailwind v4 CSS).
-- Nunca editar `src/styles/theme-design.css` sem também atualizar o `DESIGN.md` — os dois devem estar em sincronia.
-- Novos componentes devem referenciar tokens do `DESIGN.md` (`{colors.primary}`, `{rounded.sm}`…).
-- Componentes gerados pelo Figma Make contêm hex hardcoded — não altere ao refatorar sem checar o `DESIGN.md` primeiro.
-- Antes de criar um componente do zero, verifique `src/app/components/ui/` — button, input, textarea, dialog, slider, card, tabs e outros já existem.
+- **Reutilização antes de criação** — preferir componentes, hooks, serviços e utilitários já existentes.
+- **O código é a fonte da verdade para implementação** — leia o código real; docs e regras não substituem o que está no repo.
+- **A documentação deve refletir o comportamento do código** — se o produto mudou, atualize `docs/` (e este arquivo, se a convenção mudou).
+- **Evitar duplicação** entre código, documentação de produto e regras dos agentes — uma verdade por tema; o resto só aponta.
 
 ---
 
-## Convenções de código
+## Workflow de sessão
 
-**Imports:**
-```ts
-// Alias @/ → src/ (configurado no vite.config.ts)
-import CustomizationScreen from "@/app/components/CustomizationScreen";
-import { DEFAULT_ASSISTANTS } from "@/app/constants/defaultAssistants";
-import svgPaths from "@/imports/svg-vtaynlf815";
+1. **Entender a tarefa** — escopo, arquivos e se mexe em produto, design ou só código.
+2. **Confirmar Git** — branch, worktree (se houver) e `git status` limpo/esperado **antes** de implementar.
+3. **Abrir só a documentação necessária** — use o [Mapa](#mapa-de-documentação-leia-só-o-necessário); não leia `DESIGN.md`/`docs/` por padrão.
+4. **Ler o código real** — `App.tsx`, tela/seção alvo; não confiar em exemplos antigos de outros docs.
+5. **Verificar reutilização** — antes de criar componente, hook, serviço ou utilitário, busque equivalentes em `src/app/components/` (incl. `ui/`), `lib/`, etc.
+6. **Implementar** — seguir convenções deste arquivo; UI: toasts/padrões em `project.mdc`; tokens em `DESIGN.md`.
+7. **Validar e fechar** — cumprir o [Definition of Done](#definition-of-done) antes de declarar a tarefa concluída.
 
-// Assets Figma Make (resolver customizado no Vite)
-import imgAvatar from "figma:asset/cfa90523740b88f37cf837b3a4b69c4f932d514c.png";
-```
+---
 
-**Naming:**
-- Arquivos de componentes: `PascalCase.tsx` (ex: `EditAssistantScreen.tsx`)
-- shadcn/ui em `ui/`: `kebab-case.tsx` (ex: `dialog.tsx`) — padrão gerado, manter
-- Constantes e utilitários: `camelCase.ts`
-- Sem `index.ts` barrel files — import direto pelo caminho
+## Arquitetura (resumo)
 
-**Tipos:**
-- Interface do modelo principal (`Assistant`) vive em `src/app/App.tsx` e é exportada: `export interface Assistant { … }`
-- Tipos locais ficam no próprio arquivo do componente
-- Sem pasta `types/` separada
+- Protótipo React + Vite + Tailwind, **sem router**. Telas via estado em `src/app/App.tsx`.
+- Fluxo de telas:
+  - `showCreateAssistant` → `CreateAssistantScreen`
+  - `showAssistantConfig` → `AssistantConfigScreen` (Customização IA v3)
+  - default → chat (`Sidebar` + Header + ChatBar)
+- Customização IA: seções `identity` | `sources` | `capabilities` | `builtins` | `config`.
+- Estado: `useState` / `useEffect` + `localStorage` + evento `assistants-updated`. Sem Redux/Zustand.
+- Config do assistente: tipos em `src/app/types/assistantConfig.ts`; persistência em `Assistant.config` (JSON string). `resources`/`tools` só migração.
+- Alias `@/` → `src/`. Assets Figma: `figma:asset/<hash>.png` (não renomear `src/assets/`).
 
-**Estado:**
-- Estado local com `useState` / `useEffect`
-- Persistência via `localStorage` + eventos customizados (`window.dispatchEvent(new Event("assistants-updated"))`)
-- Sem gerenciador de estado global (Redux, Zustand, etc.)
+Detalhe de produto da Customização IA → `docs/capacidades.md`.
+
+---
+
+## Stack (orientação)
+
+React 18, TypeScript (transpile Vite/esbuild, sem `tsc`), Vite, Tailwind v4, Radix/shadcn, lucide, sonner, react-hook-form.
+
+**Não** adicionar componentes MUI (está em `dependencies`, mas não é usado).
+
+Versões exatas → `package.json`.
 
 ---
 
 ## Comandos
 
 ```bash
-npm run dev      # Servidor de desenvolvimento (Vite)
-npm run build    # Build de produção → dist/
+npm run dev          # dev server
+npm run build        # obrigatório antes de commit (ver DoD)
+npm run design:lint  # só se alterar DESIGN.md / tokens
 ```
 
-> `lint` e `preview` **não existem** no `package.json`. Não os invoque.
+Não existem `lint`, `test` nem `preview` — não invocar.
+
+---
+
+## Convenções de código
+
+- Componentes: `PascalCase.tsx`; shadcn em `ui/`: `kebab-case.tsx`; sem barrels `index.ts`.
+- `Assistant` exportado de `App.tsx`; tipos do config v3 em `types/assistantConfig.ts`; tipos de UI locais no próprio arquivo.
+- Toasts: `toastSuccess` (`@/app/lib/toast`) / `toast.error` (sonner) — nunca `toast.success()`.
+- Preferir primitivos existentes em `src/app/components/ui/`.
+
+---
+
+## Design
+
+Fonte de verdade: **`DESIGN.md`**.  
+Alterar token → editar `DESIGN.md` e espelhar em `theme-design.css`; rodar `design:lint`.  
+Não editar `theme-design.css` / `theme.css` sem o doc. Hex em `src/imports/` veio do Figma — checar `DESIGN.md` antes de mudar.
 
 ---
 
 ## Não mexer
 
-| Arquivo / Pasta | Motivo |
+| Caminho | Motivo |
 |---|---|
-| `default_shadcn_theme.css` | Sincronizado com o Figma Make — marcado com `KEEP_IN_SYNC` |
-| `src/styles/theme.css` | Espelho do `default_shadcn_theme.css`; alterar quebra o design system inteiro |
-| `src/styles/theme-design.css` | Overrides do DESIGN.md — editar o `DESIGN.md`, não este arquivo diretamente |
-| `vercel.json` | Configuração de deploy Vercel (força npm, output dir) |
-| `vite.config.ts` | Contém o resolver `figma:asset/` — remover quebra todos os assets |
-| `src/imports/` | Auto-gerado pelo Figma Make — não editar manualmente |
-| `src/assets/` | Assets referenciados por hash — não renomear arquivos |
+| `src/imports/`, `src/assets/` | Figma Make / hashes de asset |
+| `src/styles/theme.css`, `theme-design.css`, `default_shadcn_theme.css` | Design system (editar via `DESIGN.md`) |
+| `vite.config.ts` | Resolver `figma:asset/` |
+| `vercel.json` | Deploy |
 
 ---
 
-## Fluxo de trabalho
+## Git
 
-1. **Uma branch por feature** a partir de `dev` (`git checkout -b feat/nome-da-feature`)
-2. **Commits pequenos e descritivos** com prefixo do modelo no final:
-   ```
-   feat: adiciona contador de uso na tela Persona [claude]
-   fix: corrige layout dos botões no EditAssistantScreen [codex]
-   chore: atualiza dependências [gemini]
-   ```
-3. **Sempre rodar `npm run build` antes de commitar** — confirma que não há erros de transpilação
-4. **Push para `dev`** — deploy automático na Vercel a partir dessa branch
-5. PRs de `dev → main` apenas para releases estáveis
+- Branch a partir de `dev` (`feat/…` ou ticket).
+- Commit: `feat|fix|chore: descrição em português [modelo]`.
+- Push/`dev` → deploy Vercel; PR `dev → main` só em release estável.
 
 ---
 
@@ -144,8 +123,8 @@ npm run build    # Build de produção → dist/
 Uma tarefa só deve ser considerada concluída quando:
 
 1. **Build** — `npm run build` passa sem erro.
-2. **Design (se aplicável)** — alterações de token passam em `npm run design:lint` e mantêm `DESIGN.md` ↔ `theme-design.css` sincronizados.
-3. **Documentação de produto** — se a mudança alterar fluxo, regras, estados de UI, microcopy ou persistência de uma funcionalidade documentada, atualizar o doc correspondente em `docs/` (ex.: Customização IA → `docs/capacidades.md`). Docs obsoletos devem ser marcados como tal, não deixados contradizendo o código.
-4. **Instruções de agente** — se a arquitetura/navegação/convenções mudarem, atualizar `.cursor/rules/project.mdc` (e `CLAUDE.md` / `AGENTS.md` quando o trecho afetado estiver lá).
-5. **Qualidade de UI** — seguir padrões do projeto (toasts via `toastSuccess`/`toast.error`, footer alinhado ao grid, botões destrutivos/primários conforme tokens).
-6. **Commit** — mensagem `feat|fix|chore: … [modelo]`; sem secrets; escopo coerente com a branch.
+2. **Design (se aplicável)** — `npm run design:lint` ok; `DESIGN.md` ↔ `theme-design.css` sincronizados.
+3. **Documentação de produto** — mudança de fluxo/regras/UI/microcopy/persistência → atualizar o doc em `docs/` (Customização IA → `docs/capacidades.md`). Não deixar docs contradizendo o código.
+4. **Instruções de agente** — mudança de arquitetura/convenções → atualizar **este** `AGENTS.md` e, se o resumo divergir, `.cursor/rules/project.mdc` / ponteiro em `CLAUDE.md` (sem duplicar o checklist).
+5. **Qualidade de UI** — padrões do projeto (`toastSuccess`/`toast.error`, footer no grid, botões conforme tokens/`project.mdc`).
+6. **Commit** — mensagem no formato do projeto; sem secrets; escopo coerente com a branch.

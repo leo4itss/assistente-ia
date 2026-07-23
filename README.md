@@ -1,11 +1,17 @@
+# [PROTOTIPO] Assistente IA
 
-  # [PROTOTIPO] Assistente IA
+Code bundle for [PROTOTIPO] Assistente IA. Original design: https://www.figma.com/design/C4ECFsdTfqKGQEzeOKJziu/-PROTOTIPO--Assistente-IA.
 
-  This is a code bundle for [PROTOTIPO] Assistente IA. The original project is available at https://www.figma.com/design/C4ECFsdTfqKGQEzeOKJziu/-PROTOTIPO--Assistente-IA.
+## Running the code
 
-  ## Running the code
+```bash
+npm i
+npm run dev
+```
 
-  Run `npm i` to install the dependencies.
+Optional: `npm run build` for a production build.
 
-  Run `npm run dev` to start the development server.
-  
+## Agentes e contribuição
+
+Convenções de desenvolvimento, workflow e Definition of Done: **`AGENTS.md`**.  
+Tokens e design system: **`DESIGN.md`**.

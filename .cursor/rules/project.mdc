@@ -1,103 +1,42 @@
 ---
-description: Regras gerais do projeto assistente-ia (Figma Make / React prototype)
+description: Regras always-on do Cursor para o protótipo Assistente IA (PRIZM)
 globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
 alwaysApply: true
 ---
 
-# Projeto: Assistente IA — PRIZM
+# Cursor — Assistente IA (PRIZM)
 
-Protótipo React navegável gerado via **Figma Make**. Sem router — a troca de telas é feita por renderização condicional em `src/app/App.tsx`.
+**Fonte de verdade:** `AGENTS.md` (regras, convenções, workflow, Definition of Done).  
+Este arquivo é um **resumo always-on** para edições no Cursor. Em conflito, prevalece `AGENTS.md`.
 
-## Stack
+- Tokens → `DESIGN.md`
+- Customização IA (produto) → `docs/capacidades.md`
 
-- React + TypeScript + Vite
-- Tailwind CSS (classes utilitárias inline, sem CSS Modules)
-- Sonner para toasts (`toast.custom()` com UI própria em `src/app/lib/toast.tsx`)
-- shadcn/ui para primitivos em `src/app/components/ui/`
-- `localStorage` + evento DOM `assistants-updated` para estado global
+## Navegação (quente)
 
-## Comandos válidos
-
-```bash
-npm run dev      # dev server
-npm run build    # build de produção (rodar antes de commitar)
-```
-
-Não existe `lint`, `test` ou `preview` — nunca os invoque.
-
-## Arquitetura de navegação
-
-`App.tsx` usa um único `return` com ternário encadeado:
+`App.tsx` (sem router):
 
 ```
 showCreateAssistant → <CreateAssistantScreen>
 showAssistantConfig → <AssistantConfigScreen>
-default             → shell de chat (Sidebar + Header + ChatBar)
+default             → chat (Sidebar + Header + ChatBar)
 ```
 
-A **Customização IA** é `AssistantConfigScreen` (config v3), com sidebar própria e seções:
-
-```
-ASSISTENTE → Persona (identity)
-CATÁLOGO   → Fontes (sources), Capacidades (capabilities)
-PLATAFORMA → Recursos Nativos (builtins), Configurações (config)
-```
-
-O modelo de configuração vive em `src/app/types/assistantConfig.ts` e é persistido em `Assistant.config` (JSON string). Campos legados `resources` / `tools` só entram na leitura/migração.
-
-O `<Toaster>` vive em `App.tsx` e **não** deve ser adicionado em telas individuais.
-
-> Removidos: `ResourcesToolsScreen`, `CustomizationScreen` e o fluxo antigo de abas Recursos | Integrações | Avançado.
-
-## Design system
-
-- `DESIGN.md` é a fonte de verdade para tokens (cores, tipografia, radius, espaçamento)
-- Projeto **dark-first**: `background: #030712`, `surface: #111827`, `primary: #2563eb`
-- Edite `DESIGN.md` primeiro; depois atualize `src/styles/theme-design.css` manualmente
-- Componentes em `src/imports/` carregam hex hardcoded vindos do Figma — consulte `DESIGN.md` antes de alterar
+`AssistantConfigScreen` (v3): Persona | Fontes | Capacidades | Recursos Nativos | Configurações.  
+Config em `Assistant.config` (`types/assistantConfig.ts`). `<Toaster>` só em `App.tsx`.
 
 ## Toasts
 
-Usar sempre `toastSuccess(message)` de `@/app/lib/toast` para toasts de sucesso.
-Usar `toast.error(message)` de `sonner` para erros.
-Nunca usar `toast.success()` diretamente.
+- Sucesso: `toastSuccess` de `@/app/lib/toast`
+- Erro: `toast.error` de `sonner`
+- Nunca `toast.success()`
 
-## Convenções de código
+## Padrões de UI (quente)
 
-- Arquivos de componente: `PascalCase.tsx`
-- shadcn/ui em `src/app/components/ui/`: `kebab-case.tsx`
-- Sem barrel files (`index.ts`) — importar por caminho direto
-- Interface `Assistant` exportada de `src/app/App.tsx`
-- Tipos do config v3 em `src/app/types/assistantConfig.ts`
-- Tipos locais de UI ficam no próprio arquivo de componente
-- Import alias: `@/` → `src/`
-
-## Arquivos que NÃO devem ser editados
-
-| Arquivo / Pasta | Motivo |
-|---|---|
-| `src/imports/` | Auto-gerado pelo Figma Make |
-| `src/assets/` | Hash de conteúdo — renomear quebra imports |
-| `src/styles/theme.css` | Mirror do shadcn default |
-| `src/styles/theme-design.css` | Gerado por `DESIGN.md` |
-| `default_shadcn_theme.css` | Sincronizado com Figma Make |
-| `vite.config.ts` | Contém o resolver `figma:asset/` |
-| `vercel.json` | Config de deploy |
-
-## Formato de commit
-
-```
-feat/fix/chore: descrição em português [claude]
-```
-
-Branch a partir de `dev` (`feat/...` ou ticket). PRs para `main` só em releases estáveis. Documentação de produto da Customização IA: `docs/capacidades.md`.
-
-## Padrões de UI
-
-- Conteúdo + footer da Customização IA: grid `max-w-[640px]` com `px-[32px]` (bordas dos botões alinhadas ao formulário)
-- Footer fixo: **Salvar** à direita; **Excluir assistente** à esquerda **somente** na seção Persona
-- Sidebar da Customização IA: colapsável (`w-[256px]` ↔ `w-0`); botão de expandir no header quando recolhida
-- Modal de exclusão: campo de texto exige digitação exata do nome antes de habilitar o botão
-- Botão destrutivo: `bg-[rgba(248,113,113,0.6)] hover:bg-[rgba(248,113,113,0.8)]`
-- Botão primário: `bg-[#2563eb] hover:bg-[#1d4ed8]`
-- Botão secundário: `bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)]`
+- Grid conteúdo/footer Customização IA: `max-w-[640px]` + `px-[32px]`
+- Footer: **Salvar** à direita; **Excluir assistente** à esquerda **somente** em Persona
+- Sidebar config: colapsável `w-[256px]` ↔ `w-0`; expandir no header quando recolhida
+- Modal de exclusão: digitar o nome exato para habilitar
+- Primário: `bg-[#2563eb] hover:bg-[#1d4ed8]`
+- Secundário: `bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)]`
+- Destrutivo: `bg-[rgba(248,113,113,0.6)] hover:bg-[rgba(248,113,113,0.8)]`
