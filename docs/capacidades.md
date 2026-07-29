@@ -2,6 +2,8 @@
 
 > **Escopo:** documenta a tela atual `AssistantConfigScreen` (Customização IA).  
 > A tela anterior **Resources e Tools / Capacidades** (abas Recursos | Integrações | Avançado) foi **removida**. O arquivo legado `docs/resources-tools.md` está obsoleto.
+>
+> **Microcopy (UI):** textos de produto alinhados ao Figma `[PRIZM] Assistente IA` — página *24.07.2026 - Capacidades* (`node-id=28905-806`). Propriedades, payloads e schemas permanecem com nomes técnicos.
 
 ## Índice
 
@@ -27,13 +29,13 @@ A **Customização IA** é a tela única de configuração do assistente. É abe
 
 O modelo v3 separa:
 
-| Camada | Função |
-|---|---|
-| **Persona** (`identity`) | Quem é o assistente (nome, avatar, personalidade, restrições) |
-| **Fontes** (`sources`) | Fontes de dados e conexões usadas pelas capacidades |
-| **Capacidades** (`capabilities`) | Capacidades do assistente + vínculo com fontes + roteamento + instruções |
-| **Recursos Nativos** (`builtins`) | Recursos da plataforma (ativáveis/desativáveis) |
-| **Configurações** (`config`) | Parâmetros avançados de comportamento, respostas e modelos |
+| Camada | Função | Descrição na UI (header da seção) |
+|---|---|---|
+| **Persona** (`identity`) | Quem é o assistente (nome, avatar, personalidade, restrições) | *Defina quem é o assistente: nome, avatar, personalidade, apresentação e restrições de comportamento.* |
+| **Fontes** (`sources`) | Fontes de dados e conexões usadas pelas capacidades | *Configure as fontes de dados e conexões que podem ser utilizadas pelas capacidades do assistente.* |
+| **Capacidades** (`capabilities`) | Capacidades + vínculo com fontes + roteamento + instruções | *Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.* |
+| **Recursos Nativos** (`builtins`) | Recursos da plataforma (ativáveis/desativáveis) | *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* |
+| **Configurações** (`config`) | Parâmetros avançados de comportamento, respostas e modelos | *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.* |
 
 A configuração completa é um JSON `AssistantConfig` persistido em `assistant.config` (string). Campos legados `resources` / `tools` só entram na leitura/migração.
 
@@ -87,7 +89,8 @@ A configuração completa é um JSON `AssistantConfig` persistido em `assistant.
 ### Abas
 
 - **Dados do assistente** — campos editáveis
-- **Dados do sistema** — somente leitura; descritivo: *Dados gerados e gerenciados automaticamente pela plataforma. Estes campos não podem ser editados.*
+- **Dados do sistema** — somente leitura; descritivo: *Dados gerados e gerenciados automaticamente pela plataforma. Estes campos não podem ser editados.*  
+  Labels dos campos permanecem técnicos (`_ID`, `TENANT_ID`, `AGENT`, `SCHEMA_VERSION`) — metadado de plataforma.
 
 ### Campos (Dados do assistente)
 
@@ -112,7 +115,7 @@ Badges de tipo (português): **DOCUMENTOS**, **BANCO DE DADOS**, **MCP**.
 
 ### Documentos e Acervo
 
-Campos da source:
+Campos da fonte:
 
 | Campo | Obrigatório | Descrição |
 |---|---|---|
@@ -123,11 +126,12 @@ Campos da source:
 
 #### Modal **Acervo de documentos**
 
-Descritivo: *Gerencie os arquivos e links utilizados como fonte de conhecimento pelo assistente.* Metadado separado: **ID da fonte:** `[ID]`.
+- Descritivo: *Gerencie os arquivos e links utilizados como fonte de conhecimento pelo assistente.*
+- Metadado separado: **ID da fonte:** `[ID]` (e rótulo, se houver)
 
 Ordem vertical do conteúdo:
 
-1. Barra de stats (total, arquivo(s), link(s), ready, indexing/queued quando houver, com erro)
+1. Barra de stats (total, arquivo(s), link(s), ready, indexing/queued quando houver, com erro) — labels da barra ainda usam forma `(s)`; o resumo do card em Fontes usa `arquivos · links`
 2. **Adicionar ao acervo** (upload + links) — **acima** da busca
 3. **BUSCAR NO ACERVO** (texto + filtros de tipo e status)
 4. Tabela
@@ -173,7 +177,7 @@ Limite de renderização: 100 linhas visíveis; acima disso a busca/filtro devem
 
 ### Banco de dados
 
-Source de conexão direta ou via MCP:
+Fonte de conexão direta ou via MCP:
 
 | Controle UI | Texto exibido |
 |---|---|
@@ -181,11 +185,12 @@ Source de conexão direta ou via MCP:
 | Toggle introspect | **Inspecionar estrutura** — *Identifique automaticamente a estrutura do banco via MCP.* |
 | Estrutura | **Estrutura do banco (JSON)** — *Preencha este campo quando a estrutura do banco não puder ser identificada automaticamente.* |
 
-Também: string de conexão / host / porta / transport / secret.
+Também: string de conexão / host / porta / transport / secret.  
+Nomes de propriedades no JSON (`use_mcp`, `introspect`, etc.) **não** mudam — só os rótulos da UI.
 
 ### MCP
 
-Source genérica MCP: ID, Rótulo, URL, transport, secret key. Badge **MCP**.
+Fonte genérica MCP: ID, Rótulo, URL, transport, secret key. Badge **MCP**.
 
 ---
 
@@ -202,11 +207,13 @@ Badges do card: **BANCO DE DADOS**, **DOCUMENTOS**, **PESQUISA**, **FAQ**.
 | Campo UI | Descrição |
 |---|---|
 | ID | Identificador semântico da capacidade |
-| Fonte (vínculo) | Select das sources compatíveis; vazio mostra **sem fonte** |
-| Roteamento · descrição | O que o supervisor lê para decidir acionar |
+| Fonte (vínculo) | Select das fontes compatíveis; vazio mostra **sem fonte** |
+| Roteamento · descrição | Texto que orienta quando acionar a capacidade |
 | Roteamento · exemplos (um por linha) | Exemplos de perguntas/temas |
-| Instruções | Instruções do motor |
+| Instruções | Como o assistente deve usar a capacidade |
 | Escopo (schema → tabelas/views) | Só banco — recorte schema/tabelas |
+
+> **Pendente (fora do lote de microcopy Figma):** placeholders e mensagens de validação ainda podem citar termos internos (`source`, `supervisor`, `motor`, `use_mcp`). Labels de campo acima já estão em português de produto.
 
 Empty state: orienta cadastrar fonte em **Fontes** e depois criar a capacidade que faz o **vínculo**.
 
@@ -233,7 +240,7 @@ Compatibilidade de vínculo:
 | Enriquecimento | *Defina a profundidade das respostas e o uso de informações complementares.* |
 | Modelos | *Defina os modelos de IA utilizados para diferentes tipos de tarefa.* |
 
-Campos omitidos usam default da plataforma.
+Labels de campos individuais (`GLOBAL_TEMPERATURE`, `ANSWER_DEPTH`, `MODEL_LARGE`, etc.) permanecem técnicos. Campos omitidos usam default da plataforma.
 
 ---
 
@@ -290,13 +297,31 @@ Query param `?section=` aceita: `identity` | `sources` | `capabilities` | `built
 - Filtro de status lista: todos, ready, indexing, queued, error
 - Extensão/tamanho/URL inválidos vão direto para `error`
 
-### CA-03 — Microcopy Persona / Capacidades / Fontes / Config
+### CA-03 — Microcopy (Figma → UI)
 
-- Persona: *Defina quem é o assistente…*; Restrições: *Defina regras para orientar…*; Dados do sistema: *Dados gerados e gerenciados automaticamente…*
-- Fontes: *Configure as fontes de dados e conexões…*; Acervo: *Gerencie os arquivos e links…*
-- Capacidades: *Configure as capacidades do assistente…*
-- Recursos Nativos / Configurações: descritivos de produto (sem jargão de plataforma)
-- Labels: **Fonte (vínculo)**, **Roteamento · …**, **Escopo (…)**, badges **DOCUMENTOS** / **BANCO DE DADOS** / **PESQUISA**
+Textos de produto obrigatórios na UI:
+
+| Tela | Elemento | Texto esperado |
+|---|---|---|
+| Persona | Restrições | *Defina regras para orientar o que o assistente pode ou não fazer durante as interações.* |
+| Persona | Dados do sistema | *Dados gerados e gerenciados automaticamente pela plataforma. Estes campos não podem ser editados.* |
+| Fontes | Descrição da seção | *Configure as fontes de dados e conexões que podem ser utilizadas pelas capacidades do assistente.* |
+| Fontes › Documentos | Ajuda string de conexão | *Informe a conexão utilizada para armazenar e acessar o conteúdo deste acervo.* |
+| Fontes › Documentos | Bloco acervo | Título **Acervo de documentos**; contagem `N arquivos · M links`; botão **Abrir acervo** |
+| Acervo | Descritivo | *Gerencie os arquivos e links utilizados como fonte de conhecimento pelo assistente.* + **ID da fonte:** `[ID]` |
+| Acervo | Ajuda de URL | *O conteúdo do link será processado e adicionado ao acervo para consulta pelo assistente.* |
+| Acervo | Empty state | *Nenhum arquivo ou link adicionado ao acervo.* |
+| Fontes › Banco | Usar MCP | **Usar MCP** / *Utilize MCP para acessar o banco de dados.* |
+| Fontes › Banco | Inspecionar | **Inspecionar estrutura** / *Identifique automaticamente a estrutura do banco via MCP.* |
+| Fontes › Banco | Estrutura | **Estrutura do banco (JSON)** + ajuda de preenchimento automático |
+| Capacidades | Descrição da seção | *Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.* |
+| Recursos Nativos | Descrição da seção | *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* |
+| Configurações | Descrição da seção | *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.* |
+| Config › Amostragem | Descritivo | *Ajuste o nível de precisão e criatividade das respostas do assistente.* |
+| Config › Enriquecimento | Descritivo | *Defina a profundidade das respostas e o uso de informações complementares.* |
+| Config › Modelos | Título + descritivo | **Modelos** / *Defina os modelos de IA utilizados para diferentes tipos de tarefa.* |
+
+Também: labels **Fonte (vínculo)**, **Roteamento · …**, **Escopo (…)**, badges **DOCUMENTOS** / **BANCO DE DADOS** / **PESQUISA**.
 
 ### CA-04 — Footer e sidebar
 
