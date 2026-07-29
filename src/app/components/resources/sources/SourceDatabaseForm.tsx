@@ -81,16 +81,16 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
           <ToggleSwitch
             checked={source.use_mcp}
             onChange={(v) => update({ use_mcp: v })}
-            label="use_mcp"
-            description="MCP de banco"
+            label="Usar MCP"
+            description="Utilize MCP para acessar o banco de dados."
           />
         </div>
         <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-[10px] p-[12px]">
           <ToggleSwitch
             checked={source.introspect}
             onChange={(v) => update({ introspect: v })}
-            label="introspect"
-            description="schema via MCP"
+            label="Inspecionar estrutura"
+            description="Identifique automaticamente a estrutura do banco via MCP."
           />
         </div>
       </div>
@@ -136,7 +136,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
       {/* Estrutura emulada — usada quando introspect = false */}
       {!source.introspect && (
         <div className="flex flex-col gap-[8px]">
-          <FieldLabel>Estrutura (JSON)</FieldLabel>
+          <FieldLabel>Estrutura do banco (JSON)</FieldLabel>
           <TextareaInput
             value={source.structure}
             onChange={(v) => update({ structure: v })}
@@ -144,7 +144,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
             rows={5}
           />
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-            Deixe em branco se introspect estiver ligado; obrigatório se use_mcp estiver desligado.
+            Preencha este campo quando a estrutura do banco não puder ser identificada automaticamente.
           </p>
           <FieldError message={e("structure")} />
         </div>

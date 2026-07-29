@@ -41,21 +41,23 @@ const SECTION_META: Record<SectionId, { label: string; description: string }> = 
   },
   sources: {
     label: "Fontes",
-    description: "Catálogo físico de conexões. As capacidades é que decidem quando usar cada fonte.",
+    description:
+      "Configure as fontes de dados e conexões que podem ser utilizadas pelas capacidades do assistente.",
   },
   capabilities: {
     label: "Capacidades",
     description:
-      "Opt-in do tenant: se não estiver aqui, o supervisor não enxerga. Vínculo com fonte + roteamento para o supervisor + instruções para o motor.",
+      "Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.",
   },
   builtins: {
     label: "Recursos Nativos",
-    description: "Plataforma (ativo por padrão). Podem ser ativadas/desativadas, mas não removidas nem adicionadas pelo usuário.",
+    description:
+      "Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.",
   },
   config: {
     label: "Configurações",
     description:
-      "Sobrescritas vs Infisical/env. Campos omitidos/null → default da plataforma. Provider/endpoint/credencial Azure não são sobrescrevíveis aqui.",
+      "Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.",
   },
 };
 

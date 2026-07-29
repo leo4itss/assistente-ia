@@ -292,9 +292,11 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
       <div className="flex items-center justify-between px-[32px] py-[16px] border-b border-[rgba(255,255,255,0.1)] shrink-0">
         <div className="flex flex-col gap-[2px] min-w-0">
           <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Acervo de documentos</p>
-          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] truncate">
-            Arquivos e links desta source ·{" "}
-            <span className="text-[#60a5fa]">{source.external_id || source.id}</span>
+          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
+            Gerencie os arquivos e links utilizados como fonte de conhecimento pelo assistente.
+          </p>
+          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px] truncate">
+            ID da fonte: <span className="text-[#60a5fa]">{source.external_id || source.id}</span>
             {source.label ? ` — ${source.label}` : ""}
           </p>
         </div>
@@ -381,7 +383,7 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
                 </button>
               </div>
               <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-                Links passam por extração de conteúdo (web scraping) antes de ir para o RAG.
+                O conteúdo do link será processado e adicionado ao acervo para consulta pelo assistente.
               </p>
             </div>
           </div>
@@ -446,7 +448,7 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
               <div className="flex flex-col items-center gap-[8px] py-[32px]">
                 <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[13px] text-center">
                   {allRows.length === 0
-                    ? "Nenhum arquivo ou link neste acervo ainda."
+                    ? "Nenhum arquivo ou link adicionado ao acervo."
                     : "Nenhum item corresponde à busca/filtro atual."}
                 </p>
                 {allRows.length > 0 && hasActiveFilters && (

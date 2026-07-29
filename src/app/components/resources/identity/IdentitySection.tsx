@@ -79,11 +79,7 @@ export default function IdentitySection({ identity, onChange, errors, assistantI
       {activeTab === "system" && (
         <div className="flex flex-col gap-[16px]">
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
-            Definidos pela plataforma / create — não editáveis na UI de produto (
-            <span className="font-mono text-[#c4b5fd]">_id</span> gerado,{" "}
-            <span className="font-mono text-[#c4b5fd]">tenant_id</span> do host, agent fixo{" "}
-            <span className="font-mono text-[#c4b5fd]">pas_ai</span>,{" "}
-            <span className="font-mono text-[#c4b5fd]">schema_version</span> pelo loader).
+            Dados gerados e gerenciados automaticamente pela plataforma. Estes campos não podem ser editados.
           </p>
           <div className="grid grid-cols-2 gap-[16px]">
             <ReadOnlyField label="_ID" value={assistantId} />
@@ -178,7 +174,7 @@ export default function IdentitySection({ identity, onChange, errors, assistantI
           <div className="flex flex-col gap-[4px]">
             <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[16px]">Restrições</p>
             <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px]">
-              Hoje: soft prompt. Enforcement via rails é um plano separado.
+              Defina regras para orientar o que o assistente pode ou não fazer durante as interações.
             </p>
           </div>
           <button

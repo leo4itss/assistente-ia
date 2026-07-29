@@ -60,7 +60,7 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
         />
         <FieldError message={e("connection_string")} />
         <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-          Conexão física da base de conhecimento (PGVector). O conteúdo do acervo não é definido aqui.
+          Informe a conexão utilizada para armazenar e acessar o conteúdo deste acervo.
         </p>
       </div>
 
@@ -68,9 +68,9 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
 
       <div className="bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px] p-[16px] flex items-center justify-between gap-[16px]">
         <div className="flex flex-col gap-[2px] min-w-0">
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[14px]">Acervo desta source</p>
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[14px]">Acervo de documentos</p>
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] truncate">
-            {source.files.length} arquivo(s) · {source.links.length} link(s)
+            {source.files.length} arquivos · {source.links.length} links
             {errorCount > 0 && ` · ${errorCount} com erro`}
           </p>
         </div>

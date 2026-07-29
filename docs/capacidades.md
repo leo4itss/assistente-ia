@@ -30,10 +30,10 @@ O modelo v3 separa:
 | Camada | Função |
 |---|---|
 | **Persona** (`identity`) | Quem é o assistente (nome, avatar, personalidade, restrições) |
-| **Fontes** (`sources`) | Catálogo físico de conexões (Documentos, Banco, MCP) |
-| **Capacidades** (`capabilities`) | Opt-in semântico: vínculo com uma fonte + roteamento + instruções |
-| **Recursos Nativos** (`builtins`) | Ferramentas da plataforma (ativo por padrão) |
-| **Configurações** (`config`) | Sobrescritas de runtime vs defaults da plataforma |
+| **Fontes** (`sources`) | Fontes de dados e conexões usadas pelas capacidades |
+| **Capacidades** (`capabilities`) | Capacidades do assistente + vínculo com fontes + roteamento + instruções |
+| **Recursos Nativos** (`builtins`) | Recursos da plataforma (ativáveis/desativáveis) |
+| **Configurações** (`config`) | Parâmetros avançados de comportamento, respostas e modelos |
 
 A configuração completa é um JSON `AssistantConfig` persistido em `assistant.config` (string). Campos legados `resources` / `tools` só entram na leitura/migração.
 
@@ -87,7 +87,7 @@ A configuração completa é um JSON `AssistantConfig` persistido em `assistant.
 ### Abas
 
 - **Dados do assistente** — campos editáveis
-- **Dados do sistema** — somente leitura (IDs de plataforma / schema)
+- **Dados do sistema** — somente leitura; descritivo: *Dados gerados e gerenciados automaticamente pela plataforma. Estes campos não podem ser editados.*
 
 ### Campos (Dados do assistente)
 
@@ -98,13 +98,13 @@ A configuração completa é um JSON `AssistantConfig` persistido em `assistant.
 | Descrição da persona | Personalidade, tom de voz, estilo e propósito |
 | Apresentação Resumida | Texto curto de apresentação |
 | Link de Apresentação em Vídeo | URL opcional |
-| Restrições | Cards adicionáveis (título, instrução, resposta padrão, palavras) |
+| Restrições | Cards adicionáveis; descritivo: *Defina regras para orientar o que o assistente pode ou não fazer durante as interações.* |
 
 ---
 
 ## Fontes
 
-**Descrição da seção:** *Catálogo físico de conexões. As capacidades é que decidem quando usar cada fonte.*
+**Descrição da seção:** *Configure as fontes de dados e conexões que podem ser utilizadas pelas capacidades do assistente.*
 
 Botões diretos para adicionar: **Documentos**, **Banco de dados**, **MCP**.
 
@@ -118,10 +118,12 @@ Campos da source:
 |---|---|---|
 | Rótulo | Sim | Nome legível; autopreenche o ID enquanto o ID não for editado manualmente |
 | ID | Sim | Identificador (`external_id`) |
-| String de conexão | Sim | Conexão física da base (PGVector). O conteúdo do acervo **não** é definido neste campo |
-| Acervo desta source | — | Resumo `N arquivo(s) · M link(s)` (+ erros) e botão **Abrir acervo** |
+| String de conexão | Sim | *Informe a conexão utilizada para armazenar e acessar o conteúdo deste acervo.* |
+| Acervo de documentos | — | Resumo `N arquivos · M links` (+ erros) e botão **Abrir acervo** |
 
 #### Modal **Acervo de documentos**
+
+Descritivo: *Gerencie os arquivos e links utilizados como fonte de conhecimento pelo assistente.* Metadado separado: **ID da fonte:** `[ID]`.
 
 Ordem vertical do conteúdo:
 
@@ -133,7 +135,8 @@ Ordem vertical do conteúdo:
 **Adicionar**
 
 - Upload (drag-and-drop ou clique): extensões `pdf, docx, doc, txt, md, csv, xlsx`; até 25MB
-- Link via campo URL + **Adicionar link** (extração/web scraping no fluxo real; no protótipo o pipeline é simulado)
+- Link via campo URL + **Adicionar link**; ajuda: *O conteúdo do link será processado e adicionado ao acervo para consulta pelo assistente.* (no protótipo o pipeline é simulado)
+- Empty state: *Nenhum arquivo ou link adicionado ao acervo.*
 - Validação inválida (extensão, tamanho, URL) → status `error` imediato
 - Itens válidos entram no **topo** da lista
 
@@ -170,7 +173,15 @@ Limite de renderização: 100 linhas visíveis; acima disso a busca/filtro devem
 
 ### Banco de dados
 
-Source de conexão direta ou via MCP (toggle **Usar MCP**), com campos de string de conexão / host / porta / transport / secret e estrutura opcional.
+Source de conexão direta ou via MCP:
+
+| Controle UI | Texto exibido |
+|---|---|
+| Toggle MCP | **Usar MCP** — *Utilize MCP para acessar o banco de dados.* |
+| Toggle introspect | **Inspecionar estrutura** — *Identifique automaticamente a estrutura do banco via MCP.* |
+| Estrutura | **Estrutura do banco (JSON)** — *Preencha este campo quando a estrutura do banco não puder ser identificada automaticamente.* |
+
+Também: string de conexão / host / porta / transport / secret.
 
 ### MCP
 
@@ -180,7 +191,7 @@ Source genérica MCP: ID, Rótulo, URL, transport, secret key. Badge **MCP**.
 
 ## Capacidades
 
-**Descrição da seção:** *Opt-in do tenant: se não estiver aqui, o supervisor não enxerga. Vínculo com fonte + roteamento para o supervisor + instruções para o motor.*
+**Descrição da seção:** *Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.*
 
 Tipos adicionáveis (rótulos PT): **Banco de dados**, **Documentos**, **Pesquisa** (FAQ existe no modelo; fora do fluxo ativo desta etapa).
 
@@ -212,8 +223,17 @@ Compatibilidade de vínculo:
 
 ## Recursos Nativos e Configurações
 
-- **Recursos Nativos:** toggles da plataforma (não removíveis / não adicionáveis pelo usuário).
-- **Configurações:** sobrescritas de temperatura, answer depth, models, etc. Campos omitidos usam default da plataforma.
+**Recursos Nativos** — descrição: *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* Toggles da plataforma (não removíveis / não adicionáveis pelo usuário).
+
+**Configurações** — descrição: *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.*
+
+| Seção | Descritivo na UI |
+|---|---|
+| Amostragem (temperatura) | *Ajuste o nível de precisão e criatividade das respostas do assistente.* |
+| Enriquecimento | *Defina a profundidade das respostas e o uso de informações complementares.* |
+| Modelos | *Defina os modelos de IA utilizados para diferentes tipos de tarefa.* |
+
+Campos omitidos usam default da plataforma.
 
 ---
 
@@ -270,9 +290,12 @@ Query param `?section=` aceita: `identity` | `sources` | `capabilities` | `built
 - Filtro de status lista: todos, ready, indexing, queued, error
 - Extensão/tamanho/URL inválidos vão direto para `error`
 
-### CA-03 — Microcopy Persona / Capacidades / Fontes
+### CA-03 — Microcopy Persona / Capacidades / Fontes / Config
 
-- Descrição de Persona: *Defina quem é o assistente: nome, avatar, personalidade, apresentação e restrições de comportamento.*
+- Persona: *Defina quem é o assistente…*; Restrições: *Defina regras para orientar…*; Dados do sistema: *Dados gerados e gerenciados automaticamente…*
+- Fontes: *Configure as fontes de dados e conexões…*; Acervo: *Gerencie os arquivos e links…*
+- Capacidades: *Configure as capacidades do assistente…*
+- Recursos Nativos / Configurações: descritivos de produto (sem jargão de plataforma)
 - Labels: **Fonte (vínculo)**, **Roteamento · …**, **Escopo (…)**, badges **DOCUMENTOS** / **BANCO DE DADOS** / **PESQUISA**
 
 ### CA-04 — Footer e sidebar
