@@ -266,9 +266,11 @@ Placeholders técnicos (`model_name`, `api_version`) permanecem. Campos omitidos
 
 ## Preview JSON
 
-- Painel lateral (**Ver JSON**) com editor Monaco somente leitura do `AssistantConfig` atual
-- Botão de expandir abre modal em tela cheia
-- Na modal: importar JSON / copiar JSON; importação marca a tela como dirty e pede Salvar
+- Painel lateral (**Ver JSON**) e modal expandida com editor Monaco **editável** do `AssistantConfig` atual
+- Números de linha visíveis no gutter (painel e modal)
+- Edição válida (JSON parseável + schema v3 com `sources`) aplica na config em memória e marca `isDirty`
+- JSON inválido ou fora do schema v3 exibe erro no painel e **não** sobrescreve a config
+- Na modal: importar JSON / copiar JSON; importação e edição pedem **Salvar** para persistir
 
 ---
 

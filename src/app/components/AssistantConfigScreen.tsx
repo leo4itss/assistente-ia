@@ -82,6 +82,8 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const [showJsonModal, setShowJsonModal] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [jsonDraft, setJsonDraft] = useState(() => JSON.stringify(emptyAssistantConfig(), null, 2));
+  const [jsonError, setJsonError] = useState<string | null>(null);
 
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [currentAssistant, setCurrentAssistant] = useState<Assistant | null | undefined>(assistant);
@@ -124,18 +126,19 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
 
   useEffect(() => {
     if (!currentAssistant) return;
-    setConfig(
-      readAssistantConfig({
-        config: currentAssistant.config,
-        resources: currentAssistant.resources,
-        tools: currentAssistant.tools,
-        personaDescription: currentAssistant.personaDescription,
-        name: currentAssistant.name,
-        creativity: currentAssistant.creativity,
-        briefPresentation: currentAssistant.briefPresentation,
-        videoLink: currentAssistant.videoLink,
-      }),
-    );
+    const next = readAssistantConfig({
+      config: currentAssistant.config,
+      resources: currentAssistant.resources,
+      tools: currentAssistant.tools,
+      personaDescription: currentAssistant.personaDescription,
+      name: currentAssistant.name,
+      creativity: currentAssistant.creativity,
+      briefPresentation: currentAssistant.briefPresentation,
+      videoLink: currentAssistant.videoLink,
+    });
+    setConfig(next);
+    setJsonDraft(JSON.stringify(next, null, 2));
+    setJsonError(null);
     setIsDirty(false);
   }, [currentAssistant?.id]);
 
@@ -187,8 +190,41 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
     );
   }
 
+  const applyConfig = (next: AssistantConfig) => {
+    setConfig(next);
+    setJsonDraft(JSON.stringify(next, null, 2));
+    setJsonError(null);
+    setIsDirty(true);
+    setErrors({});
+  };
+
   const patchConfig = (patch: Partial<AssistantConfig>) => {
-    setConfig((prev) => ({ ...prev, ...patch }));
+    setConfig((prev) => {
+      const next = { ...prev, ...patch };
+      setJsonDraft(JSON.stringify(next, null, 2));
+      return next;
+    });
+    setJsonError(null);
+    setIsDirty(true);
+    setErrors({});
+  };
+
+  const handleJsonChange = (value: string | undefined) => {
+    const text = value ?? "";
+    setJsonDraft(text);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      setJsonError("JSON inválido.");
+      return;
+    }
+    if (!parsed || typeof parsed !== "object" || !Array.isArray((parsed as { sources?: unknown }).sources)) {
+      setJsonError("JSON não corresponde ao formato esperado (schema v3).");
+      return;
+    }
+    setJsonError(null);
+    setConfig(readAssistantConfig({ config: text }));
     setIsDirty(true);
     setErrors({});
   };
@@ -282,8 +318,8 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
         toast.error("JSON não corresponde ao formato esperado (schema v3).");
         return;
       }
-      setConfig(readAssistantConfig({ config: text }));
-      setIsDirty(true);
+      const next = readAssistantConfig({ config: text });
+      applyConfig(next);
       toastSuccess("JSON importado. Revise os campos e clique em Salvar.");
     };
     reader.readAsText(file);
@@ -353,7 +389,7 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
   };
 
   const hasErrors = Object.keys(errors).length > 0;
-  const jsonPreview = JSON.stringify(config, null, 2);
+  const jsonPreview = jsonDraft;
 
   return (
     <>
@@ -456,23 +492,31 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
               </button>
             </div>
           </div>
-          <div className="flex-1 min-h-0">
-            <Editor
-              height="100%"
-              defaultLanguage="json"
-              value={jsonPreview}
-              theme="vs-dark"
-              options={{
-                readOnly: true,
-                minimap: { enabled: true },
-                fontSize: 14,
-                lineNumbers: "on",
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                folding: true,
-                padding: { top: 16, bottom: 16 },
-              }}
-            />
+          <div className="flex-1 min-h-0 flex flex-col">
+            {jsonError && (
+              <div className="px-[32px] py-[8px] border-b border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.1)] shrink-0">
+                <p className="font-['Inter:Regular',sans-serif] font-normal text-[#fca5a5] text-[13px]">{jsonError}</p>
+              </div>
+            )}
+            <div className="flex-1 min-h-0">
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={jsonPreview}
+                theme="vs-dark"
+                onChange={handleJsonChange}
+                options={{
+                  readOnly: false,
+                  minimap: { enabled: true },
+                  fontSize: 14,
+                  lineNumbers: "on",
+                  scrollBeyondLastLine: false,
+                  wordWrap: "on",
+                  folding: true,
+                  padding: { top: 16, bottom: 16 },
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -664,20 +708,26 @@ export default function AssistantConfigScreen({ onBack, assistant }: Props) {
                     </svg>
                   </button>
                 </div>
+                {jsonError && (
+                  <div className="px-[12px] py-[6px] border-b border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.1)] shrink-0">
+                    <p className="font-['Inter:Regular',sans-serif] font-normal text-[#fca5a5] text-[11px]">{jsonError}</p>
+                  </div>
+                )}
                 <div className="flex-1 min-h-0">
                   <Editor
                     height="100%"
                     defaultLanguage="json"
                     value={jsonPreview}
                     theme="vs-dark"
+                    onChange={handleJsonChange}
                     options={{
-                      readOnly: true,
+                      readOnly: false,
                       minimap: { enabled: false },
                       fontSize: 12,
-                      lineNumbers: "off",
+                      lineNumbers: "on",
                       scrollBeyondLastLine: false,
                       wordWrap: "on",
-                      renderLineHighlight: "none",
+                      renderLineHighlight: "line",
                       folding: true,
                       padding: { top: 12, bottom: 12 },
                       scrollbar: { vertical: "auto", horizontal: "hidden", verticalScrollbarSize: 4 },
