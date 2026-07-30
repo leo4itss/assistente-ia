@@ -141,8 +141,8 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
       />
 
       <BuiltinCard
-        title="visualization"
-        description="Gráficos via display_chart (rail pós-artifacts)"
+        title="Visualização"
+        description="Gráficos e visualizações de dados"
         enabled={builtins.visualization.enabled}
         onToggle={(v) => onChange({ ...builtins, visualization: { enabled: v } })}
       />

@@ -232,6 +232,12 @@ Compatibilidade de vínculo:
 
 **Recursos Nativos** — descrição: *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* Toggles da plataforma (não removíveis / não adicionáveis pelo usuário).
 
+| Recurso | Título | Descritivo na UI |
+|---|---|---|
+| `knowledge` | knowledge | *Ferramentas genéricas + MCP diversos* |
+| `schedule` | schedule | *Lembretes / agendamentos* |
+| `visualization` | **Visualização** | *Gráficos e visualizações de dados* |
+
 **Configurações** — descrição: *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.*
 
 | Seção | Descritivo na UI |
