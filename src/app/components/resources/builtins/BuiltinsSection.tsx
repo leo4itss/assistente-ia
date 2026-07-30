@@ -27,7 +27,7 @@ function BuiltinCard({
       <div className="flex items-center justify-between px-[20px] py-[18px]">
         <div className="flex items-center gap-[10px]">
           <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[10px] tracking-[0.5px] px-[7px] py-[2px] rounded-[4px] text-[#fbbf24] bg-[rgba(251,191,36,0.15)]">
-            BUILT-IN
+            NATIVO
           </span>
           <div className="flex flex-col">
             <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[15px]">{title}</span>
@@ -52,8 +52,8 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
   return (
     <div className="flex flex-col gap-[16px] w-full">
       <BuiltinCard
-        title="knowledge"
-        description="Ferramentas genéricas + MCP diversos"
+        title="Conhecimento"
+        description="Ferramentas gerais e fontes MCP"
         enabled={builtins.knowledge.enabled}
         onToggle={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, enabled: v } })}
       >
@@ -63,31 +63,31 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
             <CheckboxField
               checked={builtins.knowledge.tools.current_datetime}
               onChange={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, tools: { ...builtins.knowledge.tools, current_datetime: v } } })}
-              label="CURRENT_DATETIME"
+              label="DATA E HORA ATUAL"
             />
             <CheckboxField
               checked={builtins.knowledge.tools.code_execution}
               onChange={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, tools: { ...builtins.knowledge.tools, code_execution: v } } })}
-              label="CODE_EXECUTION"
+              label="EXECUÇÃO DE CÓDIGO"
             />
             <CheckboxField
               checked={builtins.knowledge.tools.fetch_url}
               onChange={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, tools: { ...builtins.knowledge.tools, fetch_url: v } } })}
-              label="FETCH_URL"
+              label="ACESSO A URLS"
             />
             <CheckboxField
               checked={builtins.knowledge.tools.attachments}
               onChange={(v) => onChange({ ...builtins, knowledge: { ...builtins.knowledge, tools: { ...builtins.knowledge.tools, attachments: v } } })}
-              label="ATTACHMENTS"
+              label="ANEXOS"
             />
           </div>
         </div>
 
         <div className="flex flex-col gap-[8px]">
-          <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">MCP_SOURCES</span>
+          <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">Fontes MCP</span>
           <div className="flex flex-wrap gap-[6px] items-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] rounded-[8px] p-[8px] min-h-[36px]">
             {builtins.knowledge.mcp_sources.length === 0 && (
-              <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] px-[4px]">Nenhuma fonte MCP referenciada</span>
+              <span className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[13px] px-[4px]">Nenhuma fonte MCP selecionada</span>
             )}
             {builtins.knowledge.mcp_sources.map((id) => {
               const source = sources.find((s) => s.id === id);
@@ -118,7 +118,7 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
                 defaultValue=""
                 className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.15)] rounded-[8px] h-[32px] px-[10px] text-[#f9fafb] text-[13px] outline-none"
               >
-                <option value="" disabled>Adicionar fonte MCP...</option>
+                <option value="" disabled>Adicionar fonte MCP</option>
                 {availableMcpSources.map((s) => (
                   <option key={s.id} value={s.id} style={{ background: "#111827" }}>
                     {s.label || SOURCE_KIND_LABELS[s.kind]}
@@ -128,14 +128,14 @@ export default function BuiltinsSection({ builtins, onChange, sources }: Props) 
             </div>
           )}
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-            Referencia fontes com kind=mcp cadastradas em "Fontes".
+            Selecione as fontes MCP cadastradas em Fontes.
           </p>
         </div>
       </BuiltinCard>
 
       <BuiltinCard
-        title="schedule"
-        description="Lembretes / agendamentos"
+        title="Agendamentos"
+        description="Lembretes e agendamentos"
         enabled={builtins.schedule.enabled}
         onToggle={(v) => onChange({ ...builtins, schedule: { enabled: v } })}
       />

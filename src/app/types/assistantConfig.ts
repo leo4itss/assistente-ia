@@ -260,9 +260,9 @@ export interface ModelOverride {
 export type AnswerDepth = "concise" | "balanced" | "detailed";
 
 export const ANSWER_DEPTH_LABELS: Record<AnswerDepth, string> = {
-  concise: "concise — só o pedido",
-  balanced: "balanced — contexto moderado",
-  detailed: "detailed — explicação completa",
+  concise: "Concisa — apenas o pedido",
+  balanced: "Equilibrada — Contexto moderado",
+  detailed: "Detalhada — Explicação completa",
 };
 
 export interface AssistantRuntimeConfig {

@@ -234,9 +234,11 @@ Compatibilidade de vínculo:
 
 | Recurso | Título | Descritivo na UI |
 |---|---|---|
-| `knowledge` | knowledge | *Ferramentas genéricas + MCP diversos* |
-| `schedule` | schedule | *Lembretes / agendamentos* |
+| `knowledge` | **Conhecimento** | *Ferramentas gerais e fontes MCP* |
+| `schedule` | **Agendamentos** | *Lembretes e agendamentos* |
 | `visualization` | **Visualização** | *Gráficos e visualizações de dados* |
+
+O badge dos cards exibe **NATIVO**. Em Conhecimento, as ferramentas são **DATA E HORA ATUAL**, **EXECUÇÃO DE CÓDIGO**, **ACESSO A URLS** e **ANEXOS**. O seletor **Fontes MCP** usa o estado vazio *Nenhuma fonte MCP selecionada*, a ação *Adicionar fonte MCP* e a ajuda *Selecione as fontes MCP cadastradas em Fontes.*
 
 **Configurações** — descrição: *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.*
 
@@ -244,9 +246,21 @@ Compatibilidade de vínculo:
 |---|---|
 | Amostragem (temperatura) | *Ajuste o nível de precisão e criatividade das respostas do assistente.* |
 | Enriquecimento | *Defina a profundidade das respostas e o uso de informações complementares.* |
-| Modelos | *Defina os modelos de IA utilizados para diferentes tipos de tarefa.* |
+| Modelos (sobrescrita por categoria) | *Defina os modelos de IA utilizados para diferentes tipos de tarefa.* |
 
-Labels de campos individuais (`GLOBAL_TEMPERATURE`, `ANSWER_DEPTH`, `MODEL_LARGE`, etc.) permanecem técnicos. Campos omitidos usam default da plataforma.
+| Campo | Label na UI |
+|---|---|
+| `global_temperature` | **TEMPERATURA GERAL** |
+| `temperature_decision` | **DECISÃO** — *Decisões, interpretação de intenção e consultas* |
+| `temperature_generation` | **GERAÇÃO** — *Geração e síntese de conteúdo* |
+| `temperature_creative` | **CRIATIVO** — *Exploração de respostas mais variadas e criativas* |
+| `answer_depth` | **Profundidade da resposta** — Concisa / Equilibrada / Detalhada |
+| `insight_enrichment_enabled` | **Enriquecimento de insights** — *Adiciona insights complementares à resposta* |
+| `model_large` | **Modelo principal** / **Versão do modelo principal** |
+| `model_small` | **Modelo leve** / **Versão do modelo leve** |
+| `model_coding` | **Modelo para código** / **Versão do modelo para código** |
+
+Placeholders técnicos (`model_name`, `api_version`) permanecem. Campos omitidos usam default da plataforma.
 
 ---
 
@@ -323,9 +337,9 @@ Textos de produto obrigatórios na UI:
 | Capacidades | Descrição da seção | *Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.* |
 | Recursos Nativos | Descrição da seção | *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* |
 | Configurações | Descrição da seção | *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.* |
-| Config › Amostragem | Descritivo | *Ajuste o nível de precisão e criatividade das respostas do assistente.* |
-| Config › Enriquecimento | Descritivo | *Defina a profundidade das respostas e o uso de informações complementares.* |
-| Config › Modelos | Título + descritivo | **Modelos** / *Defina os modelos de IA utilizados para diferentes tipos de tarefa.* |
+| Config › Amostragem | Descritivo + labels | *Ajuste o nível…*; **TEMPERATURA GERAL**; DECISÃO / GERAÇÃO / CRIATIVO com descritivos de produto |
+| Config › Enriquecimento | Labels | **Profundidade da resposta**; **Enriquecimento de insights** / *Adiciona insights complementares à resposta* |
+| Config › Modelos | Título + labels | **Modelos (sobrescrita por categoria)**; Modelo principal / leve / para código (+ versões) |
 
 Também: labels **Fonte (vínculo)**, **Roteamento · …**, **Escopo (…)**, badges **DOCUMENTOS** / **BANCO DE DADOS** / **PESQUISA**.
 
