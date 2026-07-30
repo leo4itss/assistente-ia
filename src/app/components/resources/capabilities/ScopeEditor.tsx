@@ -60,7 +60,7 @@ export default function ScopeEditor({ scope, onChange }: Props) {
         <svg className="size-[14px] shrink-0" fill="none" viewBox="0 0 14 14">
           <path d="M7 2.333v9.334M2.333 7h9.334" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33" />
         </svg>
-        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">+ Schema</span>
+        <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">Schema</span>
       </button>
     </div>
   );

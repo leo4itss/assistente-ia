@@ -82,15 +82,15 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
             checked={source.use_mcp}
             onChange={(v) => update({ use_mcp: v })}
             label="Usar MCP"
-            description="Utilize MCP para acessar o banco de dados."
+            description="Acessar o banco via MCP"
           />
         </div>
         <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-[10px] p-[12px]">
           <ToggleSwitch
             checked={source.introspect}
             onChange={(v) => update({ introspect: v })}
-            label="Inspecionar estrutura"
-            description="Identifique automaticamente a estrutura do banco via MCP."
+            label="Detectar estrutura"
+            description="Identificar schema via MCP"
           />
         </div>
       </div>
@@ -121,7 +121,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
               />
             </div>
             <div className="flex flex-col gap-[8px]">
-              <FieldLabel>Chave secreta</FieldLabel>
+              <FieldLabel>API Key</FieldLabel>
               <PasswordInput
                 value={source.mcp_secret_key}
                 onChange={(v) => update({ mcp_secret_key: v })}
@@ -144,7 +144,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
             rows={5}
           />
           <p className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
-            Preencha este campo quando a estrutura do banco não puder ser identificada automaticamente.
+            Informe a estrutura do banco quando a inspeção automática não estiver habilitada.
           </p>
           <FieldError message={e("structure")} />
         </div>

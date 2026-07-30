@@ -76,7 +76,7 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
           <FieldError message={e("transport")} />
         </div>
         <div className="flex flex-col gap-[8px]">
-          <FieldLabel>Chave secreta</FieldLabel>
+          <FieldLabel>API Key</FieldLabel>
           <PasswordInput
             value={source.secret_key}
             onChange={(v) => update({ secret_key: v })}

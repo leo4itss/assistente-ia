@@ -181,16 +181,16 @@ Fonte de conexão direta ou via MCP:
 
 | Controle UI | Texto exibido |
 |---|---|
-| Toggle MCP | **Usar MCP** — *Utilize MCP para acessar o banco de dados.* |
-| Toggle introspect | **Inspecionar estrutura** — *Identifique automaticamente a estrutura do banco via MCP.* |
-| Estrutura | **Estrutura do banco (JSON)** — *Preencha este campo quando a estrutura do banco não puder ser identificada automaticamente.* |
+| Toggle MCP | **Usar MCP** — *Acessar o banco via MCP* |
+| Toggle introspect | **Detectar estrutura** — *Identificar schema via MCP* |
+| Estrutura | **Estrutura do banco (JSON)** — *Informe a estrutura do banco quando a inspeção automática não estiver habilitada.* |
 
-Também: string de conexão / host / porta / transport / secret.  
+Também: string de conexão / host / porta / transport / **API Key**.  
 Nomes de propriedades no JSON (`use_mcp`, `introspect`, etc.) **não** mudam — só os rótulos da UI.
 
 ### MCP
 
-Fonte genérica MCP: ID, Rótulo, URL, transport, secret key. Badge **MCP**.
+Fonte genérica MCP: ID, Rótulo, URL, transport, **API Key**. Badge **MCP**.
 
 ---
 
@@ -331,9 +331,9 @@ Textos de produto obrigatórios na UI:
 | Acervo | Descritivo | *Gerencie os arquivos e links utilizados como fonte de conhecimento pelo assistente.* + **ID da fonte:** `[ID]` |
 | Acervo | Ajuda de URL | *O conteúdo do link será processado e adicionado ao acervo para consulta pelo assistente.* |
 | Acervo | Empty state | *Nenhum arquivo ou link adicionado ao acervo.* |
-| Fontes › Banco | Usar MCP | **Usar MCP** / *Utilize MCP para acessar o banco de dados.* |
-| Fontes › Banco | Inspecionar | **Inspecionar estrutura** / *Identifique automaticamente a estrutura do banco via MCP.* |
-| Fontes › Banco | Estrutura | **Estrutura do banco (JSON)** + ajuda de preenchimento automático |
+| Fontes › Banco | Usar MCP | **Usar MCP** / *Acessar o banco via MCP* |
+| Fontes › Banco | Detectar estrutura | **Detectar estrutura** / *Identificar schema via MCP* |
+| Fontes › Banco | Estrutura | **Estrutura do banco (JSON)** / *Informe a estrutura do banco quando a inspeção automática não estiver habilitada.* |
 | Capacidades | Descrição da seção | *Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.* |
 | Recursos Nativos | Descrição da seção | *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* |
 | Configurações | Descrição da seção | *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.* |
