@@ -81,19 +81,30 @@ function RowCheckbox({
   onChange: () => void;
   "aria-label": string;
 }) {
-  const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (ref.current) ref.current.indeterminate = indeterminate;
-  }, [indeterminate]);
+  const active = checked || indeterminate;
   return (
-    <input
-      ref={ref}
-      type="checkbox"
-      checked={checked}
-      onChange={onChange}
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={indeterminate ? "mixed" : checked}
       aria-label={ariaLabel}
-      className="size-[15px] accent-[#2563eb] cursor-pointer"
-    />
+      onClick={onChange}
+      className={`flex items-center justify-center size-[16px] rounded-[4px] border transition-colors shrink-0 ${
+        active
+          ? "bg-[#2563eb] border-[#2563eb]"
+          : "bg-transparent border-[rgba(255,255,255,0.25)] hover:border-[rgba(255,255,255,0.4)]"
+      }`}
+    >
+      {indeterminate ? (
+        <svg className="size-[10px]" fill="none" viewBox="0 0 10 10" aria-hidden>
+          <path d="M2 5h6" stroke="#F9FAFB" strokeLinecap="round" strokeWidth="1.5" />
+        </svg>
+      ) : checked ? (
+        <svg className="size-[10px]" fill="none" viewBox="0 0 10 10" aria-hidden>
+          <path d="M2 5.2L4.2 7.4 8 2.8" stroke="#F9FAFB" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+        </svg>
+      ) : null}
+    </button>
   );
 }
 
