@@ -1,5 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import { TextInput } from "@/app/components/resources/fields/Fields";
+import { toastSuccess } from "@/app/lib/toast";
 import type {
   SourceDocuments,
   DocumentFile,
@@ -64,6 +66,37 @@ function estimateLinkChunks() {
 
 type Row = { kind: "file"; item: DocumentFile } | { kind: "link"; item: DocumentLink };
 
+function rowKey(row: Row) {
+  return `${row.kind}:${row.item.id}`;
+}
+
+function RowCheckbox({
+  checked,
+  indeterminate = false,
+  onChange,
+  "aria-label": ariaLabel,
+}: {
+  checked: boolean;
+  indeterminate?: boolean;
+  onChange: () => void;
+  "aria-label": string;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      aria-label={ariaLabel}
+      className="size-[15px] accent-[#2563eb] cursor-pointer"
+    />
+  );
+}
+
 function StatusBadge({ status }: { status: DocumentStatus }) {
   const style = STATUS_STYLE[status];
   return (
@@ -111,6 +144,8 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
   const [dragOver, setDragOver] = useState(false);
   /** Mais recentes no topo por padrão. */
   const [updatedSort, setUpdatedSort] = useState<"desc" | "asc">("desc");
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() => new Set());
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
 
   const files = source.files;
   const links = source.links;
@@ -248,6 +283,29 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
     scheduledRef.current.delete(`${row.kind}:${row.item.id}:indexing`);
     if (row.kind === "file") setFiles(files.filter((f) => f.id !== row.item.id));
     else setLinks(links.filter((l) => l.id !== row.item.id));
+    setSelectedKeys((prev) => {
+      const next = new Set(prev);
+      next.delete(rowKey(row));
+      return next;
+    });
+  };
+
+  const removeRows = (rows: Row[]) => {
+    const fileIds = new Set(rows.filter((r) => r.kind === "file").map((r) => r.item.id));
+    const linkIds = new Set(rows.filter((r) => r.kind === "link").map((r) => r.item.id));
+    for (const row of rows) {
+      scheduledRef.current.delete(`${row.kind}:${row.item.id}:queued`);
+      scheduledRef.current.delete(`${row.kind}:${row.item.id}:indexing`);
+    }
+    onChange({
+      ...source,
+      files: files.filter((f) => !fileIds.has(f.id)),
+      links: links.filter((l) => !linkIds.has(l.id)),
+    });
+    setSelectedKeys(new Set());
+    setShowBulkDeleteConfirm(false);
+    const n = rows.length;
+    toastSuccess(n === 1 ? "1 item removido do acervo." : `${n} itens removidos do acervo.`);
   };
 
   const allRows: Row[] = useMemo(
@@ -277,6 +335,51 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
 
   const visible = filtered.slice(0, VISIBLE_CAP);
 
+  const visibleKeys = useMemo(() => visible.map(rowKey), [visible]);
+  const selectedVisibleCount = visibleKeys.filter((k) => selectedKeys.has(k)).length;
+  const allVisibleSelected = visible.length > 0 && selectedVisibleCount === visible.length;
+  const someVisibleSelected = selectedVisibleCount > 0 && !allVisibleSelected;
+
+  useEffect(() => {
+    setSelectedKeys(new Set());
+  }, [search, typeFilter, statusFilter, updatedSort]);
+
+  const toggleRowSelected = (key: string) => {
+    setSelectedKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const toggleSelectAllVisible = () => {
+    setSelectedKeys((prev) => {
+      if (allVisibleSelected) {
+        const next = new Set(prev);
+        visibleKeys.forEach((k) => next.delete(k));
+        return next;
+      }
+      const next = new Set(prev);
+      visibleKeys.forEach((k) => next.add(k));
+      return next;
+    });
+  };
+
+  const selectedRows = useMemo(
+    () => allRows.filter((row) => selectedKeys.has(rowKey(row))),
+    [allRows, selectedKeys],
+  );
+
+  const confirmBulkDelete = () => {
+    if (selectedRows.length === 0) {
+      toast.error("Nenhum item selecionado.");
+      setShowBulkDeleteConfirm(false);
+      return;
+    }
+    removeRows(selectedRows);
+  };
+
   const hasActiveFilters = search !== "" || typeFilter !== "all" || statusFilter !== "all";
   const clearFilters = () => {
     setSearch("");
@@ -284,7 +387,7 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
     setStatusFilter("all");
   };
 
-  const gridCols = "grid-cols-[64px_1fr_80px_110px_70px_100px_36px]";
+  const gridCols = "grid-cols-[36px_64px_1fr_80px_110px_70px_100px_36px]";
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col bg-[#030712]">
@@ -419,8 +522,40 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
           </div>
 
           {/* Tabela */}
+          <div className="flex flex-col gap-[12px]">
+            {selectedKeys.size > 0 && (
+              <div className="flex items-center justify-between gap-[12px] bg-[#111827] border border-[rgba(255,255,255,0.1)] rounded-[10px] px-[16px] py-[10px]">
+                <p className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">
+                  {selectedKeys.size === 1
+                    ? "1 item selecionado"
+                    : `${selectedKeys.size} itens selecionados`}
+                  {filtered.length > VISIBLE_CAP && (
+                    <span className="font-['Inter:Regular',sans-serif] font-normal text-[#6b7280] text-[12px]">
+                      {" "}
+                      (apenas entre os {VISIBLE_CAP} visíveis)
+                    </span>
+                  )}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowBulkDeleteConfirm(true)}
+                  className="bg-[rgba(248,113,113,0.6)] hover:bg-[rgba(248,113,113,0.8)] flex h-[32px] items-center justify-center px-[14px] rounded-[8px] transition-colors shrink-0"
+                >
+                  <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px]">
+                    Excluir selecionados
+                  </span>
+                </button>
+              </div>
+            )}
+
           <div className="border border-[rgba(255,255,255,0.1)] rounded-[10px] overflow-hidden">
-            <div className={`grid ${gridCols} gap-[12px] px-[16px] py-[10px] bg-[rgba(255,255,255,0.03)] border-b border-[rgba(255,255,255,0.08)]`}>
+            <div className={`grid ${gridCols} gap-[12px] px-[16px] py-[10px] bg-[rgba(255,255,255,0.03)] border-b border-[rgba(255,255,255,0.08)] items-center`}>
+              <RowCheckbox
+                checked={allVisibleSelected}
+                indeterminate={someVisibleSelected}
+                onChange={toggleSelectAllVisible}
+                aria-label="Selecionar todos os itens visíveis"
+              />
               {["Tipo", "Nome / URL", "Tamanho", "Status", "Chunks"].map((h) => (
                 <span key={h} className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#6b7280] text-[11px] tracking-[0.5px]">
                   {h}
@@ -461,11 +596,19 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
                 )}
               </div>
             ) : (
-              visible.map((row) => (
+              visible.map((row) => {
+                const key = rowKey(row);
+                const isSelected = selectedKeys.has(key);
+                return (
                 <div
-                  key={row.item.id}
-                  className={`grid ${gridCols} gap-[12px] px-[16px] py-[10px] items-center border-b border-[rgba(255,255,255,0.05)] last:border-b-0 hover:bg-[rgba(255,255,255,0.02)]`}
+                  key={key}
+                  className={`grid ${gridCols} gap-[12px] px-[16px] py-[10px] items-center border-b border-[rgba(255,255,255,0.05)] last:border-b-0 hover:bg-[rgba(255,255,255,0.02)] ${isSelected ? "bg-[rgba(37,99,235,0.06)]" : ""}`}
                 >
+                  <RowCheckbox
+                    checked={isSelected}
+                    onChange={() => toggleRowSelected(key)}
+                    aria-label={`Selecionar ${row.kind === "file" ? row.item.name : row.item.url}`}
+                  />
                   <TypeBadge kind={row.kind} />
                   <div className="min-w-0 flex flex-col">
                     <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[13px] truncate">
@@ -499,7 +642,8 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
                     </svg>
                   </button>
                 </div>
-              ))
+                );
+              })
             )}
 
             {filtered.length > VISIBLE_CAP && (
@@ -508,8 +652,43 @@ export default function AcervoModal({ source, onChange, onClose }: Props) {
               </p>
             )}
           </div>
+          </div>
         </div>
       </div>
+
+      {showBulkDeleteConfirm && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setShowBulkDeleteConfirm(false)} aria-hidden="true" />
+          <div className="bg-[#111827] flex flex-col gap-[24px] items-stretch p-[24px] relative rounded-[10px] w-full max-w-[425px] shadow-xl z-10">
+            <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[10px]" />
+            <div className="flex flex-col gap-[12px]">
+              <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[18px]">
+                Excluir {selectedRows.length === 1 ? "1 item" : `${selectedRows.length} itens`}?
+              </p>
+              <p className="font-['Inter:Regular',sans-serif] font-normal text-[#9ca3af] text-[14px] leading-[20px]">
+                Esta ação remove {selectedRows.length === 1 ? "o item selecionado" : "os itens selecionados"} do acervo desta fonte.
+              </p>
+            </div>
+            <div className="h-px w-full bg-[rgba(255,255,255,0.1)]" />
+            <div className="flex gap-[8px] items-center justify-end w-full">
+              <button
+                type="button"
+                onClick={() => setShowBulkDeleteConfirm(false)}
+                className="bg-[rgba(255,255,255,0.05)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] hover:bg-[rgba(255,255,255,0.1)] transition-colors"
+              >
+                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Cancelar</span>
+              </button>
+              <button
+                type="button"
+                onClick={confirmBulkDelete}
+                className="bg-[rgba(248,113,113,0.6)] hover:bg-[rgba(248,113,113,0.8)] flex h-[36px] items-center justify-center px-[16px] rounded-[8px] transition-colors"
+              >
+                <span className="font-['Inter:Medium',sans-serif] font-medium text-[#f9fafb] text-[14px]">Excluir</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

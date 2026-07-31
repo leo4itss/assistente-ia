@@ -180,6 +180,7 @@ No protótipo o avanço `queued → indexing → ready` é simulado no cliente (
 
 | Coluna | Comportamento |
 |---|---|
+| Seleção | Checkbox por linha; no cabeçalho seleciona/desseleciona todos os **itens visíveis** (filtro ativo ∩ limite 100) |
 | Tipo | FILE / LINK |
 | Nome / URL | Nome do arquivo ou URL |
 | Tamanho | Arquivos; links exibem `—` |
@@ -188,6 +189,14 @@ No protótipo o avanço `queued → indexing → ready` é simulado no cliente (
 | Atualizado | Data; botão de ordenação ao lado do título (padrão: mais recentes primeiro) |
 
 Limite de renderização: 100 linhas visíveis; acima disso a busca/filtro devem ser refinados.
+
+**Exclusão em massa (protótipo, estado local)**
+
+- Com 1+ itens selecionados: barra **N item(ns) selecionado(s)** + **Excluir selecionados**
+- Modal de confirmação com a quantidade; Cancelar / Excluir
+- Remove de `files`/`links` de uma vez; limpa a seleção; `toastSuccess`
+- Exclusão unitária (ícone lixeira) permanece imediata, sem modal
+- Sem API de bulk delete — só filtragem local até existir back-end
 
 ### Banco de dados
 
