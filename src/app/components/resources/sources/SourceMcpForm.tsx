@@ -6,8 +6,10 @@ import {
   PasswordInput,
   SelectInput,
 } from "@/app/components/resources/fields/Fields";
+import TestConnectionButton from "@/app/components/resources/sources/TestConnectionButton";
 import { slugifyLabel } from "@/app/lib/slug";
-import type { SourceMcp, SourceTransport, ValidationErrors } from "@/app/types/assistantConfig";
+import { untestedConnectionMeta } from "@/app/lib/testSourceConnection";
+import type { SourceMcp, SourceTransport, SourceConnectionMeta, ValidationErrors } from "@/app/types/assistantConfig";
 
 interface Props {
   source: SourceMcp;
@@ -27,6 +29,9 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
   const [idTouched, setIdTouched] = useState(!!source.external_id);
   const e = (f: string) => errors[`${errorPrefix}.${f}`];
   const update = (patch: Partial<SourceMcp>) => onChange({ ...source, ...patch });
+  const updateCredentials = (patch: Partial<SourceMcp>) =>
+    onChange({ ...source, ...patch, ...untestedConnectionMeta() });
+  const applyTestResult = (meta: SourceConnectionMeta) => onChange({ ...source, ...meta });
 
   const handleLabelChange = (label: string) => {
     if (idTouched) {
@@ -60,7 +65,7 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
 
       <div className="flex flex-col gap-[8px]">
         <FieldLabel required>URL</FieldLabel>
-        <TextInput value={source.url} onChange={(v) => update({ url: v })} placeholder="https://mcp.example.com/jira/sse" />
+        <TextInput value={source.url} onChange={(v) => updateCredentials({ url: v })} placeholder="https://mcp.example.com/jira/sse" />
         <FieldError message={e("url")} />
       </div>
 
@@ -69,7 +74,7 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
           <FieldLabel required>Transporte</FieldLabel>
           <SelectInput
             value={source.transport}
-            onChange={(v) => update({ transport: v as SourceTransport })}
+            onChange={(v) => updateCredentials({ transport: v as SourceTransport })}
             options={TRANSPORT_OPTIONS}
             placeholder="Selecione..."
           />
@@ -79,12 +84,14 @@ export default function SourceMcpForm({ source, onChange, errors, errorPrefix }:
           <FieldLabel>API Key</FieldLabel>
           <PasswordInput
             value={source.secret_key}
-            onChange={(v) => update({ secret_key: v })}
+            onChange={(v) => updateCredentials({ secret_key: v })}
             placeholder="sk-..."
             hasValue={!!source.secret_key}
           />
         </div>
       </div>
+
+      <TestConnectionButton source={source} onResult={applyTestResult} />
     </div>
   );
 }

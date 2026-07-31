@@ -1,10 +1,28 @@
 import { useState } from "react";
-import type { Source, SourceKind } from "@/app/types/assistantConfig";
+import type { Source, SourceKind, SourceConnectionStatus } from "@/app/types/assistantConfig";
 
 const KIND_BADGE: Record<SourceKind, { label: string; color: string; bg: string }> = {
   documents: { label: "DOCUMENTOS", color: "#93c5fd", bg: "rgba(37,99,235,0.15)" },
   database: { label: "BANCO DE DADOS", color: "#6ee7b7", bg: "rgba(16,185,129,0.15)" },
   mcp: { label: "MCP", color: "#c4b5fd", bg: "rgba(139,92,246,0.15)" },
+};
+
+const CONNECTION_BADGE: Record<
+  Exclude<SourceConnectionStatus, "untested">,
+  { label: string; color: string; bg: string; title: string }
+> = {
+  connected: {
+    label: "CONECTADO",
+    color: "#6ee7b7",
+    bg: "rgba(16,185,129,0.15)",
+    title: "Último teste de conexão bem-sucedido",
+  },
+  failed: {
+    label: "FALHA",
+    color: "#fca5a5",
+    bg: "rgba(248,113,113,0.15)",
+    title: "Último teste de conexão falhou",
+  },
 };
 
 interface SourceCardProps {
@@ -20,12 +38,15 @@ interface SourceCardProps {
 export default function SourceCard({ source, usedByCount = 0, expanded, onToggle, onDelete, children }: SourceCardProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const badge = KIND_BADGE[source.kind];
+  const connectionBadge =
+    source.connection_status && source.connection_status !== "untested"
+      ? CONNECTION_BADGE[source.connection_status]
+      : null;
 
   return (
     <div className="bg-[#111827] relative rounded-[14px] w-full">
       <div aria-hidden="true" className="absolute border border-[rgba(255,255,255,0.1)] border-solid inset-0 pointer-events-none rounded-[14px]" />
 
-      {/* Header (clicável para expandir/colapsar) */}
       <div className="flex items-center gap-[12px] px-[20px] py-[14px]">
         <button
           onClick={onToggle}
@@ -67,6 +88,16 @@ export default function SourceCard({ source, usedByCount = 0, expanded, onToggle
           )}
         </button>
 
+        {connectionBadge && (
+          <span
+            className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[10px] tracking-[0.5px] px-[8px] py-[3px] rounded-[4px] shrink-0"
+            style={{ color: connectionBadge.color, backgroundColor: connectionBadge.bg }}
+            title={source.connection_error || connectionBadge.title}
+          >
+            {connectionBadge.label}
+          </span>
+        )}
+
         {usedByCount > 0 && (
           <span
             className="font-['Inter:Medium',sans-serif] font-medium text-[#9ca3af] text-[12px] px-[8px] py-[3px] rounded-full bg-[rgba(255,255,255,0.05)] shrink-0"
@@ -107,7 +138,6 @@ export default function SourceCard({ source, usedByCount = 0, expanded, onToggle
         </div>
       </div>
 
-      {/* Body */}
       {expanded && (
         <div className="px-[20px] pb-[20px] pt-[4px] border-t border-[rgba(255,255,255,0.08)]">
           <div className="pt-[16px]">{children}</div>

@@ -11,6 +11,7 @@ import type {
   SourceMcp,
   ValidationErrors,
 } from "@/app/types/assistantConfig";
+import { DEFAULT_CONNECTION_META } from "@/app/types/assistantConfig";
 
 function newId() {
   return Math.random().toString(36).slice(2);
@@ -18,7 +19,16 @@ function newId() {
 
 export function createSource(kind: SourceKind): Source {
   if (kind === "documents") {
-    const s: SourceDocuments = { id: newId(), kind: "documents", external_id: "", label: "", connection_string: "", files: [], links: [] };
+    const s: SourceDocuments = {
+      id: newId(),
+      kind: "documents",
+      external_id: "",
+      label: "",
+      connection_string: "",
+      files: [],
+      links: [],
+      ...DEFAULT_CONNECTION_META,
+    };
     return s;
   }
   if (kind === "database") {
@@ -35,10 +45,20 @@ export function createSource(kind: SourceKind): Source {
       mcp_transport: "",
       mcp_secret_key: "",
       structure: "",
+      ...DEFAULT_CONNECTION_META,
     };
     return s;
   }
-  const s: SourceMcp = { id: newId(), kind: "mcp", external_id: "", label: "", url: "", transport: "", secret_key: "" };
+  const s: SourceMcp = {
+    id: newId(),
+    kind: "mcp",
+    external_id: "",
+    label: "",
+    url: "",
+    transport: "",
+    secret_key: "",
+    ...DEFAULT_CONNECTION_META,
+  };
   return s;
 }
 

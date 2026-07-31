@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { FieldLabel, FieldError, TextInput, PasswordInput } from "@/app/components/resources/fields/Fields";
 import AcervoModal from "@/app/components/resources/sources/AcervoModal";
+import TestConnectionButton from "@/app/components/resources/sources/TestConnectionButton";
 import { slugifyLabel } from "@/app/lib/slug";
-import type { SourceDocuments, ValidationErrors } from "@/app/types/assistantConfig";
+import { untestedConnectionMeta } from "@/app/lib/testSourceConnection";
+import type { SourceDocuments, SourceConnectionMeta, ValidationErrors } from "@/app/types/assistantConfig";
 
 interface Props {
   source: SourceDocuments;
@@ -16,6 +18,8 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
   const [idTouched, setIdTouched] = useState(!!source.external_id);
   const e = (f: string) => errors[`${errorPrefix}.${f}`];
   const update = (patch: Partial<SourceDocuments>) => onChange({ ...source, ...patch });
+  const updateCredentials = (patch: Partial<SourceDocuments>) =>
+    onChange({ ...source, ...patch, ...untestedConnectionMeta() });
 
   const handleLabelChange = (label: string) => {
     if (idTouched) {
@@ -24,6 +28,8 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
       update({ label, external_id: slugifyLabel(label) });
     }
   };
+
+  const applyTestResult = (meta: SourceConnectionMeta) => onChange({ ...source, ...meta });
 
   const errorCount =
     source.files.filter((f) => f.status === "error").length + source.links.filter((l) => l.status === "error").length;
@@ -54,7 +60,7 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
         <FieldLabel required>String de conexão</FieldLabel>
         <PasswordInput
           value={source.connection_string}
-          onChange={(v) => update({ connection_string: v })}
+          onChange={(v) => updateCredentials({ connection_string: v })}
           placeholder="postgresql://user:pass@host:5432/pas_file_processor"
           hasValue={!!source.connection_string}
         />
@@ -63,6 +69,8 @@ export default function SourceDocumentsForm({ source, onChange, errors, errorPre
           Informe a conexão utilizada para armazenar e acessar o conteúdo deste acervo.
         </p>
       </div>
+
+      <TestConnectionButton source={source} onResult={applyTestResult} />
 
       <div className="h-px bg-[rgba(255,255,255,0.08)] w-full" />
 

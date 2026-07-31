@@ -113,6 +113,20 @@ Botões diretos para adicionar: **Documentos**, **Banco de dados**, **MCP**.
 
 Badges de tipo (português): **DOCUMENTOS**, **BANCO DE DADOS**, **MCP**.
 
+### Teste de conexão (protótipo)
+
+Botão manual **Testar conexão** nos formulários de Documentos, Banco de dados e MCP. O Salvar **não** exige teste prévio.
+
+| Estado | Badge no card | Feedback |
+|---|---|---|
+| Nunca testou / credenciais alteradas | (sem badge) | — |
+| Sucesso | **CONECTADO** | `toastSuccess` *Conexão testada com sucesso.* |
+| Falha | **FALHA** | `toast.error` com a mensagem |
+
+Campos no `Source`: `connection_status` (`untested` \| `connected` \| `failed`), `connection_tested_at`, `connection_error`.
+
+**Mock (sem back-end):** delay ~900ms; falha se campos obrigatórios vazios; falha se algum campo de conexão contém a substring `fail` (case-insensitive) — útil para demo; caso contrário sucesso. Trocar o mock por endpoint real quando existir.
+
 ### Documentos e Acervo
 
 Campos da fonte:

@@ -18,6 +18,23 @@ export type SourceKind = "documents" | "database" | "mcp";
 export type DatabaseType = "postgresql" | "mysql" | "sqlserver";
 export type SourceTransport = "sse" | "stdio" | "http" | "websocket";
 
+/** Resultado do teste de conexão da fonte (protótipo — mock; não é health real). */
+export type SourceConnectionStatus = "untested" | "connected" | "failed";
+
+export interface SourceConnectionMeta {
+  connection_status: SourceConnectionStatus;
+  /** ISO timestamp do último teste; null se nunca testou. */
+  connection_tested_at: string | null;
+  /** Mensagem de erro do último teste (quando failed). */
+  connection_error: string | null;
+}
+
+export const DEFAULT_CONNECTION_META: SourceConnectionMeta = {
+  connection_status: "untested",
+  connection_tested_at: null,
+  connection_error: null,
+};
+
 /**
  * Ciclo de vida do item no acervo (espelha o pipeline de indexação):
  * queued → indexing → ready | error
@@ -53,7 +70,7 @@ export interface DocumentLink {
 }
 
 /** Source de documentos — base de RAG (upload de arquivos e/ou links; extração no back-end). */
-export interface SourceDocuments {
+export interface SourceDocuments extends SourceConnectionMeta {
   id: string;
   kind: "documents";
   /** Identificador legível da source (ex.: "docnix_rag") — distinto do `id` interno. */
@@ -65,7 +82,7 @@ export interface SourceDocuments {
 }
 
 /** Source de banco de dados — conexão direta ou via MCP com introspecção. */
-export interface SourceDatabase {
+export interface SourceDatabase extends SourceConnectionMeta {
   id: string;
   kind: "database";
   label: string;
@@ -83,7 +100,7 @@ export interface SourceDatabase {
 }
 
 /** Source MCP — conexão via camada MCP (tools genéricas / conhecimento). */
-export interface SourceMcp {
+export interface SourceMcp extends SourceConnectionMeta {
   id: string;
   kind: "mcp";
   /** Identificador legível da source (ex.: "jira_mcp") — distinto do `id` interno. */

@@ -7,10 +7,13 @@ import {
   SelectInput,
   ToggleSwitch,
 } from "@/app/components/resources/fields/Fields";
+import TestConnectionButton from "@/app/components/resources/sources/TestConnectionButton";
+import { untestedConnectionMeta } from "@/app/lib/testSourceConnection";
 import type {
   SourceDatabase,
   DatabaseType,
   SourceTransport,
+  SourceConnectionMeta,
   ValidationErrors,
 } from "@/app/types/assistantConfig";
 
@@ -43,6 +46,9 @@ const TRANSPORT_OPTIONS = [
 export default function SourceDatabaseForm({ source, onChange, errors, errorPrefix }: Props) {
   const e = (f: string) => errors[`${errorPrefix}.${f}`];
   const update = (patch: Partial<SourceDatabase>) => onChange({ ...source, ...patch });
+  const updateCredentials = (patch: Partial<SourceDatabase>) =>
+    onChange({ ...source, ...patch, ...untestedConnectionMeta() });
+  const applyTestResult = (meta: SourceConnectionMeta) => onChange({ ...source, ...meta });
 
   return (
     <div className="flex flex-col gap-[16px]">
@@ -56,7 +62,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
           <FieldLabel required>Banco de dados</FieldLabel>
           <SelectInput
             value={source.database}
-            onChange={(v) => update({ database: v as DatabaseType })}
+            onChange={(v) => updateCredentials({ database: v as DatabaseType })}
             options={DB_OPTIONS}
             placeholder="Selecione o banco..."
           />
@@ -68,19 +74,18 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
         <FieldLabel required>String de conexão</FieldLabel>
         <PasswordInput
           value={source.connection_string}
-          onChange={(v) => update({ connection_string: v })}
+          onChange={(v) => updateCredentials({ connection_string: v })}
           placeholder={CONNECTION_PLACEHOLDERS[source.database] ?? "protocol://user:pass@host:port/db"}
           hasValue={!!source.connection_string}
         />
         <FieldError message={e("connection_string")} />
       </div>
 
-      {/* Toggles: use_mcp + introspect */}
       <div className="grid grid-cols-2 gap-[12px]">
         <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-[10px] p-[12px]">
           <ToggleSwitch
             checked={source.use_mcp}
-            onChange={(v) => update({ use_mcp: v })}
+            onChange={(v) => updateCredentials({ use_mcp: v })}
             label="Usar MCP"
             description="Acessar o banco via MCP"
           />
@@ -95,19 +100,18 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
         </div>
       </div>
 
-      {/* Config MCP — visível quando use_mcp */}
       {source.use_mcp && (
         <div className="flex flex-col gap-[16px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-[10px] p-[16px]">
           <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[#f9fafb] text-[14px]">Configuração MCP</p>
           <div className="grid grid-cols-2 gap-[12px]">
             <div className="flex flex-col gap-[8px]">
               <FieldLabel required>Host</FieldLabel>
-              <TextInput value={source.mcp_host} onChange={(v) => update({ mcp_host: v })} placeholder="mcp-docnix.example.internal" />
+              <TextInput value={source.mcp_host} onChange={(v) => updateCredentials({ mcp_host: v })} placeholder="mcp-docnix.example.internal" />
               <FieldError message={e("mcp_host")} />
             </div>
             <div className="flex flex-col gap-[8px]">
               <FieldLabel>Porta</FieldLabel>
-              <TextInput value={source.mcp_port} onChange={(v) => update({ mcp_port: v })} placeholder="8080" type="number" />
+              <TextInput value={source.mcp_port} onChange={(v) => updateCredentials({ mcp_port: v })} placeholder="8080" type="number" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-[12px]">
@@ -115,7 +119,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
               <FieldLabel>Transporte</FieldLabel>
               <SelectInput
                 value={source.mcp_transport}
-                onChange={(v) => update({ mcp_transport: v as SourceTransport })}
+                onChange={(v) => updateCredentials({ mcp_transport: v as SourceTransport })}
                 options={TRANSPORT_OPTIONS}
                 placeholder="Selecione..."
               />
@@ -124,7 +128,7 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
               <FieldLabel>API Key</FieldLabel>
               <PasswordInput
                 value={source.mcp_secret_key}
-                onChange={(v) => update({ mcp_secret_key: v })}
+                onChange={(v) => updateCredentials({ mcp_secret_key: v })}
                 placeholder="sk-..."
                 hasValue={!!source.mcp_secret_key}
               />
@@ -133,7 +137,6 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
         </div>
       )}
 
-      {/* Estrutura emulada — usada quando introspect = false */}
       {!source.introspect && (
         <div className="flex flex-col gap-[8px]">
           <FieldLabel>Estrutura do banco (JSON)</FieldLabel>
@@ -149,6 +152,8 @@ export default function SourceDatabaseForm({ source, onChange, errors, errorPref
           <FieldError message={e("structure")} />
         </div>
       )}
+
+      <TestConnectionButton source={source} onResult={applyTestResult} />
     </div>
   );
 }

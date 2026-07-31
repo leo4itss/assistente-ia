@@ -12,9 +12,20 @@ import type {
   DatabaseType,
   SourceTransport,
 } from "@/app/types/assistantConfig";
+import { DEFAULT_CONNECTION_META } from "@/app/types/assistantConfig";
 
 function newId() {
   return Math.random().toString(36).slice(2);
+}
+
+function withConnectionMeta(s: any) {
+  return {
+    ...DEFAULT_CONNECTION_META,
+    ...s,
+    connection_status: s.connection_status ?? DEFAULT_CONNECTION_META.connection_status,
+    connection_tested_at: s.connection_tested_at ?? DEFAULT_CONNECTION_META.connection_tested_at,
+    connection_error: s.connection_error ?? DEFAULT_CONNECTION_META.connection_error,
+  };
 }
 
 function defaultModelOverride(model_name: string | null, api_version: string | null) {
@@ -78,6 +89,7 @@ function sourcesFromLegacyResources(resources: any[]): Source[] {
           mcp_transport: (p.mcp_transport as SourceTransport) || "",
           mcp_secret_key: p.mcp_secret_key || "",
           structure: "",
+          ...DEFAULT_CONNECTION_META,
         };
         sources.push(s);
       }
@@ -87,10 +99,12 @@ function sourcesFromLegacyResources(resources: any[]): Source[] {
         const s: SourceDocuments = {
           id: newId(),
           kind: "documents",
+          external_id: "",
           label: "",
           connection_string: d.connection_string || "",
           files: [],
           links: [],
+          ...DEFAULT_CONNECTION_META,
         };
         sources.push(s);
       }
@@ -134,10 +148,10 @@ export function readAssistantConfig(fields: {
           // Documents, items em FAQ) — sources/capabilities salvas antes deles
           // existirem não têm essas chaves.
           sources: (parsed.sources ?? defaults.sources).map((s: any) => {
-            if (s.kind === "mcp") return { external_id: "", ...s };
-            if (s.kind !== "documents") return s;
+            if (s.kind === "mcp") return withConnectionMeta({ external_id: "", ...s });
+            if (s.kind !== "documents") return withConnectionMeta(s);
             const fallbackUpdatedAt = new Date().toISOString();
-            const merged = { external_id: "", files: [], links: [], ...s };
+            const merged = withConnectionMeta({ external_id: "", files: [], links: [], ...s });
             merged.files = merged.files.map((f: any) => ({ updatedAt: fallbackUpdatedAt, ...f }));
             merged.links = merged.links.map((l: any) => ({ updatedAt: fallbackUpdatedAt, ...l }));
             return merged;
