@@ -53,6 +53,8 @@ Baseado no que **de fato existe** no repositório. Não copie tokens de design n
   - default → chat (`Sidebar` + Header + ChatBar)
 - Customização IA: seções `identity` | `sources` | `capabilities` | `builtins` | `config`.
 - Estado: `useState` / `useEffect` + `localStorage` + evento `assistants-updated`. Sem Redux/Zustand.
+- Fontes: status de conexão (`connection_status`) e Acervo (`files`/`links`) vivem no `AssistantConfig`; teste de conexão e bulk delete do Acervo são **mock/local** no protótipo (detalhe em `docs/capacidades.md`).
+- Preview JSON: Monaco editável; aplica na config em memória se o JSON for v3 válido — persistência só no **Salvar**.
 - Config do assistente: tipos em `src/app/types/assistantConfig.ts`; persistência em `Assistant.config` (JSON string). `resources`/`tools` só migração.
 - Alias `@/` → `src/`. Assets Figma: `figma:asset/<hash>.png` (não renomear `src/assets/`).
 

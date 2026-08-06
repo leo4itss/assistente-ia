@@ -4,6 +4,8 @@
 > A tela anterior **Resources e Tools / Capacidades** (abas Recursos | Integrações | Avançado) foi **removida**. O arquivo legado `docs/resources-tools.md` está obsoleto.
 >
 > **Microcopy (UI):** textos de produto alinhados ao Figma `[PRIZM] Assistente IA` — página *24.07.2026 - Capacidades* (`node-id=28905-806`). Propriedades, payloads e schemas permanecem com nomes técnicos.
+>
+> **Protótipo (sem back-end de Fontes/Acervo):** teste de conexão é **mock**; exclusão em massa do Acervo e pipeline de indexação são **locais**; persistência da config é `localStorage` via **Salvar**.
 
 ## Índice
 
@@ -180,7 +182,7 @@ No protótipo o avanço `queued → indexing → ready` é simulado no cliente (
 
 | Coluna | Comportamento |
 |---|---|
-| Seleção | Checkbox por linha; no cabeçalho seleciona/desseleciona todos os **itens visíveis** (filtro ativo ∩ limite 100) |
+| Seleção | Checkbox dark (borda sutil / marcado azul); no cabeçalho seleciona/desseleciona todos os **itens visíveis** (filtro ativo ∩ limite 100) |
 | Tipo | FILE / LINK |
 | Nome / URL | Nome do arquivo ou URL |
 | Tamanho | Arquivos; links exibem `—` |
@@ -234,7 +236,7 @@ Badges do card: **BANCO DE DADOS**, **DOCUMENTOS**, **PESQUISA**, **FAQ**.
 | Roteamento · descrição | Texto que orienta quando acionar a capacidade |
 | Roteamento · exemplos (um por linha) | Exemplos de perguntas/temas |
 | Instruções | Como o assistente deve usar a capacidade |
-| Escopo (schema → tabelas/views) | Só banco — recorte schema/tabelas |
+| Escopo (schema → tabelas/views) | Só banco — recorte schema/tabelas; botão **Schema** (ícone `+` + texto sem `+` duplicado) |
 
 > **Pendente (fora do lote de microcopy Figma):** placeholders e mensagens de validação ainda podem citar termos internos (`source`, `supervisor`, `motor`, `use_mcp`). Labels de campo acima já estão em português de produto.
 
@@ -277,7 +279,7 @@ O badge dos cards exibe **NATIVO**. Em Conhecimento, as ferramentas são **DATA 
 | `temperature_decision` | **DECISÃO** — *Decisões, interpretação de intenção e consultas* |
 | `temperature_generation` | **GERAÇÃO** — *Geração e síntese de conteúdo* |
 | `temperature_creative` | **CRIATIVO** — *Exploração de respostas mais variadas e criativas* |
-| `answer_depth` | **Profundidade da resposta** — Concisa / Equilibrada / Detalhada |
+| `answer_depth` | **Profundidade da resposta** — *Concisa — apenas o pedido* / *Equilibrada — Contexto moderado* / *Detalhada — Explicação completa* |
 | `insight_enrichment_enabled` | **Enriquecimento de insights** — *Adiciona insights complementares à resposta* |
 | `model_large` | **Modelo principal** / **Versão do modelo principal** |
 | `model_small` | **Modelo leve** / **Versão do modelo leve** |
@@ -289,11 +291,13 @@ Placeholders técnicos (`model_name`, `api_version`) permanecem. Campos omitidos
 
 ## Preview JSON
 
-- Painel lateral (**Ver JSON**) e modal expandida com editor Monaco **editável** do `AssistantConfig` atual
-- Números de linha visíveis no gutter (painel e modal)
-- Edição válida (JSON parseável + schema v3 com `sources`) aplica na config em memória e marca `isDirty`
-- JSON inválido ou fora do schema v3 exibe erro no painel e **não** sobrescreve a config
-- Na modal: importar JSON / copiar JSON; importação e edição pedem **Salvar** para persistir
+- Botão **Ver JSON** / **Ocultar JSON** no header abre o painel lateral (~380px)
+- Botão de expandir no painel abre **modal em tela cheia**
+- Editor Monaco **editável** (painel e modal), com **números de linha** no gutter
+- Edição válida (JSON parseável + schema v3 com array `sources`) aplica na config em memória e marca `isDirty`
+- JSON inválido ou fora do schema v3: banner de erro no painel/modal e **não** sobrescreve a config
+- Na modal: **Importar JSON** (arquivo) / **Copiar JSON**; importação e edição pedem **Salvar** para persistir
+- Formato legado `{ resources, tools }` **não** é aceito na edição/importação direta — só via migração na leitura do assistente
 
 ---
 
@@ -302,9 +306,10 @@ Placeholders técnicos (`model_name`, `api_version`) permanecem. Campos omitidos
 ### Salvar
 
 1. Botão **Salvar** desabilitado enquanto `!isDirty`
-2. Validação; em erro, navega para a seção correspondente
+2. Validação de formulário; em erro, navega para a seção correspondente
 3. Diálogo **Salvar configuração?**
 4. Persiste no `localStorage` e exibe toast *Configuração salva com sucesso.*
+5. **Não** há teste de conexão obrigatório no Salvar (teste é manual nas Fontes)
 
 ### Excluir assistente
 
@@ -319,7 +324,7 @@ Placeholders técnicos (`model_name`, `api_version`) permanecem. Campos omitidos
 
 | Chave | Conteúdo |
 |---|---|
-| `assistants` | Lista de assistentes; cada um com `config` (JSON string do `AssistantConfig`) e campos de identidade espelhados |
+| `assistants` | Lista de assistentes; cada um com `config` (JSON string do `AssistantConfig`, incl. status de conexão das fontes e itens do acervo) e campos de identidade espelhados |
 | `selectedAssistantId` | Assistente ativo |
 | Evento `assistants-updated` | Sincroniza UI após salvar / excluir / criar |
 
@@ -335,6 +340,7 @@ Query param `?section=` aceita: `identity` | `sources` | `capabilities` | `built
 - Novos arquivos/links válidos entram no topo
 - Coluna **Atualizado** tem controle de ordenação (padrão: mais recentes primeiro)
 - Coluna **Chunks** exibe valor só em `ready`
+- Coluna de seleção com checkboxes dark mode
 
 ### CA-02 — Status do Acervo
 
@@ -359,8 +365,11 @@ Textos de produto obrigatórios na UI:
 | Fontes › Banco | Usar MCP | **Usar MCP** / *Acessar o banco via MCP* |
 | Fontes › Banco | Detectar estrutura | **Detectar estrutura** / *Identificar schema via MCP* |
 | Fontes › Banco | Estrutura | **Estrutura do banco (JSON)** / *Informe a estrutura do banco quando a inspeção automática não estiver habilitada.* |
+| Fontes › Banco/MCP | Label secret | **API Key** (não “Chave secreta”) |
 | Capacidades | Descrição da seção | *Configure as capacidades do assistente e defina quais fontes ele deve utilizar em cada uma delas.* |
+| Capacidades › Escopo | Botão | Ícone `+` + texto **Schema** (sem `+` no texto) |
 | Recursos Nativos | Descrição da seção | *Gerencie os recursos nativos disponíveis no assistente, ativando ou desativando conforme a necessidade.* |
+| Recursos Nativos | Cards | Badge **NATIVO**; títulos **Conhecimento** / **Agendamentos** / **Visualização** |
 | Configurações | Descrição da seção | *Ajuste parâmetros avançados que influenciam o comportamento, as respostas e os modelos utilizados pelo assistente.* |
 | Config › Amostragem | Descritivo + labels | *Ajuste o nível…*; **TEMPERATURA GERAL**; DECISÃO / GERAÇÃO / CRIATIVO com descritivos de produto |
 | Config › Enriquecimento | Labels | **Profundidade da resposta**; **Enriquecimento de insights** / *Adiciona insights complementares à resposta* |
@@ -373,3 +382,27 @@ Também: labels **Fonte (vínculo)**, **Roteamento · …**, **Escopo (…)**, b
 - Em Persona: **Excluir assistente** à esquerda e **Salvar** à direita, alinhados ao grid `640 + 32`
 - Nas demais seções: botão de excluir **não** aparece
 - Ícone da sidebar recolhe/expande a navegação lateral
+
+### CA-05 — Teste de conexão (Fontes)
+
+- Botão **Testar conexão** em Documentos, Banco e MCP
+- Sucesso → toast + badge **CONECTADO** no card
+- Falha → toast.error + badge **FALHA**
+- Alterar credenciais remove o badge (status `untested`)
+- **Salvar** não exige teste prévio
+- Mock: substring `fail` nos campos de conexão força falha (demo)
+
+### CA-06 — Exclusão em massa (Acervo)
+
+- Selecionar N linhas (ou “todos visíveis”) habilita **Excluir selecionados**
+- Modal confirma com a quantidade; após confirmar, itens saem da tabela e stats atualizam
+- “Selecionar todos” respeita filtros e o limite de 100 visíveis
+- Exclusão unitária (lixeira) permanece imediata
+- Remoção é local até o usuário **Salvar** a configuração do assistente
+
+### CA-07 — Preview JSON editável
+
+- Painel e modal permitem editar o JSON
+- JSON v3 válido aplica na UI e marca dirty; inválido mostra erro sem sobrescrever
+- Importar / copiar disponíveis na modal
+- Persistência só após **Salvar**

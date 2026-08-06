@@ -23,7 +23,8 @@ default             → chat (Sidebar + Header + ChatBar)
 ```
 
 `AssistantConfigScreen` (v3): Persona | Fontes | Capacidades | Recursos Nativos | Configurações.  
-Config em `Assistant.config` (`types/assistantConfig.ts`). `<Toaster>` só em `App.tsx`.
+Config em `Assistant.config` (`types/assistantConfig.ts`). `<Toaster>` só em `App.tsx`.  
+Produto detalhado (Acervo, teste de conexão, JSON editável, microcopy): `docs/capacidades.md`.
 
 ## Toasts
 

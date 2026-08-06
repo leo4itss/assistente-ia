@@ -14,4 +14,5 @@ Optional: `npm run build` for a production build.
 ## Agentes e contribuição
 
 Convenções de desenvolvimento, workflow e Definition of Done: **`AGENTS.md`**.  
-Tokens e design system: **`DESIGN.md`**.
+Tokens e design system: **`DESIGN.md`**.  
+Funcionalidade da Customização IA (Fontes, Acervo, Capacidades, etc.): **`docs/capacidades.md`**.
